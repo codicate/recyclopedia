@@ -1,22 +1,22 @@
 import { useEffect, useRef } from 'react';
-import getElement from 'functions/getElement';
+import getRefCurrent from 'functions/getRefCurrent';
 
 const useEventListener = (eventTarget, eventType, handler, options = {}) => {
-  const savedHandler = useRef();
+  const savedHandler = useRef(null);
 
   useEffect(() => {
     savedHandler.current = handler;
   }, [handler]);
 
   useEffect(() => {
-    const element = getElement(eventTarget);
+    const element = getRefCurrent(eventTarget);
     if (!element || !element.addEventListener) return;
 
-    const eventListener = (event) => savedHandler.current(event);
-    element.addEventListener(eventType, eventListener, options);
+    const listener = (event) => savedHandler.current(event);
+    element.addEventListener(eventType, listener, options);
 
-    return () => element.removeEventListener(eventType, eventListener, options);
-  }, [eventTarget, eventType, handler, options]);
+    return () => element.removeEventListener(eventType, listener, options);
+  }, [eventTarget, eventType, options]);
 };
 
 export default useEventListener;
