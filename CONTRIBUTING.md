@@ -11,7 +11,7 @@
 
 ## Tools
 
-- **Yarn** over NPM - using both can cause issues. Yarn is recommended more so let’s use that.
+- **NPM** over Yarn - simply because we won't benefit much from yarn, and NPM command are more familiar to us
 - **Absolute path** over relative path - Absolute path is less confusing and more secure, and can be customized if we need to
 
 
@@ -28,8 +28,5 @@
 
 ## Styling
 
-- Still in debate…
-- Some options worth considering:
-	- styled components
-	- scss modules
+- we will us scss modules to solve namespacing issue
 - But not frameworks like bootstrap and material ui, because they are too generic
