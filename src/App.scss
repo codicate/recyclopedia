@@ -1,0 +1,16 @@
+@import "/src/styles/variables";
+@import "/src/styles/components";
+
+#root {
+  height: 100%;
+
+  display: grid;
+  grid-template: auto 1fr / 100%;
+
+  padding: 0 2rem;
+
+  font-size: 1rem;
+
+  color: $text-main;
+  background-color: $main;
+}

@@ -30,3 +30,4 @@
 
 - we will us scss modules to solve namespacing issue
 - But not frameworks like bootstrap and material ui, because they are too generic
+- absolute path doesn't work in scss, so use this instead `@import "/src/styles/...";
