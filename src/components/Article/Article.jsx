@@ -1,9 +1,8 @@
 import React from 'react';
+import { Route } from 'react-router-dom';
+
 import styles from 'components/Article/Article.module.scss';
 import { validPageLink } from 'utils/functions';
-
-import { Route, Link } from 'react-router-dom';
-
 
 export function buildFromJSON({ name, content, id }) {
   return (
