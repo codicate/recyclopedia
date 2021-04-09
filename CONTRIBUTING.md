@@ -31,3 +31,8 @@
 - we will us scss modules to solve namespacing issue
 - But not frameworks like bootstrap and material ui, because they are too generic
 - absolute path doesn't work in scss, so use this instead `@import "/src/styles/...";
+
+
+## Publishing
+
+- If we need to test out how it works on the web, use gh-pages for now. Just enter `npm run deploy` will do.
