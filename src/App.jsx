@@ -8,6 +8,7 @@ import { useState } from 'react';
 
 function App() {
   const [articlesData, setArticlesData] = useState(globalArticlesData);
+
   return (
     <>
       <h1>
@@ -20,7 +21,7 @@ function App() {
           <Homepage articlesData={articlesData} />
         </Route>
         <Route exact path='/recyclopedia/admin'>
-          <Admin articlesData={articlesData} setArticlesData={setArticlesData}/>
+          <Admin articlesData={articlesData} setArticlesData={setArticlesData} />
         </Route>
         {articlesData["articles"].map(buildFromJSON)}
       </Switch>
