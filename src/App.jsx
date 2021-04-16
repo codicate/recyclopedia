@@ -11,15 +11,15 @@ function App() {
   return (
     <>
       <h1>
-        <Link to="/">Recyclopedia</Link>
+        <Link to="/recyclopedia/">Recyclopedia</Link>
         <br />
-        <Link to="/admin">Admin</Link>
+        <Link to="/recyclopedia/admin">Admin</Link>
       </h1>
       <Switch>
-        <Route exact path='/'>
+        <Route exact path='/recyclopedia/'>
           <Homepage articlesData={articlesData} />
         </Route>
-        <Route exact path='/admin'>
+        <Route exact path='/recyclopedia/admin'>
           <Admin articlesData={articlesData} setArticlesData={setArticlesData}/>
         </Route>
         {articlesData["articles"].map(buildFromJSON)}
