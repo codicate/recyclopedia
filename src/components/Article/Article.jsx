@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 
 import styles from 'components/Article/Article.module.scss';
 import { validPageLink } from 'utils/functions';
-import { intoParsable, tryParseString, matchedQuotePairs, eatIdentifier } from 'utils/intoParsable';
+import { intoParsable, tryParseString, matchedQuotePairs, eatIdentifier, eatWhitespace } from 'utils/intoParsable';
 
 var md = require('markdown-it')(
   {
@@ -64,37 +64,57 @@ function preprocessMarkdown(input) {
                 );
 
                 if (inbetween && has_end) {
-                    // pre-emptive string pair matching check. If this fails don't try to
-                    // parse anything and just fail it with no output. The parser will choke
-                    // on invalid input.
-
-                    // I know I don't actually have to do the check however I made a mistake somewhere
-                    // that results in me having to do this.
-                    // Investigate (consumeUntil), since that's the only place the error could be.
-                    if (matchedQuotePairs(inbetween, [['\'', '\'']])) {
-                        result += "<img ";
-                        while (inbetween.stillParsing()) {
-                            // Since this is not a REAL parser still
-                            // the | separator is not enforced. It's just a separator
-                            // like whitespace.
-                            inbetween.requireCharacter('|');
-                            inbetween.requireCharacter(' ');
-
+                    let image_tag = "<img ";
+                    let error = false;
+                    
+                    while (inbetween.stillParsing() && !error) {
+                        eatWhitespace(inbetween);
+                        let property = eatIdentifier(inbetween);
+                        if (property) {
+                            image_tag += property;
+                            eatWhitespace(inbetween);
                             if (inbetween.requireCharacter('=')) {
-                                result += "=";
-                            } else if (inbetween.peekCharacter() == '\'') {
-                                let maybe_string = tryParseString(inbetween, {delimiter: '\''});
-                                if (maybe_string) {
-                                    result += '\'' + maybe_string + '\'';
+                                image_tag += "=";
+                                eatWhitespace(inbetween);
+                                if (inbetween.peekCharacter() === '\'') {
+                                    let maybe_string = tryParseString(inbetween, {delimiter: '\''});
+                                    if (maybe_string) {
+                                        image_tag += '\'' + maybe_string + '\'';
+                                    } else {
+                                        console.error("No string value?");
+                                        error = true;
+                                    }
+                                } else {
+                                    let value_identifier = eatIdentifier(inbetween);
+                                    if (value_identifier) {
+                                        image_tag += value_identifier;
+                                    } else {
+                                        console.error("No value identifier?");
+                                        error = true;
+                                    }
+                                }
+                                eatWhitespace(inbetween);
+                                if (!inbetween.requireCharacter('|')) {
+                                    if (eatIdentifier(inbetween) || tryParseString(inbetween, {delimiter: '\''})) {
+                                        console.error("Missing pipe separator!");
+                                        error = true;
+                                    }
                                 }
                             } else {
-                                result += eatIdentifier(inbetween);
+                                console.error("Missing assignment for property?");
+                                error = true;
                             }
-                            result += " ";
+                        } else {
+                            console.error("Could not find property name!");
+                            error = true;
                         }
-                        result += "/>";
+                        image_tag += " ";
+                    }
+                    image_tag += "/>";
+                    if (!error) {
+                        result += image_tag;
                     } else {
-                        // Unmatched pairs (IE: bad string somewhere.) Handle if needed or just blank out.
+                        console.log("error happened");
                     }
                 } else {
                     // not valid tag. Don't do anything.
@@ -114,7 +134,8 @@ function preprocessMarkdown(input) {
 }
 
 const TEXT = `
-@@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png'|alt='this is alt'|style='width: 170px; height: 500px;'@@
+@@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png' | alt='this is alt' | style='width: 170px; height: 500px;'@@
+@@src = https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png' | alt='this is alt' | style='width: 170px; height: 500px;'@@
 
 [asd]("asdoapos")
 

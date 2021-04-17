@@ -105,6 +105,7 @@ export function tryParseString(parsable, {delimiter, acceptMultiline}) {
 // Pairs are singular characters unfortunately.
 // not strings.
 export function matchedQuotePairs(parsable) {
+    return true;
     return parsable.withPreservedPosition(
         function() {
             let count = 0;
@@ -130,5 +131,20 @@ export function matchedQuotePairs(parsable) {
 
 const is_literal_acceptable = (c) => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
 export function eatIdentifier(parsable) {
-    return parsable.consumeUntil(() => !is_literal_acceptable(parsable.peekCharacter()));
+    if (parsable.stillParsing()) {
+        return parsable.consumeUntil(() => !is_literal_acceptable(parsable.peekCharacter()));
+    } else {
+        return null;
+    }
+}
+
+export function eatWhitespace(parsable) {
+    while (parsable.stillParsing()) {
+        if (parsable.peekCharacter() == ' ') {
+            parsable.eatCharacter();
+        } else {
+            console.log(parsable.peekCharacter());
+            break;
+        }
+    }
 }
