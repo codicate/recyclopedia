@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 
 import styles from 'components/Article/Article.module.scss';
 import { validPageLink } from 'utils/functions';
-import { intoParsable, tryParseString, eatIdentifier } from 'utils/intoParsable';
+import { intoParsable, tryParseString, matchedQuotePairs, eatIdentifier } from 'utils/intoParsable';
 
 var md = require('markdown-it')(
   {
@@ -24,11 +24,10 @@ export function buildFromJSON({ name, content, id }) {
 
 // A parsable object from a string.
 
-function preprocess_markdown(input) {
+function preprocessMarkdown(input) {
     let result = "";
     input = intoParsable(input);
 
-    const is_literal_acceptable = (c) => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
     while (input.stillParsing()) {
         if (input.requireCharacter('\\')) {
             result += input.eatCharacter();
@@ -67,26 +66,12 @@ function preprocess_markdown(input) {
                 if (inbetween && has_end) {
                     // pre-emptive string pair matching check. If this fails don't try to
                     // parse anything and just fail it with no output. The parser will choke
-                    // on invalid input
-                    let no_unmatched_quote_pairs = inbetween.withPreservedPosition(
-                        function() {
-                            let count = 0;
+                    // on invalid input.
 
-                            while (inbetween.stillParsing()) {
-                                if (inbetween.requireCharacter('\\')) {
-                                    inbetween.eatCharacter();
-                                } else if (inbetween.requireCharacter('\'')) {
-                                    count++;
-                                } else {
-                                    inbetween.eatCharacter();
-                                }
-                            }
-
-                            return (count % 2) === 0;
-                        }
-                    );
-
-                    if (no_unmatched_quote_pairs) {
+                    // I know I don't actually have to do the check however I made a mistake somewhere
+                    // that results in me having to do this.
+                    // Investigate (consumeUntil), since that's the only place the error could be.
+                    if (matchedQuotePairs(inbetween, [['\'', '\'']])) {
                         result += "<img ";
                         while (inbetween.stillParsing()) {
                             // Since this is not a REAL parser still
@@ -97,16 +82,19 @@ function preprocess_markdown(input) {
 
                             if (inbetween.requireCharacter('=')) {
                                 result += "=";
-                            } else if (inbetween.requireCharacter('\'')) {
-                                result += "\'" + inbetween.consumeUntil(() => inbetween.requireCharacter('\'')) + "\'";
+                            } else if (inbetween.peekCharacter() == '\'') {
+                                let maybe_string = tryParseString(inbetween, {delimiter: '\''});
+                                if (maybe_string) {
+                                    result += '\'' + maybe_string + '\'';
+                                }
                             } else {
-                                result += inbetween.consumeUntil(() => !is_literal_acceptable(inbetween.peekCharacter()));
+                                result += eatIdentifier(inbetween);
                             }
                             result += " ";
                         }
                         result += "/>";
                     } else {
-                        // Unmatched pairs (IE: bad string.) Handle if needed or just blank out.
+                        // Unmatched pairs (IE: bad string somewhere.) Handle if needed or just blank out.
                     }
                 } else {
                     // not valid tag. Don't do anything.
@@ -126,21 +114,7 @@ function preprocess_markdown(input) {
 }
 
 const TEXT = `
-@@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png'|alt='this is alt'|style='width: 170px; height: 500px;'@
-@@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png'|alt='this is alt'|style='width: 170px; height: 500px;'@
-@@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png'|alt='this is alt'|style='width: 170px; height: 500px;'@
-@@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png'|alt='this is alt'|style='width: 170px; height: 500px;'@
 @@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png'|alt='this is alt'|style='width: 170px; height: 500px;'@@
-@@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png'|alt='this is alt'|style='width: 170px; height: 500px;'@
-@@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png'|alt='this is alt'|style='width: 170px; height: 500px;'@
-@@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png'|alt='this is alt'|style='width: 170px; height: 500px;'@
-@@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png'|alt='this is alt'|style='width: 170px; height: 500px;'@
-@@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png'|alt='this is alt'|style='width: 170px; height: 500px;'@
-@@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png'|alt='this is alt'|style='width: 170px; height: 500px;'@
-@@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png'|alt='this is alt'|style='width: 170px; height: 500px;'@
-@@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png'|alt='this is alt'|style='width: 170px; height: 500px;'@
-@@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png'|alt='this is alt'|style='width: 170px; height: 500px;'@
-@@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png'|alt='this is alt'|style='width: 170px; height: 500px;'@
 
 [asd]("asdoapos")
 
@@ -391,7 +365,7 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 `;
 
 function Article({ name, content }) {
-    content = preprocess_markdown(TEXT);
+    content = preprocessMarkdown(TEXT);
     // content = TEXT;
     return (
         <div>

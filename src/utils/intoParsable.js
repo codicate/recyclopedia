@@ -102,6 +102,32 @@ export function tryParseString(parsable, {delimiter, acceptMultiline}) {
     return null;
 }
 
+// Pairs are singular characters unfortunately.
+// not strings.
+export function matchedQuotePairs(parsable) {
+    return parsable.withPreservedPosition(
+        function() {
+            let count = 0;
+
+            while (parsable.stillParsing()) {
+                if (parsable.requireCharacter('\\')) {
+                    parsable.eatCharacter();
+                } else {
+                    if (parsable.requireCharacter('\'')) {
+                        count++;
+                    }
+                    parsable.eatCharacter();
+                }
+            }
+
+            return (count % 2 === 0);
+        }
+    );
+}
+
+// console.log(tryParseString(intoParsable('\'Hello\nWorld!\'|'), {delimiter: '\'', acceptMultiline: true}));
+// console.log(tryParseString(intoParsable('\'Hello\nWorld!\'|'), {delimiter: '\''}));
+
 const is_literal_acceptable = (c) => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
 export function eatIdentifier(parsable) {
     return parsable.consumeUntil(() => !is_literal_acceptable(parsable.peekCharacter()));
