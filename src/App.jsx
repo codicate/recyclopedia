@@ -14,8 +14,9 @@ function App() {
     <>
       <header id={styles.header}>
         <nav id={styles.navbar}>
-          <div id={styles.logoDiv}></div>
-          <Link to="/">Recyclopedia</Link>
+          <Link to="/">
+            <div id={styles.logoDiv}></div>
+          </Link>
           <Link to="/admin">Admin</Link>
         </nav>
       </header>
