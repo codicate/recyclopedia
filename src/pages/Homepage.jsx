@@ -6,7 +6,7 @@ function Homepage({ articlesData }) {
     <>
       <h1>Welcome to Recyclopedia</h1>
       {
-        articlesData["articles"].map(({ name }) => (
+        articlesData.articles.map(({ name }) => (
           <p key={name} >
             <Link to={validPageLink(name)}>
               {name}
