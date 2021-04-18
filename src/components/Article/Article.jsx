@@ -3,6 +3,7 @@ import { Route } from 'react-router-dom';
 
 import styles from 'components/Article/Article.module.scss';
 import { validPageLink } from 'utils/functions';
+import { intoParsable, tryParseString, matchedQuotePairs, eatIdentifier, eatWhitespace } from 'utils/intoParsable';
 
 var md = require('markdown-it')(
   {
@@ -12,8 +13,6 @@ var md = require('markdown-it')(
     typographer: true,
   }
 );
-var result = md.renderInline('__markdown-it__ rulezz!');
-console.log(result);
 
 export function buildFromJSON({ name, content, id }) {
   return (
@@ -23,124 +22,122 @@ export function buildFromJSON({ name, content, id }) {
   );
 }
 
-const smaller_parse_string = `
-<img src="https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png" alt="8BitDeckAssets" style="zoom:67%;" />
+// A parsable object from a string.
 
-@@src='https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png' | alt='this is alt' | zoom=50@@
+function preprocessMarkdown(input) {
+    let result = "";
+    input = intoParsable(input);
 
----
-__Advertisement :)__
+    while (input.stillParsing()) {
+        if (input.requireCharacter('\\')) {
+            result += input.eatCharacter();
+        } else if (input.requireCharacter('@')) {
+            if (input.requireCharacter('@')) {
+                let has_end = false;
+                /*
+                  Whenever our region fails to parse it'll just refuse to output anything.
+                  
+                  @ asdf @ asdf -> @ asdf @ asdf
+                  @@ asdf @ asdf -> null
+                  @@ asdf @@ asdf -> whatever we would've parsed.
+                  
+                  if you need multiple @ signs consecutively just do
+                  \@\@ or @\@.
+                 */
+                let inbetween = intoParsable(
+                    input.consumeUntil(
+                        function() {
+                            if (input.requireCharacter('\n')) {
+                                return true;
+                            } else if (input.requireCharacter('@')) {
+                                /*
+                                  When we encounter an @ sign, it's likely to be the end of parsing a "region".
+                                 */
+                                if (input.requireCharacter('@')) {
+                                    has_end = true;
+                                }
+                                return true;
+                            }
+                            return false;
+                        }
+                    )
+                );
 
-- __[pica](https://nodeca.github.io/pica/demo/)__ - high quality and fast image
-  resize in browser.
-- __[babelfish](https://github.com/nodeca/babelfish/)__ - developer friendly
-  i18n with plurals support and easy syntax.
-
-You will like those projects!
-`;
-
-const smallest_parse_string = `
-  yolo
-  asdfoiuazsdiuofdsjoifaoijfdsa
-  @@src='www.google.com' | alt='This is alt' | super='asdf'@@
-  @@src='www.google.com' |alt='This is alt'@@
-  @@src='www.google.com' |alt='This is alt'@@
-  @@src='www.google.com' |alt='This is alt'@@
-  @@src='www.google.com' |alt='This is alt'@@
-  asdfoiuazsdiuofdsjoifaoijfdsa
-  asdfoiuazsdiuofdsjoifaoijfdsa
-  asdfoiuazsdiuofdsjoifaoijfdsa
-  asdfoiuazsdiuofdsjoifaoijfdsa
-`;
-
-const test_parser = (text) =>
-  text.replace(
-    /@@\s*src\s*=\s*['|"]([^['|"]]*)['|"][^@]*\s*@@/g,
-    `<img src="$1" alt="$2"/>`
-  );
-// C programmer does string parsing 
-// it's somewhat successful 
-
-/*   
-  TODO(jerry): There's no error checking for anything here,     
-    since this was a rush job. 
-
-  Make something that stores parsing state so you can do proper
-  error checking and also more robust parsing
-  
-  In C I would do something like
-    struct ParseState {
-        char* string;
-        size_t current_character_index;
-    }
-    
-    // ETC.
-    string eat_string(ParseState*); // ADVANCE
-    char eat_character(ParseState*);  // ADVANCE
-    char peek_character(ParseState*); // DON'T ADVANCE
-*/
-function test_parser2(str) {
-  let result = "";
-
-  for (let i = 0; i < str.length; ++i) {
-    switch (str[i]) {
-      case '@': {
-        if (str[i + 1] == '@') {
-          i += 2;
-          let inbetween = "";
-
-          result += "<img ";
-          while (i < str.length) {
-            if (str[i] == '@') {
-              if (str[i + 1] == '@') {
-                i += 2;
-                break;
-              }
+                if (inbetween && has_end) {
+                    let image_tag = "<img ";
+                    let error = false;
+                    
+                    while (inbetween.stillParsing() && !error) {
+                        eatWhitespace(inbetween);
+                        let property = eatIdentifier(inbetween);
+                        if (property) {
+                            image_tag += property;
+                            eatWhitespace(inbetween);
+                            if (inbetween.requireCharacter('=')) {
+                                image_tag += "=";
+                                eatWhitespace(inbetween);
+                                if (inbetween.peekCharacter() === '\'') {
+                                    let maybe_string = tryParseString(inbetween, {delimiter: '\''});
+                                    if (maybe_string) {
+                                        image_tag += '\'' + maybe_string + '\'';
+                                    } else {
+                                        console.error("No string value?");
+                                        error = true;
+                                    }
+                                } else {
+                                    let value_identifier = eatIdentifier(inbetween);
+                                    if (value_identifier) {
+                                        image_tag += value_identifier;
+                                    } else {
+                                        console.error("No value identifier?");
+                                        error = true;
+                                    }
+                                }
+                                eatWhitespace(inbetween);
+                                if (!inbetween.requireCharacter('|')) {
+                                    if (eatIdentifier(inbetween) || tryParseString(inbetween, {delimiter: '\''})) {
+                                        console.error("Missing pipe separator!");
+                                        error = true;
+                                    }
+                                }
+                            } else {
+                                console.error("Missing assignment for property?");
+                                error = true;
+                            }
+                        } else {
+                            console.error("Could not find property name!");
+                            error = true;
+                        }
+                        image_tag += " ";
+                    }
+                    image_tag += "/>";
+                    if (!error) {
+                        result += image_tag;
+                    } else {
+                        console.log("error happened");
+                    }
+                } else {
+                    // not valid tag. Don't do anything.
+                    // maybe add a newline since there should really only be one image per
+                    // line as per markup style.
+                    result += '\n';
+                }
             } else {
-              inbetween += str[i++];
+                result += '@';
             }
-          }
-
-          for (let j = 0; j < inbetween.length; ++j) {
-            let token = "";
-            switch (inbetween[j]) {
-              case ' ': continue; break;
-              case '\'': {
-                j++;
-                token += "\'";
-                do {
-                  token += inbetween[j++];
-                } while (inbetween[j] != '\'' && j < inbetween.length);
-                token += "\'";
-              } break;
-              case '|': continue; break;
-              case '=': token += "="; break;
-              default: {
-                do {
-                  token += inbetween[j++];
-                } while (inbetween[j] != ' ' && j < inbetween.length);
-              } break;
-            }
-            result += token;
-            result += " ";
-          }
-
-          result += "/>\n";
+        } else {
+            result += input.eatCharacter();
         }
-      } break;
-      default: { result += str[i]; } break;
     }
-  }
 
-  return result;
+    return result;
 }
 
-test_parser(smallest_parse_string);
-
 const TEXT = `
-<img src="https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png" alt="8BitDeckAssets" style="zoom:10%;" />
+@@src = 'https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png' | alt='this is alt' | style='width: 170px; height: 500px;'@@
+@@src = https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png' | alt='this is alt' | style='width: 170px; height: 500px;'@@
 
-@@src='https://i.ibb.co/kyXHS0n/8-Bit-Deck-Assets.png' | alt='this is alt' | style='height: 10px;'@@
+[asd]("asdoapos")
 
 ---
 __Advertisement :)__
@@ -315,7 +312,6 @@ The killer feature of \`markdown-it\` is very effective support of
 
 see [how to change output](https://github.com/markdown-it/markdown-it-emoji#change-output) with twemoji.
 
-
 ### [Subscript](https://github.com/markdown-it/markdown-it-sub) / [Superscript](https://github.com/markdown-it/markdown-it-sup)
 
 - 19^th^
@@ -389,20 +385,17 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 :::
 `;
 
-const result2 = test_parser2(TEXT);
-console.log('Jerry', result2);
-
-
 function Article({ name, content }) {
-  content = test_parser2(TEXT);
-  return (
-    <div>
-      <h1 className={styles.title}>{name}</h1>
-      <div className={styles.article} dangerouslySetInnerHTML={{ __html: md.render(content) }}>
-      </div>
-      <br></br>
-    </div>
-  );
+    content = preprocessMarkdown(TEXT);
+    // content = TEXT;
+    return (
+        <div>
+          <h1 className={styles.title}>{name}</h1>
+          <div className={styles.article} dangerouslySetInnerHTML={{ __html: md.render(content) }}>
+          </div>
+          <br></br>
+        </div>
+    );
 }
 
 export default Article;
