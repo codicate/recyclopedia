@@ -1,30 +1,42 @@
-import { Route, Switch, Link } from 'react-router-dom';
-import globalArticlesData from 'data/articles.json';
-
-import { buildFromJSON } from "components/Article/Article";
-import Homepage from "pages/Homepage";
-import Admin from "pages/Admin/Admin";
 import { useState } from 'react';
+import { Route, Switch, Link } from 'react-router-dom';
+
+import styles from 'App.module.scss';
+import globalArticlesData from 'data/articles.json';
+import { buildFromJSON } from "components/Article/Article";
+import Homepage from "pages/Homepage/Homepage";
+import Admin from "pages/Admin/Admin";
 
 function App() {
   const [articlesData, setArticlesData] = useState(globalArticlesData);
 
   return (
     <>
-      <h1>
-        <Link to="/">Recyclopedia</Link>
-        <br />
-        <Link to="/admin">Admin</Link>
-      </h1>
-      <Switch>
-        <Route exact path='/'>
-          <Homepage articlesData={articlesData} />
-        </Route>
-        <Route exact path='/admin'>
-          <Admin articlesData={articlesData} setArticlesData={setArticlesData} />
-        </Route>
-        {articlesData.articles.map(buildFromJSON)}
-      </Switch>
+      <header id={styles.header}>
+        <nav id={styles.navbar}>
+          <div id={styles.logoDiv}></div>
+          <Link to="/">Recyclopedia</Link>
+          <Link to="/admin">Admin</Link>
+        </nav>
+      </header>
+
+      <main id={styles.main}>
+        <article id={styles.page}>
+          <Switch>
+            <Route exact path='/'>
+              <Homepage articlesData={articlesData} />
+            </Route>
+            <Route exact path='/admin'>
+              <Admin articlesData={articlesData} setArticlesData={setArticlesData} />
+            </Route>
+            {articlesData.articles.map(buildFromJSON)}
+          </Switch>
+        </article>
+      </main>
+
+      <footer id={styles.footer}>
+
+      </footer>
     </>
   );
 }
