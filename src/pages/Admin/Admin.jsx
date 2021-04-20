@@ -2,12 +2,14 @@ import React from 'react';
 import Form from 'components/Form/Form';
 import Button from 'components/Form/Button';
 
-export default function Admin({ articlesData, setArticlesData }) {
+export default function Admin({ api, articlesData, setArticlesData }) {
   function submitHandler(input) {
-    const newData = {
-      "articles": articlesData.articles.concat(input)
-    };
-    setArticlesData(newData);
+      (async function() {
+          await api.insertArticle(input);
+          let result = await api.queryForArticles();
+          setArticlesData(result);
+          console.log("Article written! ", result);
+      })();
   }
 
   return (
