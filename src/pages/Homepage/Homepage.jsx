@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
+
 import { validPageLink } from 'utils/functions';
+import styles from 'pages/Homepage/Homepage.module.scss'
 
 function Homepage({ articlesData }) {
   return (
     <>
       <h1>Welcome to Recyclopedia</h1>
       {
-        articlesData["articles"].map(({ name }) => (
+        articlesData.articles.map(({ name }) => (
           <p key={name} >
             <Link to={validPageLink(name)}>
               {name}

@@ -1,13 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import 'index.css';
-import App from 'App';
 import reportWebVitals from 'reportWebVitals';
 
-import {Secrets} from 'secrets';
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import { BrowserRouter } from 'react-router-dom';
+
+import 'index.css';
+import 'styles/global.scss';
 
 import * as Realm from "realm-web";
+import {Secrets} from 'secrets';
+
+import App from 'App';
 
 class RecyclopediaApplicationContext {
     constructor(appId, onFinishedLoadFn) {

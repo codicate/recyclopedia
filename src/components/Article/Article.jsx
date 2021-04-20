@@ -24,6 +24,7 @@ export function buildFromJSON({ name, content, id }) {
 
 function Article({ name, content }) {
     content = preprocessMarkdown(content);
+
     return (
         <div>
           <h1 className={styles.title}>{name}</h1>

@@ -5,4 +5,4 @@ export const getRefCurrent = (ref) => {
     : ref;
 };
 
-export const validPageLink = (originalName) => `/recyclopedia/${originalName.toLowerCase().replace(" ", "_")}`;
+export const validPageLink = (originalName) => `/${originalName.toLowerCase().replace(" ", "_")}`;

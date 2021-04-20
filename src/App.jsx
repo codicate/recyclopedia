@@ -1,10 +1,11 @@
-import { Route, Switch, Link } from 'react-router-dom';
-import globalArticlesData from 'data/articles.json';
-
-import { buildFromJSON } from "components/Article/Article";
-import Homepage from "pages/Homepage";
-import Admin from "pages/Admin/Admin";
 import { useEffect, useState } from 'react';
+import { Route, Switch, Link } from 'react-router-dom';
+
+import styles from 'App.module.scss';
+import globalArticlesData from 'data/articles.json';
+import { buildFromJSON } from "components/Article/Article";
+import Homepage from "pages/Homepage/Homepage";
+import Admin from "pages/Admin/Admin";
 
 function App({api}) {
     const [articlesData, setArticlesData] = useState(globalArticlesData);

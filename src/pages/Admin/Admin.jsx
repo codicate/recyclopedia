@@ -1,4 +1,6 @@
 import React from 'react';
+
+import styles from 'pages/Admin/Admin.module.scss';
 import Form from 'components/Form/Form';
 import Button from 'components/Form/Button';
 
@@ -13,7 +15,7 @@ export default function Admin({ api, articlesData, setArticlesData }) {
   }
 
   return (
-    <div>
+    <>
       <Form
         submitFn={submitHandler}
         inputItems={[
@@ -23,6 +25,6 @@ export default function Admin({ api, articlesData, setArticlesData }) {
         <Button type='submit'>Submit</Button>
 
       </Form>
-    </div>
+    </>
   );
 }

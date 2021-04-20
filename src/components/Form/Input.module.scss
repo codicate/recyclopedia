@@ -11,7 +11,7 @@ $main-color: black;
   position: relative;
   margin: 45px 0;
 
-  .input {
+  input, textarea {
     background: none;
     background-color: white;
     color: $sub-color;
