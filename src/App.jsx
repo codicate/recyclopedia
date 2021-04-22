@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext, createContext } from 'react';
 import { Route, Switch, Link, useHistory } from 'react-router-dom';
 
 import styles from 'App.module.scss';
@@ -7,7 +7,9 @@ import { buildFromJSON } from "components/Article/Article";
 import Homepage from "pages/Homepage/Homepage";
 import Admin from "pages/Admin/Admin";
 
-import {Secrets} from 'secrets';
+import { Secrets } from 'secrets';
+
+export const ApplicationContext = createContext({});
 
 function App({ api }) {
   const [articlesData, setArticlesData] = useState(globalArticlesData);
@@ -17,8 +19,19 @@ function App({ api }) {
     (async function () { setArticlesData(await api.queryForArticles()); })();
   }, []);
 
+  const [isAdmin, _setAdminState] = useState(localStorage.getItem('isAdmin') || false);
+  function setAdminState(value) {
+    localStorage.setItem('isAdmin', value);
+    _setAdminState(value);
+  }
   return (
-    <>
+    <ApplicationContext.Provider value={
+      {
+          isAdmin: isAdmin,
+          setAdminState: setAdminState,
+      }
+    }>
+
       <header id={styles.header}>
         <nav id={styles.navbar}>
           <Link to="/">
@@ -28,13 +41,14 @@ function App({ api }) {
             onClick={
               function () {
                 if (prompt("Enter Admin Password") === Secrets.ADMIN_PASSWORD) {
-                  history.push('/admin');
+                  setAdminState(true);
                 }
               }
             }
           >
             Admin
           </button>
+          {(isAdmin) && <Link to="/admin">Create New Article</Link>}
         </nav>
       </header>
 
@@ -42,12 +56,12 @@ function App({ api }) {
         <article id={styles.page}>
           <Switch>
             <Route exact path='/'>
-              <Homepage articlesData={articlesData}/>
+              <Homepage articlesData={articlesData} />
             </Route>
             <Route exact path='/admin'>
               <Admin api={api} articlesData={articlesData} setArticlesData={setArticlesData} />
             </Route>
-            {articlesData.articles.map(({name, content}) => buildFromJSON({name, content, api, articlesData, setArticlesData}))}
+            {articlesData.articles.map(({ name, content }) => buildFromJSON({ name, content, api, articlesData, setArticlesData }))}
             <Route>
               404
             </Route>
@@ -58,7 +72,8 @@ function App({ api }) {
       <footer id={styles.footer}>
 
       </footer>
-    </>
+      
+    </ApplicationContext.Provider >
   );
 }
 
