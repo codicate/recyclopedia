@@ -6,13 +6,13 @@ import Button from 'components/Form/Button';
 
 export default function Admin({ api, articlesData, setArticlesData, currentArticle }) {
   function submitHandler(input) {
-    for (let index = 0; index < articlesData.articles.length; ++index) {
-      if (articlesData.articles[index].name === input.name) {
-        articlesData.articles[index].content = input.content;
-        break;
-      }
-    }
-    setArticlesData(articlesData);
+    setArticlesData({
+      ...articlesData,
+      articles: articlesData.articles.map(item => ({
+        name: item.name,
+        content: (item.name === input.name) ? input.content : item.content,
+      }))
+    });
 
     (async function () {
       await api.insertArticle(input);
@@ -37,11 +37,16 @@ export default function Admin({ api, articlesData, setArticlesData, currentArtic
           ["content", "Content",
             {
               option: 'textarea',
-              defaultValue: (currentArticle?.contents) ? currentArticle.contents : ""
-            }]
+              defaultValue: (currentArticle?.content) && currentArticle.content
+            }
+          ]
         ]}
       >
-        <Button type='submit'>Submit</Button>
+        <Button type='submit'>
+          {(currentArticle)
+            ? "Save Article"
+            : "Submit Article"}
+        </Button>
       </Form>
     </>
   );

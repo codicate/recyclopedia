@@ -4,6 +4,7 @@ const Input = ({
   changeHandler = () => { },
   label,
   option,
+  readOnly,
   ...props
 }) => {
   return (
@@ -13,14 +14,14 @@ const Input = ({
           ? (
             <textarea
               className={styles.textarea}
-              onChange={changeHandler}
+              onChange={readOnly ? undefined : changeHandler}
               {...props}
             />
           )
           : (
             <input
               className={styles.input}
-              onChange={changeHandler}
+                onChange={readOnly ? undefined : changeHandler}
               {...props}
             />
           )

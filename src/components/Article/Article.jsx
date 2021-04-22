@@ -32,47 +32,49 @@ function Article({ name, content, api, articlesData, setArticlesData }) {
 
   const context = useContext(ApplicationContext);
 
-  return (
-    <>
-      {
-        (context.isAdmin)
-          ? (
-            <>
-              <button onClick={() => {
-                api.deleteArticle(name);
-                history.push('/');
-                articlesData.articles = articlesData.articles.filter(item => item.name !== name );
-                setArticlesData(articlesData);
-              }
-              }>
-                Delete Page
-              </button>
-              <button onClick={() => updateAdminEditView(!adminEditView)}>
-                Edit This Page
-                </button>
-            </>
-          )
-          : (<></>)
-      }
-      { (adminEditView)
-        ? (
-          <Admin
-            currentArticle={{ name, content }}
-            api={api}
-            articlesData={articlesData}
-            setArticlesData={setArticlesData}
-          />
-        ) : (
-          <div>
-            <h1 className={styles.title}>{name}</h1>
-            <div className={styles.article} dangerouslySetInnerHTML={{ __html: md.render(preprocessMarkdown(content)) }}>
-            </div>
-            <br></br>
+  return <>
+    {
+      (context.isAdmin) && (
+        <>
+          <button
+            onClick={() => {
+              api.deleteArticle(name);
+              history.push('/');
+              articlesData.articles = articlesData.articles.filter(item => item.name !== name);
+              setArticlesData(articlesData);
+            }}
+          >
+            Delete Page
+            </button>
+          <button
+            onClick={() => updateAdminEditView(!adminEditView)}
+          >
+            Edit This Page
+            </button>
+        </>
+      )
+    }
+    { (adminEditView)
+      ? (
+        <Admin
+          currentArticle={{ name, content }}
+          api={api}
+          articlesData={articlesData}
+          setArticlesData={setArticlesData}
+        />
+      ) : (
+        <div>
+          <h1 className={styles.title}>
+            {name}
+          </h1>
+          <div
+            className={styles.article}
+            dangerouslySetInnerHTML={{ __html: md.render(preprocessMarkdown(content)) }}>
           </div>
-        )
-      }
-    </>
-  );
+        </div>
+      )
+    }
+  </>;
 }
 
 export default Article;
