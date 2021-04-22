@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Route, Switch, Link } from 'react-router-dom';
+import { Route, Switch, Link, useHistory } from 'react-router-dom';
 
 import styles from 'App.module.scss';
 import globalArticlesData from 'data/articles.json';
@@ -7,33 +7,59 @@ import { buildFromJSON } from "components/Article/Article";
 import Homepage from "pages/Homepage/Homepage";
 import Admin from "pages/Admin/Admin";
 
-function App({api}) {
-    const [articlesData, setArticlesData] = useState(globalArticlesData);
+import {Secrets} from 'secrets';
 
-    useEffect(function() {
-        (async function() {setArticlesData(await api.queryForArticles());})();
-    }, []);
+function App({ api }) {
+  const [articlesData, setArticlesData] = useState(globalArticlesData);
+  const history = useHistory();
 
-    return (
-        <>
-          <h1>
-            <Link to="/recyclopedia/">Recyclopedia</Link>
-            <br />
-            <Link to="/recyclopedia/admin">Admin</Link>
-          </h1>
+  useEffect(function () {
+    (async function () { setArticlesData(await api.queryForArticles()); })();
+  }, []);
+
+  return (
+    <>
+      <header id={styles.header}>
+        <nav id={styles.navbar}>
+          <Link to="/">
+            <div id={styles.logoDiv}></div>
+          </Link>
+          <button
+            onClick={
+              function () {
+                if (prompt("Enter Admin Password") === Secrets.ADMIN_PASSWORD) {
+                  history.push('/admin');
+                }
+              }
+            }
+          >
+            Admin
+          </button>
+        </nav>
+      </header>
+
+      <main id={styles.main}>
+        <article id={styles.page}>
           <Switch>
-            <Route exact path='/recyclopedia/'>
-              <Homepage articlesData={articlesData} />
+            <Route exact path='/'>
+              <Homepage articlesData={articlesData}/>
             </Route>
-            <Route exact path='/recyclopedia/admin'>
-              <Admin api={api}
-                     articlesData={articlesData}
-                     setArticlesData={setArticlesData} />
+            <Route exact path='/admin'>
+              <Admin api={api} articlesData={articlesData} setArticlesData={setArticlesData} />
             </Route>
-            {articlesData["articles"].map(buildFromJSON)}
+            {articlesData.articles.map(({name, content}) => buildFromJSON({name, content, api, articlesData, setArticlesData}))}
+            <Route>
+              404
+            </Route>
           </Switch>
-        </>
-    );
+        </article>
+      </main>
+
+      <footer id={styles.footer}>
+
+      </footer>
+    </>
+  );
 }
 
 export default App;

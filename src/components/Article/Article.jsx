@@ -1,9 +1,11 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, useHistory } from 'react-router-dom';
 
 import styles from 'components/Article/Article.module.scss';
 import { validPageLink } from 'utils/functions';
 import { preprocessMarkdown } from 'utils/preprocessMarkdown';
+
+import Admin from 'pages/Admin/Admin';
 
 const md = require('markdown-it')(
   {
@@ -14,25 +16,59 @@ const md = require('markdown-it')(
   }
 );
 
-export function buildFromJSON({ name, content, id }) {
+export function buildFromJSON({ name, content, api, articlesData, setArticlesData }) {
   return (
     <Route key={name} exact path={validPageLink(name)}>
-      <Article name={name} content={content} />
+      <Article name={name} content={content} api={api} articlesData={articlesData} setArticlesData={setArticlesData} />
     </Route>
   );
 }
 
-function Article({ name, content }) {
-    content = preprocessMarkdown(content);
+function Article({ name, content, api, articlesData, setArticlesData }) {
+  const [adminEditView, updateAdminEditView] = React.useState(false);
+  const history = useHistory();
 
-    return (
-        <div>
-          <h1 className={styles.title}>{name}</h1>
-          <div className={styles.article} dangerouslySetInnerHTML={{ __html: md.render(content) }}>
+  return (
+    <>
+      <button onClick={() => {
+        api.deleteArticle(name);
+        history.push('/');
+
+        {
+          let index;
+          let new_articles_array = [];
+          for (index = 0; index < articlesData.articles.length; ++index) {
+            if (articlesData.articles[index].name !== name) {
+              new_articles_array.push(articlesData.articles[index]);
+            }
+          }
+          articlesData.articles = new_articles_array;
+          setArticlesData(articlesData);
+        }
+      }
+      }>
+        Delete Page
+      </button>
+      <button onClick={() => updateAdminEditView(!adminEditView)}>Edit This Page</button>
+      { (adminEditView)
+        ? (
+          <Admin
+            currentArticle={{ name, content }}
+            api={api}
+            articlesData={articlesData}
+            setArticlesData={setArticlesData}
+          />
+        ) : (
+          <div>
+            <h1 className={styles.title}>{name}</h1>
+            <div className={styles.article} dangerouslySetInnerHTML={{ __html: md.render(preprocessMarkdown(content)) }}>
+            </div>
+            <br></br>
           </div>
-          <br></br>
-        </div>
-    );
+        )
+      }
+    </>
+  );
 }
 
 export default Article;
