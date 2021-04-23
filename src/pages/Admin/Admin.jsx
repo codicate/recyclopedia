@@ -5,14 +5,15 @@ import Form from 'components/Form/Form';
 import Button from 'components/Form/Button';
 import { uploadImage } from 'utils/functions';
 
-export default function Admin({ api, articlesData, setArticlesData }) {
+export default function Admin({ api, articlesData, setArticlesData, currentArticle }) {
   function submitHandler(input) {
-    (async function () {
-      await api.insertArticle(input);
-      let result = await api.queryForArticles();
-      setArticlesData(result);
-      console.log("Article written! ", result);
-    })();
+    setArticlesData({
+      ...articlesData,
+      articles: articlesData.articles.map(item => ({
+        name: item.name,
+        content: (item.name === input.name) ? input.content : item.content,
+      }))
+    });
   }
 
   return (
@@ -20,11 +21,27 @@ export default function Admin({ api, articlesData, setArticlesData }) {
       <Form
         submitFn={submitHandler}
         inputItems={[
-          ["name", "Name"],
-          ["content", "Content", { option: 'textarea' }]
-        ]}>
-        <Button type='submit'>Submit</Button>
-
+          ["name",
+            "Name",
+            (currentArticle?.name) &&
+            {
+              defaultValue: currentArticle.name,
+              readOnly: true
+            }
+          ],
+          ["content", "Content",
+            {
+              option: 'textarea',
+              defaultValue: (currentArticle?.content) && currentArticle.content
+            }
+          ]
+        ]}
+      >
+        <Button type='submit'>
+          {(currentArticle)
+            ? "Save Article"
+            : "Submit Article"}
+        </Button>
       </Form>
     </>
   );

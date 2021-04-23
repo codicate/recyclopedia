@@ -27,9 +27,12 @@ $text-color: hsl(147, 68%, 12%);
     margin-right: auto;
   }
 
-  a {
+  button, a {
     margin: 0 1em;
     padding: 0.25em 0.5em;
+
+    background-color: transparent;
+    border: none;
 
     &:hover,
     &:focus {
