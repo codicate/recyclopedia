@@ -6,7 +6,7 @@
 import { intoParsable, tryParseString, matchedQuotePairs, eatIdentifier, eatWhitespace } from 'utils/intoParsable';
 
 
-export function preprocessMarkdown(input) {
+export function preprocessMarkdown(input, onImageFound=undefined) {
     let result = "";
     input = intoParsable(input);
 
@@ -62,6 +62,9 @@ export function preprocessMarkdown(input) {
                                     let maybe_string = tryParseString(inbetween, {delimiter: '\''});
                                     if (maybe_string) {
                                         image_tag += '\'' + maybe_string + '\'';
+                                        if (property === "src" && onImageFound) {
+                                            onImageFound(maybe_string);
+                                        }
                                     } else {
                                         console.error("No string value?");
                                         error = true;
