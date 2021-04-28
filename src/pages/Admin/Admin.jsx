@@ -8,18 +8,15 @@ import { uploadImage } from 'utils/functions';
 
 function ImageURL({ children }) {
   return (
-    <a
-      href="#"
+    <button
       onClick={
         () => {
           navigator.clipboard.writeText(`@@src='${children}'@@`).then(
-            function () {
-              alert("copied to clipboard");
-            }
+            () => alert("copied to clipboard")
           );
         }}>
-      {children}
-    </a>
+      Copy
+    </button>
   );
 }
 
@@ -35,7 +32,7 @@ function MediaPreview({ imagePreviewInfo, updateImageURLs }) {
           updateImageURLs(imageURLs => imageURLs.filter(([previewName]) => (previewName !== thumbnail)));
         }}
       >
-        X
+        Delete
       </button>
     </div>
   );
@@ -51,7 +48,7 @@ export default function Admin({ api, articlesData, setArticlesData, currentArtic
       }))
     });
 
-    (async function () {
+    (async () => {
       await api.insertArticle(input);
       let result = await api.queryForArticles();
       setArticlesData(result);
@@ -59,13 +56,13 @@ export default function Admin({ api, articlesData, setArticlesData, currentArtic
   }
 
   const [imageURLs, updateImageURLs] = useState(
-    function() {
+    (() => {
       let existing_images = [];
       if (currentArticle?.content) {
         preprocessMarkdown(currentArticle.content, (img) => existing_images.push([img, img]));
       }
       return existing_images;
-    }()
+    })()
   );
 
   return (
@@ -82,7 +79,7 @@ export default function Admin({ api, articlesData, setArticlesData, currentArtic
               const image_file = target.files[0];
               const img = document.createElement('img');
               img.src = URL.createObjectURL(image_file);
-              img.onload = async function () {
+              img.onload = async () => {
                 const canvas = document.createElement("canvas");
                 const canvas_context = canvas.getContext("2d");
 
