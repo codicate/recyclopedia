@@ -15,6 +15,8 @@ import {RecyclopediaApplicationContext} from 'utils/RecyclopediaApplicationConte
 
 import App from 'App';
 
+
+
 /*
   This weird wrapping mess is kind of necessary as the connection to mongodb realm/atlas
   takes a noticable amount of time. I'm not entirely convinced it's cause of how I set it up
@@ -30,6 +32,7 @@ import App from 'App';
         <React.StrictMode>
           <BrowserRouter basename='/recyclopedia'>
             <App api={this} />
+
           </BrowserRouter>
         </React.StrictMode>,
         document.getElementById('root')

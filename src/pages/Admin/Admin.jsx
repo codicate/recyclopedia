@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { preprocessMarkdown } from 'utils/preprocessMarkdown';
 
 import styles from 'pages/Admin/Admin.module.scss';
+import TagEditor from 'pages/Admin/TagEditor'
 import Form from 'components/Form/Form';
 import Button from 'components/Form/Button';
 import { uploadImage } from 'utils/functions';
@@ -78,6 +79,7 @@ export default function Admin({ api, articlesData, setArticlesData, currentArtic
           imagePreviewInfo={info}
         />)
       }
+      
       <form>
         <input
           type="file"
