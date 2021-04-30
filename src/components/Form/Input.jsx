@@ -5,6 +5,8 @@ const Input = ({
   label,
   option,
   readOnly,
+  value,
+  defaultValue,
   ...props
 }) => {
   return (
@@ -14,14 +16,17 @@ const Input = ({
           ? (
             <textarea
               className={styles.textarea}
-              onChange={readOnly ? undefined : changeHandler}
+              onChange={changeHandler}
+              {...(readOnly ? { defaultValue: value } : { value: value })}
               {...props}
             />
           )
           : (
             <input
+              readOnly
               className={styles.input}
-                onChange={readOnly ? undefined : changeHandler}
+              onChange={changeHandler}
+              {...(readOnly ? { defaultValue: value } : { value: value })}
               {...props}
             />
           )
@@ -29,7 +34,7 @@ const Input = ({
       {
         label && (
           <label
-            className={`${props.value ? styles.shrink : ''}`}
+            className={`${value ? styles.shrink : ''}`}
           >
             {label}
           </label>

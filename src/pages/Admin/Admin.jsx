@@ -24,8 +24,11 @@ function MediaPreview({ imagePreviewInfo, updateImageURLs }) {
   const [thumbnail, image] = imagePreviewInfo;
 
   return (
-    <div className="image-preview-thing">
-      <img key={thumbnail} src={thumbnail} alt={image} width="80px"></img>
+    <div
+      className="image-preview-thing"
+      key={thumbnail}
+    >
+      <img src={thumbnail} alt={image} width="80px"></img>
       <ImageURL>{image}</ImageURL>
       <button
         onClick={() => {
