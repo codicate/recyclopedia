@@ -72,7 +72,11 @@ export default function Admin({ api, articlesData, setArticlesData, currentArtic
     <>
       <h2>Upload Media</h2>
       {
-        imageURLs.map((info) => <MediaPreview updateImageURLs={updateImageURLs} imagePreviewInfo={info} />)
+        imageURLs.map((info) => <MediaPreview
+          key={info}
+          updateImageURLs={updateImageURLs}
+          imagePreviewInfo={info}
+        />)
       }
       <form>
         <input

@@ -1,7 +1,7 @@
 import styles from 'components/Form/Input.module.scss';
 
 const Input = ({
-  changeHandler = () => { },
+  changeHandler,
   label,
   option,
   readOnly,
