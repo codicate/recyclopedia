@@ -1,5 +1,7 @@
 import reportWebVitals from 'reportWebVitals';
 
+import approximateSearch from 'utils/search';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 
