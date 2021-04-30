@@ -33,8 +33,7 @@ export default function approximateSearch(entries, key) {
                 } else if (matched[0] < matched[1]) {
                     return 1;
                 } else {
-                    // equal match length? Push them both back to make room for actual exact match.
-                    return 1;
+                    return -1;
                 }
             } else {
                 // none of them match the characters...

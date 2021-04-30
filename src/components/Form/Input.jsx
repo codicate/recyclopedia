@@ -1,4 +1,5 @@
 import styles from 'components/Form/Input.module.scss';
+import { createElement } from 'react';
 
 const Input = ({
   changeHandler,
@@ -9,28 +10,17 @@ const Input = ({
   defaultValue,
   ...props
 }) => {
+  
+  const properties = {
+    className: (option === 'textarea') ? styles.textarea : styles.input,
+    onChange: changeHandler,
+    ...(readOnly ? { defaultValue: value, readOnly: true } : { value: value }),
+    ...props
+  };
+
   return (
     <div className={styles.group}>
-      {
-        option === 'textarea'
-          ? (
-            <textarea
-              className={styles.textarea}
-              onChange={changeHandler}
-              {...(readOnly ? { defaultValue: value } : { value: value })}
-              {...props}
-            />
-          )
-          : (
-            <input
-              readOnly
-              className={styles.input}
-              onChange={changeHandler}
-              {...(readOnly ? { defaultValue: value } : { value: value })}
-              {...props}
-            />
-          )
-      }
+      { createElement(option || 'input', { ...properties })}
       {
         label && (
           <label
