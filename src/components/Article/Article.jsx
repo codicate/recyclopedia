@@ -4,6 +4,7 @@ import { Route, useHistory } from 'react-router-dom';
 import styles from 'components/Article/Article.module.scss';
 import { validPageLink } from 'utils/functions';
 import { preprocessMarkdown } from 'utils/preprocessMarkdown';
+import { MarkdownRender } from "components/Article/RenderMarkdown";
 
 import Admin from 'pages/Admin/Admin';
 
@@ -26,7 +27,18 @@ export function buildFromJSON({ name, content, api, articlesData, setArticlesDat
   );
 }
 
-function Article({ name, content, api, articlesData, setArticlesData }) {
+export function ArticleRender({ name, content }) {
+  return (
+    <div>
+      <h1 className={styles.title}> {name} </h1>
+      <MarkdownRender className={styles.article}>
+        {preprocessMarkdown(content)}
+      </MarkdownRender>
+    </div>
+  );
+}
+
+export function Article({ name, content, api, articlesData, setArticlesData }) {
   const [adminEditView, updateAdminEditView] = React.useState(false);
   const history = useHistory();
 
@@ -55,26 +67,13 @@ function Article({ name, content, api, articlesData, setArticlesData }) {
       )
     }
     { (adminEditView)
-      ? (
-        <Admin
-          currentArticle={{ name, content }}
-          api={api}
-          articlesData={articlesData}
-          setArticlesData={setArticlesData}
-        />
-      ) : (
-        <div>
-          <h1 className={styles.title}>
-            {name}
-          </h1>
-          <div
-            className={styles.article}
-            dangerouslySetInnerHTML={{ __html: md.render(preprocessMarkdown(content)) }}>
-          </div>
-        </div>
-      )
+      ? (<Admin
+        currentArticle={{ name, content }}
+        api={api}
+        articlesData={articlesData}
+        setArticlesData={setArticlesData} />
+      ) : 
+      <ArticleRender name={name} content={content} />
     }
   </>;
 }
-
-export default Article;
