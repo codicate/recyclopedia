@@ -1,5 +1,7 @@
 import reportWebVitals from 'reportWebVitals';
 
+import approximateSearch from 'utils/search';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -12,6 +14,8 @@ import { Secrets } from 'secrets';
 import {RecyclopediaApplicationContext} from 'utils/RecyclopediaApplicationContext';
 
 import App from 'App';
+
+
 
 /*
   This weird wrapping mess is kind of necessary as the connection to mongodb realm/atlas
@@ -28,6 +32,7 @@ import App from 'App';
         <React.StrictMode>
           <BrowserRouter basename='/recyclopedia'>
             <App api={this} />
+
           </BrowserRouter>
         </React.StrictMode>,
         document.getElementById('root')

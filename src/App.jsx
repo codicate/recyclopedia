@@ -15,7 +15,6 @@ export const ApplicationContext = createContext({});
 
 function App({ api }) {
   const [articlesData, setArticlesData] = useState(globalArticlesData);
-
   useEffect(() => {
     (async () => setArticlesData(await api.queryForArticles()))();
   }, [api]);

@@ -1,35 +1,30 @@
 import styles from 'components/Form/Input.module.scss';
+import { createElement } from 'react';
 
 const Input = ({
-  changeHandler = () => { },
+  changeHandler,
   label,
   option,
   readOnly,
+  value,
+  defaultValue,
   ...props
 }) => {
+  
+  const properties = {
+    className: (option === 'textarea') ? styles.textarea : styles.input,
+    onChange: changeHandler,
+    ...(readOnly ? { defaultValue: value, readOnly: true } : { value: value }),
+    ...props
+  };
+
   return (
     <div className={styles.group}>
-      {
-        option === 'textarea'
-          ? (
-            <textarea
-              className={styles.textarea}
-              onChange={readOnly ? undefined : changeHandler}
-              {...props}
-            />
-          )
-          : (
-            <input
-              className={styles.input}
-                onChange={readOnly ? undefined : changeHandler}
-              {...props}
-            />
-          )
-      }
+      { createElement(option || 'input', { ...properties })}
       {
         label && (
           <label
-            className={`${props.value ? styles.shrink : ''}`}
+            className={`${value ? styles.shrink : ''}`}
           >
             {label}
           </label>

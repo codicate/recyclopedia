@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { preprocessMarkdown } from 'utils/preprocessMarkdown';
 
 import styles from 'pages/Admin/Admin.module.scss';
+import TagEditor from 'pages/Admin/TagEditor'
 import Form from 'components/Form/Form';
 import Button from 'components/Form/Button';
 import { uploadImage } from 'utils/functions';
@@ -24,8 +25,11 @@ function MediaPreview({ imagePreviewInfo, updateImageURLs }) {
   const [thumbnail, image] = imagePreviewInfo;
 
   return (
-    <div className="image-preview-thing">
-      <img key={thumbnail} src={thumbnail} alt={image} width="80px"></img>
+    <div
+      className="image-preview-thing"
+      key={thumbnail}
+    >
+      <img src={thumbnail} alt={image} width="80px"></img>
       <ImageURL>{image}</ImageURL>
       <button
         onClick={() => {
@@ -69,8 +73,13 @@ export default function Admin({ api, articlesData, setArticlesData, currentArtic
     <>
       <h2>Upload Media</h2>
       {
-        imageURLs.map((info) => <MediaPreview updateImageURLs={updateImageURLs} imagePreviewInfo={info} />)
+        imageURLs.map((info) => <MediaPreview
+          key={info}
+          updateImageURLs={updateImageURLs}
+          imagePreviewInfo={info}
+        />)
       }
+      
       <form>
         <input
           type="file"
