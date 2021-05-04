@@ -1,72 +1,58 @@
-import { useEffect, useState, useContext, createContext } from 'react';
-import { Route, Switch, Link, useHistory } from 'react-router-dom';
-
 import styles from 'App.module.scss';
+import { useEffect, useState, createContext } from 'react';
+import { Route, Switch } from 'react-router-dom';
+import useLocalStorageState from 'hooks/useLocalStorageState';
+
 import globalArticlesData from 'data/articles.json';
 import { buildFromJSON } from "components/Article/Article";
+
+import Header from 'pages/Header/Header';
 import Homepage from "pages/Homepage/Homepage";
 import Admin from "pages/Admin/Admin";
 
-import { Secrets } from 'secrets';
 
 export const ApplicationContext = createContext({});
 
 function App({ api }) {
   const [articlesData, setArticlesData] = useState(globalArticlesData);
-  const history = useHistory();
 
-  useEffect(function () {
-    (async function () { setArticlesData(await api.queryForArticles()); })();
-  }, []);
+  useEffect(() => {
+    (async () => setArticlesData(await api.queryForArticles()))();
+  }, [api]);
 
-  const [isAdmin, _setAdminState] = useState(localStorage.getItem('isAdmin') || false);
-  function setAdminState(value) {
-    localStorage.setItem('isAdmin', value);
-    _setAdminState(value);
-  }
+  const [isAdmin, setIsAdmin] = useLocalStorageState('isAdmin', false);
+
   return (
-    <ApplicationContext.Provider value={
-      {
-          isAdmin: isAdmin,
-          setAdminState: setAdminState,
-      }
-    }>
+    <ApplicationContext.Provider value={{
+      isAdmin: isAdmin,
+      setAdminState: setIsAdmin,
+    }}>
 
-      <header id={styles.header}>
-        <nav id={styles.navbar}>
-          <Link to="/">
-            <div id={styles.logoDiv}></div>
-          </Link>
-          <button
-            onClick={
-              function () {
-                if (prompt("Enter Admin Password") === Secrets.ADMIN_PASSWORD) {
-                  setAdminState(true);
-                }
-              }
-            }
-          >
-            Admin
-          </button>
-          {(isAdmin) && <Link to="/admin">Create New Article</Link>}
-        </nav>
-      </header>
+      <Header />
 
       <main id={styles.main}>
-        <article id={styles.page}>
-          <Switch>
-            <Route exact path='/'>
-              <Homepage articlesData={articlesData} />
-            </Route>
-            <Route exact path='/admin'>
-              <Admin api={api} articlesData={articlesData} setArticlesData={setArticlesData} />
-            </Route>
-            {articlesData.articles.map(({ name, content }) => buildFromJSON({ name, content, api, articlesData, setArticlesData }))}
-            <Route>
-              404
-            </Route>
-          </Switch>
-        </article>
+        <Switch>
+          <Route exact path='/'>
+            <Homepage articlesData={articlesData} />
+          </Route>
+          <Route exact path='/admin'>
+            <Admin
+              api={api}
+              articlesData={articlesData}
+              setArticlesData={setArticlesData}
+            />
+          </Route>
+
+          {
+            articlesData.articles.map(({ name, content }) =>
+              buildFromJSON({ name, content, api, articlesData, setArticlesData })
+            )
+          }
+
+          <Route path='*'>
+            404
+          </Route>
+        </Switch>
       </main>
 
       <footer id={styles.footer}>

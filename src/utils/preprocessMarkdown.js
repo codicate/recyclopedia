@@ -3,7 +3,7 @@
   
   Does not really do tokenizing, so be ware of dragons.
  */
-import { intoParsable, tryParseString, matchedQuotePairs, eatIdentifier, eatWhitespace } from 'utils/intoParsable';
+import { intoParsable, tryParseString, eatIdentifier, eatWhitespace } from 'utils/intoParsable';
 
 
 export function preprocessMarkdown(input, onImageFound=undefined) {

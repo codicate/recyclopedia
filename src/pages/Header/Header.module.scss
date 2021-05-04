@@ -1,0 +1,62 @@
+@import "/src/styles/variables";
+@import "/src/styles/components";
+
+#header {}
+
+#navbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  width: 100%;
+
+  padding: 1em;
+
+  color: $text-color;
+
+  background-color: white;
+  box-shadow: 0 1px 1px hsl(0, 0%, 93%);
+
+  &>:first-child {
+    margin-right: auto;
+  }
+
+  button,
+  a {
+    margin: 0 1em;
+    padding: 0.25em 0.5em;
+
+    background-color: transparent;
+    border: none;
+
+    &:hover,
+    &:focus {
+      color: lighten($text-color, 12%);
+    }
+  }
+}
+
+#logoDiv {
+  display: flex;
+  align-items: center;
+
+  &::before {
+    content: '';
+    height: 2rem;
+    width: 2rem;
+
+    background: center/100% url(../../assets/projectenv-logo.png);
+  }
+
+  &::after {
+    content: 'Recyclopedia';
+    margin-left: 0.75rem;
+
+    font-size: large;
+    font-weight: bold;
+  }
+}
