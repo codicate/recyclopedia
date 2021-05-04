@@ -5,7 +5,6 @@
  */
 import { intoParsable, tryParseString, matchedQuotePairs, eatIdentifier, eatWhitespace } from 'utils/intoParsable';
 
-
 export function preprocessMarkdown(input, onImageFound=undefined) {
     let result = "";
     input = intoParsable(input);
