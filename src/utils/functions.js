@@ -18,3 +18,20 @@ export async function uploadImage(image_name) {
 
   return await res.json();
 }
+
+export async function retrieveImageData(imageFileName, whenRetrieved) {
+  const image_file = imageFileName;
+  const img = document.createElement('img');
+  img.src = URL.createObjectURL(image_file);
+  img.onload = async function () {
+    const canvas = document.createElement("canvas");
+    const canvas_context = canvas.getContext("2d");
+
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    canvas_context.drawImage(img, 0, 0);
+    const imgData = canvas.toDataURL().split(',')[1];
+    whenRetrieved(imgData);
+  };
+}
