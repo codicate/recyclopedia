@@ -14,7 +14,7 @@ function renderElement(root, textContents) {
       if (root.tagName === "P") {
           return textContents + "\n";
       } else if (root.tagName[0] === 'H') {
-          return "#".repeat(Number(root.tagName[1])) + " " + textContents;
+          return "#".repeat(Number(root.tagName[1])) + " " + textContents + "\n";
       } else if (root.tagName === "LI") { // List item
           return (root.parentElement.nodeName === "OL") ?
               `${Array.from(root.parentElement.childNodes).indexOf(root) + 1}. ${textContents}\n` : `- ${textContents}\n`;
