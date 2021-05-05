@@ -11,11 +11,12 @@ export class RecyclopediaApplicationContext {
       try {
         const result = await this.application.logIn(recyclopediaAnonymousCredentials);
         this.applicationUser = result;
+        onFinishedLoadFn.bind(this)(false);
       } catch (error) {
         console.error("Failed to login because: ", error);
+        onFinishedLoadFn.bind(this)(true);
       }
 
-      onFinishedLoadFn.bind(this)();
     }).bind(this)();
   }
 

@@ -23,15 +23,24 @@ import App from 'App';
 (async function () {
   new RecyclopediaApplicationContext(
     Secrets.RECYCLOPEDIA_APPLICATION_ID,
-    function () {
-      ReactDOM.render(
-        <React.StrictMode>
-          <BrowserRouter basename='/recyclopedia'>
-            <App api={this} />
-          </BrowserRouter>
-        </React.StrictMode>,
-        document.getElementById('root')
-      );
+    function (errored) {
+      if (errored) {
+        ReactDOM.render(
+          <React.StrictMode>
+            <p>MongoDB is probably offline. Crap.</p>
+          </React.StrictMode>,
+          document.getElementById('root')
+        );
+      } else {
+        ReactDOM.render(
+          <React.StrictMode>
+            <BrowserRouter basename='/recyclopedia'>
+              <App api={this} />
+            </BrowserRouter>
+          </React.StrictMode>,
+          document.getElementById('root')
+        );
+      }
 
       reportWebVitals();
     });
