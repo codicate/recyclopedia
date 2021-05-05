@@ -54,6 +54,17 @@ export function RichTextEditor({ submissionHandler, currentArticle }) {
     },
   });
 
+  // would only apply to a few relevant states.
+  function toggleWidgetActiveState(widgetId, categoryValue) {
+    updateWidgetState(
+      dictionaryUpdateKeyNested(
+        widgetStates,
+        [(categoryValue) ? (categoryValue) : (widgetId), "active"],
+        (currentlyActive) => (currentlyActive === widgetId) ? null : widgetId
+      )
+    );
+  }
+
   function flattenWidgetStateTypes() {
     return Object.entries(widgetStates).reduce(
       function (accumulator, [id, { types }]) {
@@ -124,14 +135,7 @@ export function RichTextEditor({ submissionHandler, currentArticle }) {
               onClick={
                 (_) => {
                   const key = (widget.category) ? widget.category : widgetId;
-                  updateWidgetState(
-                    dictionaryUpdateKeyNested(
-                      widgetStates,
-                      [key, "active"],
-                      (currentlyActive) => (currentlyActive === widgetId) ? null : widgetId
-                    )
-                  );
-
+                  toggleWidgetActiveState(key);
                   executeRichTextCommand(widget.command, widget.argument);
                 }
               }>{(widget.display) ? widget.display : widget.name}</button>)
@@ -146,6 +150,42 @@ export function RichTextEditor({ submissionHandler, currentArticle }) {
           contentEditable={true}
           className={styles.article}
           onSelect={synchronizeCommandStateToWidgetBar}
+          onKeyDown={
+            // I would hipster write this too, but I'll just write this in a simple fashion
+            function(event) {
+              let {key, shiftKey, ctrlKey} = event;
+              let disableDefaultBehavior = false;
+              if (ctrlKey) {
+                switch (key) {
+                  case 'b':
+                    toggleWidgetActiveState("bold");
+                    disableDefaultBehavior = true;
+                    break;
+                  case 'i':
+                    toggleWidgetActiveState("italic");
+                    disableDefaultBehavior = true;
+                    break;
+                  case 'u':
+                    toggleWidgetActiveState("underline");
+                    disableDefaultBehavior = true;
+                    break;
+                  case '1':
+                  case '2':
+                  case '3':
+                  case '4':
+                  case '5':
+                  case '6':
+                    toggleWidgetActiveState(`H${key}`, "header");
+                    disableDefaultBehavior = true;
+                    break;
+                }
+              }
+
+              if (disableDefaultBehavior) {
+                event.preventDefault();
+              }
+            }
+          }
           dangerouslySetInnerHTML={
             { __html: renderMarkdown(preprocessMarkdown((currentArticle) ? currentArticle.content : "Begin typing your article.")) }
           }
