@@ -6,11 +6,23 @@ import { renderDomAsMarkdown } from 'utils/DOMIntoMarkdown';
 
 import styles from 'pages/Admin/Admin.module.scss';
 import Button from 'components/Form/Button';
-import { uploadImage } from 'utils/functions';
 
+function dictionaryUpdateKey(dictionary, key, updateValue) {
+  let newDictionary = {...dictionary};
+  newDictionary[key] = updateValue(dictionary[key]);
+  return newDictionary;
+}
+
+// The DOM to Markdown Parsers assumes that this is the case, always.
+document.execCommand("defaultParagraphSeparator", false, "p");
 export function RichTextEditor({ submissionHandler, currentArticle }) {
   const editableTitleDOMRef = useRef();
   const editableAreaDOMRef = useRef();
+  const [widgetStates, updateWidgetState] = useState({
+    "decoration": null,
+    "heading": null,
+    "list": null
+  });
 
   function executeRichTextCommand(commandName, optionalArgument) {
     if (editableAreaDOMRef.current) {
@@ -20,17 +32,17 @@ export function RichTextEditor({ submissionHandler, currentArticle }) {
   }
 
   const toolBarRichWidgets = {
-    bold: { name: "Bold", display: <b>B</b>, command: "bold" },
-    italic: { name: "Italic", display: <emph>I</emph>, command: "italic" },
-    underline: { name: "Underline", display: <u>UL</u>, command: "underline" },
-    h1: { name: "Heading 1", display: <b>h1</b>, command: "heading", argument: "H1", },
-    h2: { name: "Heading 2", display: <b>h2</b>, command: "heading", argument: "H2", },
-    h3: { name: "Heading 3", display: <b>h3</b>, command: "heading", argument: "H3", },
-    h4: { name: "Heading 4", display: <b>h4</b>, command: "heading", argument: "H4", },
-    h5: { name: "Heading 5", display: <b>h5</b>, command: "heading", argument: "H5", },
-    h6: { name: "Heading 6", display: <b>h6</b>, command: "heading", argument: "H6", },
-    orderedList: { name: "Ordered List", command: "insertorderedlist", },
-    unorderedList: { name: "Unordered List", command: "insertunorderedlist", },
+    bold: { name: "Bold", display: <b>B</b>, command: "bold", category: "decoration" },
+    italic: { name: "Italic", display: <emph>I</emph>, command: "italic", category: "decoration" },
+    underline: { name: "Underline", display: <u>UL</u>, command: "underline", category: "decoration" },
+    h1: { name: "Heading 1", display: <b>h1</b>, command: "heading", argument: "H1", category: "heading" },
+    h2: { name: "Heading 2", display: <b>h2</b>, command: "heading", argument: "H2", category: "heading" },
+    h3: { name: "Heading 3", display: <b>h3</b>, command: "heading", argument: "H3", category: "heading" },
+    h4: { name: "Heading 4", display: <b>h4</b>, command: "heading", argument: "H4", category: "heading" },
+    h5: { name: "Heading 5", display: <b>h5</b>, command: "heading", argument: "H5", category: "heading" },
+    h6: { name: "Heading 6", display: <b>h6</b>, command: "heading", argument: "H6", category: "heading" },
+    orderedList: { name: "Ordered List", command: "insertorderedlist", category: "list" },
+    unorderedList: { name: "Unordered List", command: "insertunorderedlist", category: "list" },
   };
 
   const editModeInlineStyle = { 
@@ -40,23 +52,33 @@ export function RichTextEditor({ submissionHandler, currentArticle }) {
     borderStyle: "solid",
   };
 
+  const activeWidgetCategory = {
+    color: "red",
+    backgroundColor: "blue",
+  };
+
   return (
     <>
       <div> {/*requires styling*/}
         {
           Object.entries(toolBarRichWidgets).map(
-            ([widgetId, widget]) => (<button 
-            key={widgetId} 
-            id={widgetId} 
-            onClick={
-              (_) => {
-                if (widget.argument) {
-                  executeRichTextCommand(widget.command, widget.argument);
-                } else {
-                  executeRichTextCommand(widget.command);
+            ([widgetId, widget]) => (<button
+              key={widgetId}
+              id={widgetId}
+              style={(widgetStates[widget.category] === widgetId) ? activeWidgetCategory : {}}
+              onClick={
+                (_) => {
+                  const currentSelection = window.getSelection();
+                  console.log(currentSelection.type);
+                  console.log(widgetStates);
+                  updateWidgetState(dictionaryUpdateKey(widgetStates, widget.category, () => widgetId ));
+                  if (widget.argument) {
+                    executeRichTextCommand(widget.command, widget.argument);
+                  } else {
+                    executeRichTextCommand(widget.command);
+                  }
                 }
-              }
-            }>{ (widget.display) ? widget.display : widget.name}</button>)
+              }>{(widget.display) ? widget.display : widget.name}</button>)
           )
         }
       </div>
@@ -78,7 +100,8 @@ export function RichTextEditor({ submissionHandler, currentArticle }) {
       onClick={
         function() {
           if (editableAreaDOMRef.current && editableTitleDOMRef) {
-            const markdownText = renderDomAsMarkdown(editableAreaDOMRef.current);
+            // oddity, that this returns an array for mysterious reasons.
+            const markdownText = renderDomAsMarkdown(editableAreaDOMRef.current)[0];
             submissionHandler({ name: (currentArticle) ? currentArticle.name : editableTitleDOMRef.current.textContent , content: markdownText });
           }
         }
