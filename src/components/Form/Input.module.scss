@@ -33,6 +33,17 @@ $main-color: black;
     }
   }
 
+  /*
+  this is intentionally out of place. You need your forms to support more custom styles since writing code 
+  is still only good with monospaced fonts.
+
+  Variable pitches make table alignment too difficult to handle.
+  */
+  textarea {
+    font-family: 'Courier New', Courier, monospace;
+  }
+  /**/
+
   input[type='password'] {
     letter-spacing: 0.3em;
   }
