@@ -134,8 +134,7 @@ export function RichTextEditor({ submissionHandler, currentArticle }) {
                   ? activeWidgetCategory : {}}
               onClick={
                 (_) => {
-                  const key = (widget.category) ? widget.category : widgetId;
-                  toggleWidgetActiveState(key);
+                  toggleWidgetActiveState(widgetId, widget.category);
                   executeRichTextCommand(widget.command, widget.argument);
                 }
               }>{(widget.display) ? widget.display : widget.name}</button>)
@@ -156,33 +155,48 @@ export function RichTextEditor({ submissionHandler, currentArticle }) {
               let {key, shiftKey, ctrlKey} = event;
               let disableDefaultBehavior = false;
               if (ctrlKey) {
-                switch (key) {
-                  case 'b':
-                    toggleWidgetActiveState("bold");
-                    disableDefaultBehavior = true;
-                    break;
-                  case 'i':
-                    toggleWidgetActiveState("italic");
-                    disableDefaultBehavior = true;
-                    break;
-                  case 'u':
-                    toggleWidgetActiveState("underline");
-                    disableDefaultBehavior = true;
-                    break;
-                  case '1':
-                  case '2':
-                  case '3':
-                  case '4':
-                  case '5':
-                  case '6':
-                    toggleWidgetActiveState(`H${key}`, "header");
-                    disableDefaultBehavior = true;
-                    break;
+                if (!shiftKey) {
+                  switch (key) {
+                    case 'b':
+                      toggleWidgetActiveState("bold");
+                      executeRichTextCommand("bold");
+                      disableDefaultBehavior = true;
+                      break;
+                    case 'i':
+                      toggleWidgetActiveState("italic");
+                      executeRichTextCommand("italic");
+                      disableDefaultBehavior = true;
+                      break;
+                    case 'u':
+                      toggleWidgetActiveState("underline");
+                      executeRichTextCommand("underline");
+                      disableDefaultBehavior = true;
+                      break;
+                    case '1': case '2': case '3': case '4': case '5': case '6':
+                      toggleWidgetActiveState(`h${key}`, "heading");
+                      executeRichTextCommand("heading", `H${key}`);
+                      disableDefaultBehavior = true;
+                      break;
+                  }
+                } else {
+                  console.log("CTRL and SHIFT", key);
+                  switch (key) {
+                    case 'U':
+                      console.log("unordered list");
+                      executeRichTextCommand("insertunorderedlist");
+                      disableDefaultBehavior = true;
+                      break;
+                    case 'O':
+                      executeRichTextCommand("insertorderedlist");
+                      disableDefaultBehavior = true;
+                      break;
+                  }
                 }
               }
 
               if (disableDefaultBehavior) {
                 event.preventDefault();
+                event.stopPropagation();
               }
             }
           }
