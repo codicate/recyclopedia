@@ -1,36 +1,30 @@
 $notice-color:white;
-$background-color: rgba(0, 100, 0, 0.6);
+$background-color: rgba(0, 200, 0, 0.45);
 $start-height: -5.5em;
+$animation-time: 0.6s;
 
 @keyframes drop-in {
     from { top: $start-height; }
     to { top: 0; }
 }
 
-@keyframes drop-out {
-    from { top: 0; }
-    to { top: $start-height; }
-}
-
-.dropOut {
-    top: $start-height;
-    animation: drop-out 0.4s ease-in-out;
-}
-.dropIn {
-    top: 0;
-    animation: drop-in 0.4s ease-in-out;
-}
+.dropOut { top: $start-height; }
+.dropIn { top: 0; animation: drop-in $animation-time ease-in-out; }
 
 .main {
     font-size: 1.5em;
-    background-color: $background-color;
-    color: $notice-color;
     font-weight: bolder;
     padding: 0.8em;
+    
+    background-color: $background-color;
+    color: $notice-color;
 
     position: fixed;
     left: 0;
     width: 100%;
+
+    pointer-events: none;
+    transition: top $animation-time;
 
     text-align: center;
 }

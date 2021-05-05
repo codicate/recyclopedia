@@ -61,7 +61,11 @@ function NoticeBanner({children, dirtyFlag}) {
       updateSelfDirtyFlag(!selfDirtyFlag);
   }
 
-  return (<div className={noticeBannerStyles.main + " " + styles[style%2]} >{children}</div>);
+  return (
+    <div className={noticeBannerStyles.main + " " + styles[style % 2]}>
+      {children}
+    </div>
+  );
 }
 /*
   I'm actually not 100% sure of how we should `data-bind` two separate representations of the same document. Ideally we
