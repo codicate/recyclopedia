@@ -6,6 +6,8 @@ import { renderDomAsMarkdown } from 'utils/DOMIntoMarkdown';
 import { dictionaryUpdateKey, dictionaryUpdateKeyNested } from 'utils/functions';
 
 import styles from 'pages/Admin/Admin.module.scss';
+import noticeBannerStyles from './NoticeBanner.module.scss';
+
 import Button from 'components/Form/Button';
 
 const widgets = {
@@ -48,7 +50,19 @@ const widgets = {
   },
 };
 
+function NoticeBanner({children, dirtyFlag}) {
+  const styles = [noticeBannerStyles.dropOut, noticeBannerStyles.dropIn];
 
+  const [selfDirtyFlag, updateSelfDirtyFlag] = useState(dirtyFlag);
+  const [style, updateStyle] = useState(0);
+
+  if (dirtyFlag !== selfDirtyFlag) {
+      updateStyle((style+1));
+      updateSelfDirtyFlag(!selfDirtyFlag);
+  }
+
+  return (<div className={noticeBannerStyles.main + " " + styles[style%2]} >{children}</div>);
+}
 /*
   I'm actually not 100% sure of how we should `data-bind` two separate representations of the same document. Ideally we
   should really only pick one as the source of truth, and the more convenient one to pick is markdown.
@@ -61,6 +75,15 @@ export function RichTextEditor({ submissionHandler, currentArticle }) {
 
   document.execCommand("defaultParagraphSeparator", false, "p");
   const [widgetStates, updateWidgetState] = useState(widgets);
+  const [dirtyFlag, updateDirtyFlag] = useState(false);
+
+  function saveDocument() {
+    if (editableAreaDOMRef.current && editableTitleDOMRef) {
+      const markdownText = renderDomAsMarkdown(editableAreaDOMRef.current);
+      submissionHandler({ name: (currentArticle) ? currentArticle.name : editableTitleDOMRef.current.textContent, content: markdownText });
+      updateDirtyFlag(false);
+    }
+  }
 
   // would only apply to a few relevant states.
   function toggleWidgetActiveState(widgetId, categoryValue) {
@@ -149,6 +172,7 @@ export function RichTextEditor({ submissionHandler, currentArticle }) {
           )
         }
       </div>
+      <NoticeBanner dirtyFlag={dirtyFlag}>You have unsaved changes!</NoticeBanner> : <></>
       <h1 className={styles.title} contentEditable={(currentArticle) ? "false" : "true"} ref={editableTitleDOMRef}>
         {(currentArticle) ? currentArticle.name : "Edit New Title"}
       </h1>
@@ -165,6 +189,10 @@ export function RichTextEditor({ submissionHandler, currentArticle }) {
               if (ctrlKey) {
                 if (!shiftKey) {
                   switch (key) {
+                    case 's':
+                      saveDocument();
+                      disableDefaultBehavior = true;
+                      break;
                     case 'b':
                       toggleWidgetActiveState("bold");
                       executeRichTextCommand("bold");
@@ -205,6 +233,8 @@ export function RichTextEditor({ submissionHandler, currentArticle }) {
               if (disableDefaultBehavior) {
                 event.preventDefault();
                 event.stopPropagation();
+              } else {
+                updateDirtyFlag(true);
               }
             }
           }
@@ -215,17 +245,7 @@ export function RichTextEditor({ submissionHandler, currentArticle }) {
         </div>
       </div>
       <br></br>
-      <Button
-      onClick={
-        function() {
-          if (editableAreaDOMRef.current && editableTitleDOMRef) {
-            // oddity, that this returns an array for mysterious reasons.
-            const markdownText = renderDomAsMarkdown(editableAreaDOMRef.current);
-            console.log(markdownText);
-            submissionHandler({ name: (currentArticle) ? currentArticle.name : editableTitleDOMRef.current.textContent , content: markdownText });
-          }
-        }
-      }>
+      <Button onClick={saveDocument}>
         {(currentArticle)
           ? "Save Article"
           : "Submit Article"}
