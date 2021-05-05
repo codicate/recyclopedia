@@ -8,51 +8,59 @@ import { dictionaryUpdateKey, dictionaryUpdateKeyNested } from 'utils/functions'
 import styles from 'pages/Admin/Admin.module.scss';
 import Button from 'components/Form/Button';
 
-// The DOM to Markdown Parsers assumes that this is the case, always.
-document.execCommand("defaultParagraphSeparator", false, "p");
+const widgets = {
+  heading: {
+    active: null,
+    types: {
+      h1: { name: "Heading 1", display: <b>h1</b>, command: "heading", argument: "H1", category: "heading" },
+      h2: { name: "Heading 2", display: <b>h2</b>, command: "heading", argument: "H2", category: "heading" },
+      h3: { name: "Heading 3", display: <b>h3</b>, command: "heading", argument: "H3", category: "heading" },
+      h4: { name: "Heading 4", display: <b>h4</b>, command: "heading", argument: "H4", category: "heading" },
+      h5: { name: "Heading 5", display: <b>h5</b>, command: "heading", argument: "H5", category: "heading" },
+      h6: { name: "Heading 6", display: <b>h6</b>, command: "heading", argument: "H6", category: "heading" },
+    }
+  },
+  list: {
+    active: null,
+    types: {
+      orderedList: { name: "Ordered List", command: "insertorderedlist", category: "list" },
+      unorderedList: { name: "Unordered List", command: "insertunorderedlist", category: "list" },
+    }
+  },
+  // disadvantage at the moment. You don't have to do this, but this makes the current format work without code changes
+  bold: {
+    active: null,
+    types: {
+      bold: { name: "Bold", display: <b>B</b>, command: "bold" }
+    }
+  },
+  italic: {
+    active: null,
+    types: {
+      italic: { name: "Italic", display: <emph>I</emph>, command: "italic" }
+    }
+  },
+  underline: {
+    active: null,
+    types: {
+      underline: { name: "Underline", display: <u>UL</u>, command: "underline" }
+    }
+  },
+};
+
+
+/*
+  I'm actually not 100% sure of how we should `data-bind` two separate representations of the same document. Ideally we
+  should really only pick one as the source of truth, and the more convenient one to pick is markdown.
+
+  This is technically experimental anyways.
+*/
 export function RichTextEditor({ submissionHandler, currentArticle }) {
   const editableTitleDOMRef = useRef();
   const editableAreaDOMRef = useRef();
 
-  const [widgetStates, updateWidgetState] = useState({
-    heading: {
-      active: null,
-      types: {
-        h1: { name: "Heading 1", display: <b>h1</b>, command: "heading", argument: "H1", category: "heading" },
-        h2: { name: "Heading 2", display: <b>h2</b>, command: "heading", argument: "H2", category: "heading" },
-        h3: { name: "Heading 3", display: <b>h3</b>, command: "heading", argument: "H3", category: "heading" },
-        h4: { name: "Heading 4", display: <b>h4</b>, command: "heading", argument: "H4", category: "heading" },
-        h5: { name: "Heading 5", display: <b>h5</b>, command: "heading", argument: "H5", category: "heading" },
-        h6: { name: "Heading 6", display: <b>h6</b>, command: "heading", argument: "H6", category: "heading" },
-      }
-    },
-    list: {
-      active: null,
-      types: {
-        orderedList: { name: "Ordered List", command: "insertorderedlist", category: "list" },
-        unorderedList: { name: "Unordered List", command: "insertunorderedlist", category: "list" },
-      }
-    },
-    // disadvantage at the moment. You don't have to do this, but this makes the current format work without code changes
-    bold: {
-      active: null,
-      types: {
-        bold: { name: "Bold", display: <b>B</b>, command: "bold" }
-      }
-    },
-    italic: {
-      active: null,
-      types: {
-        italic: { name: "Italic", display: <emph>I</emph>, command: "italic" }
-      }
-    },
-    underline: {
-      active: null,
-      types: {
-        underline: { name: "Underline", display: <u>UL</u>, command: "underline" }
-      }
-    },
-  });
+  document.execCommand("defaultParagraphSeparator", false, "p");
+  const [widgetStates, updateWidgetState] = useState(widgets);
 
   // would only apply to a few relevant states.
   function toggleWidgetActiveState(widgetId, categoryValue) {
@@ -212,7 +220,8 @@ export function RichTextEditor({ submissionHandler, currentArticle }) {
         function() {
           if (editableAreaDOMRef.current && editableTitleDOMRef) {
             // oddity, that this returns an array for mysterious reasons.
-            const markdownText = renderDomAsMarkdown(editableAreaDOMRef.current)[0];
+            const markdownText = renderDomAsMarkdown(editableAreaDOMRef.current);
+            console.log(markdownText);
             submissionHandler({ name: (currentArticle) ? currentArticle.name : editableTitleDOMRef.current.textContent , content: markdownText });
           }
         }
