@@ -12,6 +12,27 @@ export function RichTextEditor({ submissionHandler, currentArticle }) {
   const editableTitleDOMRef = useRef();
   const editableAreaDOMRef = useRef();
 
+  function executeRichTextCommand(commandName, optionalArgument) {
+    if (editableAreaDOMRef.current) {
+        document.execCommand(commandName, false, optionalArgument);
+        editableAreaDOMRef.current.focus();
+    }
+  }
+
+  const toolBarRichWidgets = {
+    bold: { name: "Bold", display: <b>B</b>, command: "bold" },
+    italic: { name: "Italic", display: <emph>I</emph>, command: "italic" },
+    underline: { name: "Underline", display: <u>UL</u>, command: "underline" },
+    h1: { name: "Heading 1", display: <b>h1</b>, command: "heading", argument: "H1", },
+    h2: { name: "Heading 2", display: <b>h2</b>, command: "heading", argument: "H2", },
+    h3: { name: "Heading 3", display: <b>h3</b>, command: "heading", argument: "H3", },
+    h4: { name: "Heading 4", display: <b>h4</b>, command: "heading", argument: "H4", },
+    h5: { name: "Heading 5", display: <b>h5</b>, command: "heading", argument: "H5", },
+    h6: { name: "Heading 6", display: <b>h6</b>, command: "heading", argument: "H6", },
+    orderedList: { name: "Ordered List", command: "insertorderedlist", },
+    unorderedList: { name: "Unordered List", command: "insertunorderedlist", },
+  };
+
   const editModeInlineStyle = { 
     borderColor: "black",
     borderWidth: "1px",
@@ -21,6 +42,24 @@ export function RichTextEditor({ submissionHandler, currentArticle }) {
 
   return (
     <>
+      <div> {/*requires styling*/}
+        {
+          Object.entries(toolBarRichWidgets).map(
+            ([widgetId, widget]) => (<button 
+            key={widgetId} 
+            id={widgetId} 
+            onClick={
+              (_) => {
+                if (widget.argument) {
+                  executeRichTextCommand(widget.command, widget.argument);
+                } else {
+                  executeRichTextCommand(widget.command);
+                }
+              }
+            }>{ (widget.display) ? widget.display : widget.name}</button>)
+          )
+        }
+      </div>
       <h1 className={styles.title} contentEditable={(currentArticle) ? "false" : "true"} ref={editableTitleDOMRef}>
         {(currentArticle) ? currentArticle.name : "Edit New Title"}
       </h1>
