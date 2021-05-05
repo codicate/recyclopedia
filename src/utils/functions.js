@@ -35,3 +35,29 @@ export async function retrieveImageData(imageFileName, whenRetrieved) {
     whenRetrieved(imgData);
   };
 }
+
+export function dictionaryUpdateKey(dictionary, key, updateFunction) {
+  let newDictionary = {...dictionary};
+  newDictionary[key] = updateFunction(dictionary[key]);
+  return newDictionary;
+}
+
+// return dictionaryUpdateKey(newWidgetState, type,
+//   function (typeField) {
+//     if (type === "heading") {
+//       return dictionaryUpdateKey(typeField, "active", () => queryRichTextCommand("heading", true));
+//     } else {
+//       return dictionaryUpdateKey(typeField, "active", () => queryRichTextCommand(type) ? type : null);
+//     }
+//   });
+
+export function dictionaryUpdateKeyNested(dictionary, keys, updateFunction) {
+  if (keys.length > 1)  {
+    let shallowClone = { ...dictionary };
+    shallowClone[keys[0]] = 
+      dictionaryUpdateKeyNested(shallowClone[keys[0]], keys.slice(1), updateFunction);
+    return shallowClone;
+  }
+
+  return dictionaryUpdateKey(dictionary, keys[0], updateFunction);
+}

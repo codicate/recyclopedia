@@ -20,7 +20,6 @@ function renderElement(root, textContents) {
               `${Array.from(root.parentElement.childNodes).indexOf(root) + 1}. ${textContents}\n` : `- ${textContents}\n`;
       }
 
-      console.log(root.tagName, textContents)
       return safeLambdaCall(surrounders[root.tagName])(textContents);
   } else {
       return (root.tagName === "P") ? "\\\n" : "";
