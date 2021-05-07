@@ -6,7 +6,7 @@ export const getRefCurrent = (ref) => {
     : ref;
 };
 
-export const validPageLink = (originalName) => `/${originalName.toLowerCase().replace(" ", "_")}`;
+export const validPageLink = (originalName) => `/${originalName.toLowerCase().trim().replace(/ +/g, '_')}`;
 
 export async function uploadImage(image_name) {
   let form_data = new FormData();

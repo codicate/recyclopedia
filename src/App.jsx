@@ -1,5 +1,5 @@
-import { useEffect, useState, useContext, createContext } from 'react';
-import { Route, Switch, Link, useHistory } from 'react-router-dom';
+import { useEffect, useState, createContext } from 'react';
+import { Route, Switch, Link } from 'react-router-dom';
 
 import styles from 'App.module.scss';
 import globalArticlesData from 'data/articles.json';
@@ -13,11 +13,10 @@ export const ApplicationContext = createContext({});
 
 function App({ api }) {
   const [articlesData, setArticlesData] = useState(globalArticlesData);
-  const history = useHistory();
 
   useEffect(function () {
     (async function () { setArticlesData(await api.queryForArticles()); })();
-  }, []);
+  }, [api]);
 
   const [isAdmin, _setAdminState] = useState(localStorage.getItem('isAdmin') || false);
   function setAdminState(value) {
