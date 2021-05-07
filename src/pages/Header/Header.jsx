@@ -6,6 +6,7 @@ import { useContext } from 'react';
 
 import { Secrets } from 'secrets';
 
+
 const Header = () => {
   const context = useContext(ApplicationContext);
 
@@ -15,17 +16,18 @@ const Header = () => {
         <Link to="/">
           <div id={styles.logoDiv}></div>
         </Link>
+
         {(
           context.isAdmin
         ) ? (
           <Link to="/admin">
-            Create New Article
+            New Article
           </Link>
         ) : (
           <button
             onClick={() => {
               if (prompt("Enter Admin Password") === Secrets.ADMIN_PASSWORD) {
-                context.setIsAdmin(true);
+                context.setAdminState(true);
               }
             }}
           >
