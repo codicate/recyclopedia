@@ -70,7 +70,7 @@ export function Article({ article, api, articlesData, setArticlesData }) {
   }
   { (adminEditView)
     ? (<Admin
-                    currentArticle={{... article}}
+                    currentArticle={{...article}}
                     api={api}
                     articlesData={articlesData}
                     setArticlesData={setArticlesData} />
