@@ -25,13 +25,13 @@ export class RecyclopediaApplicationContext {
     // however I forced a buffer load, before anything happens
     // so I am guaranteed to have a user unless we couldn't login for some reason.
     if (this.applicationUser) {
-      return (async function () {
-        if (query) {
-          return await this.applicationUser.functions.getAllArticles(query);
-        } else {
-          return await this.applicationUser.functions.getAllArticles();
-        }
-      }).bind(this)();
+        return (async function () {
+            if (query) {
+                return await this.applicationUser.functions.getAllArticles(query);
+            } else {
+                return await this.applicationUser.functions.getAllArticles();
+            }
+        }).bind(this)();
     } else {
       console.error("No user? This is bad news.");
     }

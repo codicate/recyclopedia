@@ -43,8 +43,8 @@ function App({ api }) {
           </Route>
 
           {
-            articlesData.articles.map(({ name, content }) =>
-              buildFromJSON({ name, content, api, articlesData, setArticlesData })
+            articlesData.articles.map((article) =>
+                buildFromJSON({ article, api, articlesData, setArticlesData })
             )
           }
 

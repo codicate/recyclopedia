@@ -17,6 +17,8 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
+    "lint": "eslint src --ext .js --ext .jsx",
+    "lint:fix": "eslint src --ext .js --ext .jsx --fix",
     "start": "react-scripts start",
     "predeploy": "yarn build",
     "deploy": "gh-pages -d build",
