@@ -65,6 +65,6 @@ export default function Admin({ api, articlesData, setArticlesData, currentArtic
         <option value="richtext" selected>Experimental Rich Text Editor</option>
       </select>
       {editorMode}
-      <TagEditor articlesData={articlesData} setArticlesData={setArticlesData} currentArticle={currentArticle}/>
+      {/* <TagEditor articlesData={articlesData} setArticlesData={setArticlesData} currentArticle={currentArticle}/> */}
     </>);
 }

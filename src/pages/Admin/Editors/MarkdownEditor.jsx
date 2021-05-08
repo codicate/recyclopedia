@@ -28,22 +28,22 @@ export function MarkdownEditor({ submissionHandler, currentArticle }) {
         <input
           type="file"
           onChange={
-              ({ target }) => {
-                  retrieveImageData(target.files[0], 
-                      function (imgURL) {
-                          if (imgURL.success) {
-                              updateImageURLs(imageURLs.concat([[imgURL.data.thumb.url, imgURL.data.url]]));
-                          } else {
-                              console.error("IMGBB is down. Tony pls get us a server");
-                          }
-                      });
-              }
+            ({ target }) => {
+              retrieveImageData(target.files[0],
+                function (imgURL) {
+                  if (imgURL.success) {
+                    updateImageURLs(imageURLs.concat([[imgURL.data.thumb.url, imgURL.data.url]]));
+                  } else {
+                    console.error("IMGBB is down. Tony pls get us a server");
+                  }
+                });
+            }
           }
         />
       </form>
 
       <Form
-        submitFn={(input) => submissionHandler(input) }
+        submitFn={(input) => submissionHandler(input)}
         inputItems={[
           ["name",
             "Name",
