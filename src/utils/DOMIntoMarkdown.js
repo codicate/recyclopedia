@@ -22,7 +22,9 @@ function surrounder(sym) {
 }
 const surrounders = {
     "B": surrounder("**"),
+    "STRONG": surrounder("**"),
     "I": surrounder("_"),
+    "EM": surrounder("_"),
     "U": surrounder("__"),
 };
 const safe_call = (fn, ...rest) => (...rest) => (fn) ? fn(...rest) : rest[0];
@@ -75,6 +77,7 @@ function renderElement(root, text_contents) {
                 } , "");
         }
 
+        console.log("going to try and root out tags friends");
         return safe_call(surrounders[root.tagName])(text_contents);
     } else {
         return (root.tagName === "P") ? "\\\n" : "";

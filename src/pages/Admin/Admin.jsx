@@ -23,7 +23,6 @@ function submitHandler({ api, articlesData, setArticlesData, currentArticle }, i
                               api.queryForArticles().then(
                                   function(result) {
                                       setArticlesData(result);
-                                      console.log(result);
                                   }
                               );
                           });
@@ -35,7 +34,6 @@ export default function Admin({ api, articlesData, setArticlesData, currentArtic
     const [draftStatus, updateDraftStatus] = useState((currentArticle.draftStatus === undefined) ? false : currentArticle.draftStatus);
 
     const submissionHandler = function (submissionData) {
-        console.log({... submissionData, draftStatus: draftStatus});
         submitHandler(
             { api, articlesData, setArticlesData, currentArticle, },
             {... submissionData, draftStatus: draftStatus},
