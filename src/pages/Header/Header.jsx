@@ -6,6 +6,7 @@ import { useContext } from 'react';
 
 import { Secrets } from 'secrets';
 
+
 const Header = () => {
     const context = useContext(ApplicationContext);
 

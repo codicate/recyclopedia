@@ -4,6 +4,8 @@ import { NoticeBanner } from './Editors/NoticeBanner.jsx';
 import { MarkdownEditor } from "./Editors/MarkdownEditor";
 import { RichTextEditor } from "./Editors/RichTextEditor";
 
+import { TagEditor } from 'pages/Admin/TagEditor.jsx';
+
 function submitHandler({ api, articlesData, setArticlesData, currentArticle }, input, onFinishedCallback) {
     (async function () {
         setArticlesData({
@@ -31,7 +33,11 @@ function submitHandler({ api, articlesData, setArticlesData, currentArticle }, i
 
 export default function Admin({ api, articlesData, setArticlesData, currentArticle }) {
     const [dirtyFlag, updateDirtyFlag] = useState(false);
-    const [draftStatus, updateDraftStatus] = useState((currentArticle.draftStatus === undefined) ? false : currentArticle.draftStatus);
+    const [draftStatus, updateDraftStatus] = useState(
+        (currentArticle !== undefined) ?
+            ((currentArticle.draftStatus === undefined) ?
+             false :
+             currentArticle.draftStatus) : false);
 
     const submissionHandler = function (submissionData) {
         submitHandler(

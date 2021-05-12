@@ -1,39 +1,25 @@
 import styles from 'pages/Admin/TagEditor';
+import Form from 'components/Form/Form';
 
-export default {};
-
-const articles = [
-  { // 0
-    name: "ASDF",
-    content: "I like trains",
-    tags: ['tree', 'asdf', 'train']
-  },
-  { // 1
-    name: "brain",
-    content: "brain",
-    tags: ['brain']
-  },
-  { // 2
-    name: "yrain",
-    content: "yrain",
-    tags: ['brain', 'yrain']
-  },
-  { // 3
-    name: "fadsiuofdiosuafhuidjsaifhdusahifudsihufdsahiusadfhuifdsahiufdasuihfhiudfsiuhihufauishfidhusafiuhasdfihuasdfhiusf",
-    content: "yrain",
-    tags: ['asdf']
-  }
-];
-
-
-function findTag(articles, tags) {
-  const result = articles.filter(function (article) {
-
-    if (article.tags.indexOf('tree') !== -1) {
+function anyInside(array, items) {
+  for (let item = 0; item < items.length; item++) {
+    if (array.includes(items[item])) {
       return true;
     }
-  });
-  console.table(
-    result
-  );
+  }
+
+  return false;
+}
+
+function findTag(articles, tags) {
+  return articles.filter(function (article) { return anyInside(article.tags, tags); });
+}
+
+export function TagEditor({ articlesData, setArticlesData, currentArticle }) {
+  return <>
+    <ul>
+      {console.log(currentArticle)}
+      {currentArticle.tags?.map((tag) => <li>{tag}</li>)}
+    </ul>
+  </>;
 }

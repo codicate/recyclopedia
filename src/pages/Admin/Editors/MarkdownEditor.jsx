@@ -130,7 +130,7 @@ export function MarkdownEditor({ submissionHandler, currentArticle, updateDirtyF
       </form>
 
       <Form
-        submitFn={(input) => submissionHandler(input) }
+        submitFn={(input) => submissionHandler(input)}
         inputItems={[
           ["name",
             "Name",
