@@ -5,31 +5,35 @@ import { MarkdownEditor } from "./Editors/MarkdownEditor";
 import { RichTextEditor } from "./Editors/RichTextEditor";
 
 function submitHandler({ api, articlesData, setArticlesData, currentArticle }, input, onFinishedCallback) {
-  setArticlesData({
-    ...articlesData,
-    articles: articlesData.articles.map(item => ({
-      name: item.name,
-      content: (item.name === input.name) ? input.content : item.content,
-    }))
-  });
+    setArticlesData({
+        ...articlesData,
+        articles: articlesData.articles.map(item => ({
+            name: item.name,
+            content: (item.name === input.name) ? input.content : item.content,
+            draftStatus: (item.name === input.name) ? input.draftStatus : item.draftStatus,
+        }))
+    });
 
-  (async function () {
-    await api.insertArticle(input);
-    if (onFinishedCallback) {
-      onFinishedCallback(input);
-    }
-    let result = await api.queryForArticles();
-    setArticlesData(result);
-  })();
+    (async function () {
+        await api.insertArticle(input);
+        if (onFinishedCallback) {
+            onFinishedCallback(input);
+        }
+        let result = await api.queryForArticles();
+        setArticlesData(result);
+        console.log(result);
+    })();
 }
 
 export default function Admin({ api, articlesData, setArticlesData, currentArticle }) {
     const [dirtyFlag, updateDirtyFlag] = useState(false);
+    const [draftStatus, updateDraftStatus] = useState((currentArticle.draftStatus === undefined) ? false : currentArticle.draftStatus);
 
     const submissionHandler = function (submissionData) {
+        console.log({... submissionData, draftStatus: draftStatus});
         submitHandler(
             { api, articlesData, setArticlesData, currentArticle, },
-            submissionData,
+            {... submissionData, draftStatus: draftStatus},
             function ({ name, content }) {
                 console.log(`Article ${name} written!`);
                 updateDirtyFlag(false);
@@ -37,43 +41,41 @@ export default function Admin({ api, articlesData, setArticlesData, currentArtic
 
     };
 
-    const editorMarkdown = (
-        <MarkdownEditor
-          submissionHandler={submissionHandler}
-          currentArticle={currentArticle}
-          updateDirtyFlag={updateDirtyFlag}> 
-        </MarkdownEditor>
-    );
-    const editorRichText = (
-        <RichTextEditor
-          submissionHandler={submissionHandler}
-          currentArticle={currentArticle}
-          updateDirtyFlag={updateDirtyFlag}>
-        </RichTextEditor>
-    );
-    const [editorMode, setEditorMode] = useState(editorRichText);
+    const [editorMode, setEditorMode] = useState("richtext");
 
     return (
         <>
           <select
             onChange={
                 function (event) {
-                    switch (event.target.value) {
-                    case "richtext":
-                        setEditorMode(editorRichText);
-                        break;
-                    case "markdown":
-                    default:
-                        setEditorMode(editorMarkdown);
-                        break;
-                    }
+                    setEditorMode(event.target.value);
                 }
             }>
             <option value="markdown">Manual Markdown Editor</option>
             <option value="richtext" selected>Experimental Rich Text Editor</option>
           </select>
-          <NoticeBanner dirtyFlag={dirtyFlag}>You have unsaved changes!</NoticeBanner> : <></>
-          {editorMode}
+          <h2>{(draftStatus) ? "DRAFT*" : "WILL PUBLISH ON SAVE"}</h2>
+          <NoticeBanner dirtyFlag={dirtyFlag}>You have unsaved changes!</NoticeBanner>
+          {
+              (editorMode === "richtext") ?
+                  (
+                      <RichTextEditor
+                        submissionHandler={submissionHandler}
+                        currentArticle={currentArticle}
+                        updateDirtyFlag={updateDirtyFlag}
+                        toggleDraftStatus={() => updateDraftStatus(!draftStatus)} >
+                      </RichTextEditor>
+                  )
+                  :
+                  (
+                      <MarkdownEditor
+                        submissionHandler={submissionHandler}
+                        currentArticle={currentArticle}
+                        updateDirtyFlag={updateDirtyFlag}
+                        toggleDraftStatus={() => updateDraftStatus(!draftStatus)} > 
+                      </MarkdownEditor>
+                  )
+          }
           {/* <TagEditor articlesData={articlesData} setArticlesData={setArticlesData} currentArticle={currentArticle}/> */}
         </>);
 }
