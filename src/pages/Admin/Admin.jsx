@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { NoticeBanner } from './Editors/NoticeBanner.jsx';
+
 import { MarkdownEditor } from "./Editors/MarkdownEditor";
 import { RichTextEditor } from "./Editors/RichTextEditor";
 
@@ -22,30 +24,38 @@ function submitHandler({ api, articlesData, setArticlesData, currentArticle }, i
 }
 
 export default function Admin({ api, articlesData, setArticlesData, currentArticle }) {
-    const submissionHandler = function(submissionData) {
+    const [dirtyFlag, updateDirtyFlag] = useState(false);
+
+    const submissionHandler = function (submissionData) {
         submitHandler(
             { api, articlesData, setArticlesData, currentArticle, },
             submissionData,
-            function({name, content}) {
+            function ({ name, content }) {
                 console.log(`Article ${name} written!`);
+                updateDirtyFlag(false);
             });
+
     };
+
     const editorMarkdown = (
         <MarkdownEditor
           submissionHandler={submissionHandler}
-          currentArticle={currentArticle}>
+          currentArticle={currentArticle}
+          updateDirtyFlag={updateDirtyFlag}> 
         </MarkdownEditor>
     );
     const editorRichText = (
         <RichTextEditor
           submissionHandler={submissionHandler}
-          currentArticle={currentArticle}>
+          currentArticle={currentArticle}
+          updateDirtyFlag={updateDirtyFlag}>
         </RichTextEditor>
     );
     const [editorMode, setEditorMode] = useState(editorRichText);
+
     return (
         <>
-          <select 
+          <select
             onChange={
                 function (event) {
                     switch (event.target.value) {
@@ -62,6 +72,8 @@ export default function Admin({ api, articlesData, setArticlesData, currentArtic
             <option value="markdown">Manual Markdown Editor</option>
             <option value="richtext" selected>Experimental Rich Text Editor</option>
           </select>
+          <NoticeBanner dirtyFlag={dirtyFlag}>You have unsaved changes!</NoticeBanner> : <></>
           {editorMode}
+          {/* <TagEditor articlesData={articlesData} setArticlesData={setArticlesData} currentArticle={currentArticle}/> */}
         </>);
 }

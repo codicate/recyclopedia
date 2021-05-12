@@ -6,8 +6,6 @@ import { renderDomAsMarkdown } from 'utils/DOMIntoMarkdown';
 import { dictionaryUpdateKey, dictionaryUpdateKeyNested } from 'utils/functions';
 
 import styles from 'pages/Admin/Admin.module.scss';
-import noticeBannerStyles from './NoticeBanner.module.scss';
-
 import Button from 'components/Form/Button';
 
 const widgets = {
@@ -49,43 +47,23 @@ const widgets = {
     }
   },
 };
-
-function NoticeBanner({children, dirtyFlag}) {
-  const styles = [noticeBannerStyles.dropOut, noticeBannerStyles.dropIn];
-
-  const [selfDirtyFlag, updateSelfDirtyFlag] = useState(dirtyFlag);
-  const [style, updateStyle] = useState(0);
-
-  if (dirtyFlag !== selfDirtyFlag) {
-      updateStyle((style+1));
-      updateSelfDirtyFlag(!selfDirtyFlag);
-  }
-
-  return (
-    <div className={noticeBannerStyles.main + " " + styles[style % 2]}>
-      {children}
-    </div>
-  );
-}
 /*
   I'm actually not 100% sure of how we should `data-bind` two separate representations of the same document. Ideally we
   should really only pick one as the source of truth, and the more convenient one to pick is markdown.
 
   This is technically experimental anyways.
 */
-export function RichTextEditor({ submissionHandler, currentArticle }) {
+export function RichTextEditor({ submissionHandler, currentArticle, updateDirtyFlag }) {
   const editableTitleDOMRef = useRef();
   const editableAreaDOMRef = useRef();
 
   document.execCommand("defaultParagraphSeparator", false, "p");
   const [widgetStates, updateWidgetState] = useState(widgets);
-  const [dirtyFlag, updateDirtyFlag] = useState(false);
 
   function saveDocument() {
     if (editableAreaDOMRef.current && editableTitleDOMRef) {
       const markdownText = renderDomAsMarkdown(editableAreaDOMRef.current);
       submissionHandler({ name: (currentArticle) ? currentArticle.name : editableTitleDOMRef.current.textContent, content: markdownText });
-      updateDirtyFlag(false);
     }
   }
 
@@ -176,7 +154,6 @@ export function RichTextEditor({ submissionHandler, currentArticle }) {
           )
         }
       </div>
-      <NoticeBanner dirtyFlag={dirtyFlag}>You have unsaved changes!</NoticeBanner> : <></>
       <h1 className={styles.title} contentEditable={(currentArticle) ? "false" : "true"} ref={editableTitleDOMRef}>
         {(currentArticle) ? currentArticle.name : "Edit New Title"}
       </h1>
