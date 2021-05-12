@@ -7,6 +7,8 @@ import { renderDomAsMarkdown } from 'utils/DOMIntoMarkdown';
 import { dictionaryUpdateKey, dictionaryUpdateKeyNested } from 'utils/functions';
 import { widgets, toggleWidgetActiveState, flattenWidgetStateTypes } from './RichTextEditWidgetInformation.js';
 
+import bottomToolbarStyle from './bottomToolbar.module.scss';
+import richWidgetBarStyle from './richWidgetBar.module.scss';
 import styles from 'pages/Admin/Admin.module.scss';
 import Button from 'components/Form/Button';
 
@@ -155,30 +157,26 @@ export function RichTextEditor({ submissionHandler,
     borderStyle: "solid",
   };
 
-  const activeWidgetCategory = {
-    color: "red",
-    backgroundColor: "blue",
-  };
-
   return (
     <>
-      <div> {/*requires styling*/}
+      <div className={richWidgetBarStyle.main}> {/*requires styling*/}
         {
-          Object.entries(_flattenWidgetStateTypes()).map(
-            ([widgetId, widget]) => (<button
-              key={widgetId}
-              id={widgetId}
-              style={ 
-                  ((widgetStates[(widget.category !== undefined) ? widget.category : widgetId].active) === widgetId)
-                      ? activeWidgetCategory : {}
-              }
-              onClick={
-                (_) => {
-                  _toggleWidgetActiveState(widgetId, widget.category);
-                  executeRichTextCommand(widget.command, widget.argument);
-                }
-              }>{(widget.display) ? widget.display : widget.name}</button>)
-          )
+            Object.entries(_flattenWidgetStateTypes()).map(
+                ([widgetId, widget]) => (<button
+                                           key={widgetId}
+                                           id={widgetId}
+                                           className={
+                                               ((widgetStates[(widget.category !== undefined) ?
+                                                              widget.category : widgetId].active) === widgetId) ?
+                                                   richWidgetBarStyle.active : richWidgetBarStyle.button
+                                           }
+                                           onClick={
+                                               (_) => {
+                                                   _toggleWidgetActiveState(widgetId, widget.category);
+                                                   executeRichTextCommand(widget.command, widget.argument);
+                                               }
+                                           }>{(widget.display) ? widget.display : widget.name}</button>)
+            )
         }
       </div>
       <h1 className={styles.title} contentEditable={(currentArticle) ? "false" : "true"} ref={editableTitleDOMRef}>
@@ -196,20 +194,23 @@ export function RichTextEditor({ submissionHandler,
               updateDirtyFlag: updateDirtyFlag,
           })}
           dangerouslySetInnerHTML={
-            { __html: renderMarkdown(preprocessMarkdown((currentArticle) ? currentArticle.content : "Begin typing your article.")) }
+              { __html: renderMarkdown(preprocessMarkdown((currentArticle) ? currentArticle.content : "Begin typing your article.")) }
           }
           ref={editableAreaDOMRef}>
         </div>
       </div>
       <br></br>
-      <Button onClick={() => {toggleDraftStatus();} }>
-        Toggle Draft Status
-      </Button>
-      <Button onClick={saveDocument}>
-        {(currentArticle)
-          ? "Save Article"
-          : "Submit Article"}
-      </Button>
+      <br></br>
+      <div className={bottomToolbarStyle.main}>
+        <Button onClick={() => {toggleDraftStatus();} }>
+          Toggle Draft Status
+        </Button>
+        <Button onClick={saveDocument}>
+          {(currentArticle)
+           ? "Save Article"
+           : "Submit Article"}
+        </Button>
+      </div>
     </>
   );
 }
