@@ -45,13 +45,13 @@ function App({ api }) {
           {
               (isAdmin) ?
                   (articlesData.articles
-                   .map(({ name, content, draftStatus }) =>
-                        buildFromJSON({ name: name, content, api, articlesData, setArticlesData })))
+                   .map((article) =>
+                        buildFromJSON({ article: {... article}, api, articlesData, setArticlesData })))
                   :
                   (articlesData.articles
                    .filter((article) => article.draftStatus === false || article.draftStatus === undefined)
-                   .map(({ name, content }) =>
-                        buildFromJSON({ name, content, api, articlesData, setArticlesData })))
+                   .map((article) =>
+                        buildFromJSON({ article: {... article}, api, articlesData, setArticlesData })))
           }
 
           <Route path='*'>
