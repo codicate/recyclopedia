@@ -104,16 +104,18 @@ export function RichTextEditor({ submissionHandler,
                 fileDialog.type = "file";
                 fileDialog.click();
                 function fileHandlerOnChange({target}) {
-                  retrieveImageData(target.files[0], 
-                      function (imgURL) {
-                          if (imgURL.success) {
-                              // updateImageURLs(imageURLs.concat([[imgURL.data.thumb.url, imgURL.data.url]]));
-                              alert("image work");
-                              document.execCommand("insertImage", false, imgURL.data.url);
-                          } else {
-                              console.error("IMGBB is down. Tony pls get us a server");
-                          }
-                      });
+                    retrieveImageData(target.files[0], 
+                                      function (imgData) {
+                                          uploadImage(imgData).then(
+                                              function (imgURL) {
+                                                  if (imgURL.success) {
+                                                      document.execCommand("insertImage", false, imgURL.data.url);
+                                                  } else {
+                                                      console.error("IMGBB is down. Tony pls get us a server");
+                                                  }
+                                              }
+                                          );
+                                      });
                 }
                 // TODO(jerry): cleanup
                 fileDialog.addEventListener("change", fileHandlerOnChange);

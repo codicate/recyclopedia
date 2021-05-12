@@ -88,7 +88,6 @@ export function MarkdownEditor({ submissionHandler, currentArticle, updateDirtyF
               id={widgetId}
               onClick={
                 (_) => {
-
                     editorHandleKeybindings({
                         saveDocument: function() {
                             console.log("STUB: saveDocument!");
@@ -114,12 +113,16 @@ export function MarkdownEditor({ submissionHandler, currentArticle, updateDirtyF
           onChange={
               ({ target }) => {
                   retrieveImageData(target.files[0], 
-                      function (imgURL) {
-                          if (imgURL.success) {
-                              updateImageURLs(imageURLs.concat([[imgURL.data.thumb.url, imgURL.data.url]]));
-                          } else {
-                              console.error("IMGBB is down. Tony pls get us a server");
-                          }
+                      function (imgData) {
+                          uploadImage(imgData).then(
+                              function (imgURL) {
+                                  if (imgURL.success) {
+                                      updateImageURLs(imageURLs.concat([[imgURL.data.thumb.url, imgURL.data.url]]));
+                                  } else {
+                                      console.error("IMGBB is down. Tony pls get us a server");
+                                  }
+                              }
+                          );
                       });
               }
           }

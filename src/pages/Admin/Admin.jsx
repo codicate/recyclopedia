@@ -5,23 +5,28 @@ import { MarkdownEditor } from "./Editors/MarkdownEditor";
 import { RichTextEditor } from "./Editors/RichTextEditor";
 
 function submitHandler({ api, articlesData, setArticlesData, currentArticle }, input, onFinishedCallback) {
-    setArticlesData({
-        ...articlesData,
-        articles: articlesData.articles.map(item => ({
-            name: item.name,
-            content: (item.name === input.name) ? input.content : item.content,
-            draftStatus: (item.name === input.name) ? input.draftStatus : item.draftStatus,
-        }))
-    });
-
     (async function () {
-        await api.insertArticle(input);
-        if (onFinishedCallback) {
-            onFinishedCallback(input);
-        }
-        let result = await api.queryForArticles();
-        setArticlesData(result);
-        console.log(result);
+        setArticlesData({
+            ...articlesData,
+            articles: articlesData.articles.map(item => ({
+                name: item.name,
+                content: (item.name === input.name) ? input.content : item.content,
+                draftStatus: (item.name === input.name) ? input.draftStatus : item.draftStatus,
+            }))
+        });
+
+        await api.insertArticle(input,
+                          function() {
+                              if (onFinishedCallback) {
+                                  onFinishedCallback(input);
+                              }
+                              api.queryForArticles().then(
+                                  function(result) {
+                                      setArticlesData(result);
+                                      console.log(result);
+                                  }
+                              );
+                          });
     })();
 }
 
