@@ -67,7 +67,7 @@ function editorHandleKeybindings({saveDocument,
     }
 }
 
-export function MarkdownEditor({ submissionHandler, currentArticle, updateDirtyFlag }) {
+export function MarkdownEditor({ submissionHandler, currentArticle, updateDirtyFlag, toggleDraftStatus }) {
   const [imageURLs, updateImageURLs] = useState(
     function () {
       let existing_images = [];
@@ -148,10 +148,13 @@ export function MarkdownEditor({ submissionHandler, currentArticle, updateDirtyF
           ]
         ]}
       >
+        <Button onClick={() => {toggleDraftStatus();} }>
+          Toggle Draft Status
+        </Button>
         <Button type='submit'>
           {(currentArticle)
-            ? "Save Article"
-            : "Submit Article"}
+           ? "Save Article"
+           : "Submit Article"}
         </Button>
       </Form>
     </>
