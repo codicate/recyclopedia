@@ -23,10 +23,7 @@ const Header = () => {
                     Create New Article
                   </Link>
                   <button onClick={() => {
-                      // wut.
-                      console.log(context.setIsAdmin);
-                      /* context.setIsAdmin(false); */
-                      /* context.setIsAdmin(true); */
+                      context.setAdminState(false);
                   }}
                   >
                     Logout
@@ -36,7 +33,7 @@ const Header = () => {
                 <button
                   onClick={() => {
                       if (prompt("Enter Admin Password") === Secrets.ADMIN_PASSWORD) {
-                          context.setIsAdmin(true);
+                          context.setAdminState(true);
                       }
                   }}
                 >
