@@ -19,12 +19,12 @@ const md = require('markdown-it')(
   }
 );
 
-export function buildFromJSON({ name, content, api, articlesData, setArticlesData }) {
-  return (
-    <Route key={name} exact path={validPageLink(name)}>
-      <Article name={name} content={content} api={api} articlesData={articlesData} setArticlesData={setArticlesData} />
-    </Route>
-  );
+export function buildFromJSON({ draftStatus, name, content, api, articlesData, setArticlesData }) {
+    return (
+        <Route key={name} exact path={validPageLink(name)}>
+          <Article name={name} content={content} api={api} articlesData={articlesData} setArticlesData={setArticlesData} />
+        </Route>
+    );
 }
 
 export function ArticleRender({ name, content }) {
