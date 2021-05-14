@@ -1,0 +1,23 @@
+.active, .button {
+    background-color: black;
+    color: white;
+    border-color: black;
+    border-radius: 5px;
+}
+
+.active {
+    font-size: 1.55em;
+    padding-left: 1.1em;
+    padding-right: 1.1em;
+    text-align: center;
+    color: yellow;
+}
+
+.main {
+    background-color: black;
+    border-radius: 16px;
+    padding: 0.8em;
+    position: sticky;
+    top: 8%;
+
+}

@@ -8,35 +8,42 @@ import { Secrets } from 'secrets';
 
 
 const Header = () => {
-  const context = useContext(ApplicationContext);
+    const context = useContext(ApplicationContext);
 
-  return (
-    <header id={styles.header}>
-      <nav id={styles.navbar}>
-        <Link to="/">
-          <div id={styles.logoDiv}></div>
-        </Link>
-
-        {(
-          context.isAdmin
-        ) ? (
-          <Link to="/admin">
-            New Article
-          </Link>
-        ) : (
-          <button
-            onClick={() => {
-              if (prompt("Enter Admin Password") === Secrets.ADMIN_PASSWORD) {
-                context.setAdminState(true);
-              }
-            }}
-          >
-            Admin
-          </button>
-        )}
-      </nav>
-    </header>
-  );
+    return (
+        <header id={styles.header}>
+          <nav id={styles.navbar}>
+            <Link to="/">
+              <div id={styles.logoDiv}></div>
+            </Link>
+            {(
+                context.isAdmin
+            ) ? (
+                <>
+                  <Link to="/admin">
+                    Create New Article
+                  </Link>
+                  <button onClick={() => {
+                      context.setAdminState(false);
+                  }}
+                  >
+                    Logout
+                  </button>
+                </>
+            ) : (
+                <button
+                  onClick={() => {
+                      if (prompt("Enter Admin Password") === Secrets.ADMIN_PASSWORD) {
+                          context.setAdminState(true);
+                      }
+                  }}
+                >
+                  Admin
+                </button>
+            )}
+          </nav>
+        </header>
+    );
 };
 
 export default Header;

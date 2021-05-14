@@ -20,20 +20,20 @@ export async function uploadImage(image_name) {
 }
 
 export async function retrieveImageData(imageFileName, whenRetrieved) {
-  const image_file = imageFileName;
-  const img = document.createElement('img');
-  img.src = URL.createObjectURL(image_file);
-  img.onload = async function () {
-    const canvas = document.createElement("canvas");
-    const canvas_context = canvas.getContext("2d");
+    const image_file = imageFileName;
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(image_file);
+    img.onload = async function () {
+        const canvas = document.createElement("canvas");
+        const canvas_context = canvas.getContext("2d");
 
-    canvas.width = img.width;
-    canvas.height = img.height;
+        canvas.width = img.width;
+        canvas.height = img.height;
 
-    canvas_context.drawImage(img, 0, 0);
-    const imgData = canvas.toDataURL().split(',')[1];
-    whenRetrieved(imgData);
-  };
+        canvas_context.drawImage(img, 0, 0);
+        const imgData = canvas.toDataURL().split(',')[1];
+        whenRetrieved(imgData);
+    };
 }
 
 export function dictionaryUpdateKey(dictionary, key, updateFunction) {
@@ -41,15 +41,6 @@ export function dictionaryUpdateKey(dictionary, key, updateFunction) {
   newDictionary[key] = updateFunction(dictionary[key]);
   return newDictionary;
 }
-
-// return dictionaryUpdateKey(newWidgetState, type,
-//   function (typeField) {
-//     if (type === "heading") {
-//       return dictionaryUpdateKey(typeField, "active", () => queryRichTextCommand("heading", true));
-//     } else {
-//       return dictionaryUpdateKey(typeField, "active", () => queryRichTextCommand(type) ? type : null);
-//     }
-//   });
 
 export function dictionaryUpdateKeyNested(dictionary, keys, updateFunction) {
   if (keys.length > 1)  {
