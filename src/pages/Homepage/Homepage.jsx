@@ -30,7 +30,7 @@ function Homepage({ api, setArticlesData, articlesData }) {
                   <Link to={validPageLink(name)}>
                     <u><p>{name}</p></u>
                     <MarkdownRender className={styles.searchResult}>
-                    {`${content.substr(0, 100).replaceAll(/\\n/g, ' ')}...`}
+                    {`${content.substr(0, 320).replaceAll(/(@@.*)|(@@.*@@)/g, '')}...`}
                     </MarkdownRender>
                   </Link>
               ))
