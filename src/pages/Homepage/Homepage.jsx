@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { MarkdownRender } from 'components/Article/RenderMarkdown.jsx';
 
 import { validPageLink } from 'utils/functions';
 import styles from 'pages/Homepage/Homepage.module.scss';
@@ -14,7 +15,7 @@ function Homepage({ api, setArticlesData, articlesData }) {
     const search = (input) => {
         setSearchResult(
           (input) ? approximateSearch(
-            articlesData.articles.map(({ name }) => name),
+            articlesData.articles.map((article) => article),
             input
           ) : []
         );
@@ -25,13 +26,16 @@ function Homepage({ api, setArticlesData, articlesData }) {
           <h1>Welcome to Recyclopedia</h1>
           <Searchbar returnInput={search} />
           {
-              searchResult.map((articleTitle) => (
-                  <Link to={validPageLink(articleTitle)}>
-                    <u><p>{articleTitle}</p></u>
+              searchResult.map(({name, content}) => (
+                  <Link to={validPageLink(name)}>
+                    <u><p>{name}</p></u>
+                    <MarkdownRender className={styles.searchResult}>
+                    {`${content.substr(0, 100)}...`}
+                    </MarkdownRender>
                   </Link>
               ))
           }
-          <br />
+          <br/>
           {
               (context.isAdmin) ?
                   articlesData.articles.map(({ name, draftStatus }) => (
