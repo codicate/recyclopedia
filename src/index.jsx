@@ -11,7 +11,7 @@ import 'index.css';
 import 'styles/global.scss';
 
 import { Secrets } from 'secrets';
-import {RecyclopediaApplicationContext} from 'utils/RecyclopediaApplicationContext';
+import { RecyclopediaApplicationContext } from 'utils/RecyclopediaApplicationContext';
 
 import App from 'App';
 
@@ -25,34 +25,34 @@ import App from 'App';
   Something to put into consideration though.
 */
 (async function () {
-    new RecyclopediaApplicationContext(
-        Secrets.RECYCLOPEDIA_APPLICATION_ID,
-        function (errored) {
-            if (errored) {
-                ReactDOM.render(
-                    <React.StrictMode>
-                      <p>MongoDB is probably offline. Crap.</p>
-                    </React.StrictMode>,
-                    document.getElementById('root')
-                );
-            } else {
-                ReactDOM.render(
-                    <React.StrictMode>
-                      <BrowserRouter basename='/recyclopedia'>
-                        <App api={this} />
-                      </BrowserRouter>
-                    </React.StrictMode>,
-                    document.getElementById('root')
-                );
-            }
+  new RecyclopediaApplicationContext(
+    Secrets.RECYCLOPEDIA_APPLICATION_ID,
+    function (errored) {
+      if (errored) {
+        ReactDOM.render(
+          <React.StrictMode>
+            <p>MongoDB is probably offline. Crap.</p>
+          </React.StrictMode>,
+          document.getElementById('root')
+        );
+      } else {
+        ReactDOM.render(
+          <React.StrictMode>
+            <BrowserRouter basename='/recyclopedia'>
+              <App api={this} />
+            </BrowserRouter>
+          </React.StrictMode>,
+          document.getElementById('root')
+        );
+      }
 
-            reportWebVitals();
-        });
+      reportWebVitals();
+    });
 
-    ReactDOM.render(
-        <React.StrictMode>
-          <p>Please wait! Loading Recyclopedia...</p>
-        </React.StrictMode>,
-        document.getElementById('root')
-    );
+  ReactDOM.render(
+    <React.StrictMode>
+      <p>Please wait! Loading Recyclopedia...</p>
+    </React.StrictMode>,
+    document.getElementById('root')
+  );
 })();

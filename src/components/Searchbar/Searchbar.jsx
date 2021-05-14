@@ -1,9 +1,16 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from 'components/Searchbar/Searchbar.module.scss';
 
 export default function Searchbar({ returnInput }) {
   const [input, setInput] = useState('');
   const searchbar = useRef(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      returnInput(input);
+    }, 500);
+    return () => clearTimeout(timer); 
+  }, [input])
 
   return (
     <div id={styles.searchbar}>
@@ -13,12 +20,7 @@ export default function Searchbar({ returnInput }) {
         placeholder='Search'
         ref={searchbar}
         value={input}
-        onChange={
-          e => setInput(e.target.value)
-        }
-        onKeyUp={e =>
-          e.key === 'Enter' && returnInput((e.target).value)
-        }
+        onChange={(e)=> setInput(e.target.value)}
       />
       <div id={styles.clearDiv}>
         <span

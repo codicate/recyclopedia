@@ -13,10 +13,10 @@ function Homepage({ api, setArticlesData, articlesData }) {
 
     const search = (input) => {
         setSearchResult(
-            approximateSearch(
-                articlesData.articles.map(({ name }) => name),
-                input
-            )
+          (input) ? approximateSearch(
+            articlesData.articles.map(({ name }) => name),
+            input
+          ) : []
         );
     };
 
