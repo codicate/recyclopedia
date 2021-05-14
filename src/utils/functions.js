@@ -1,4 +1,6 @@
+import React from "react";
 import { Secrets } from "secrets";
+import { useEffect } from 'react';
 //Return the current property of a ref if it is a ref
 export const getRefCurrent = (ref) => {
   return ref.hasOwnProperty("current")
@@ -51,4 +53,11 @@ export function dictionaryUpdateKeyNested(dictionary, keys, updateFunction) {
   }
 
   return dictionaryUpdateKey(dictionary, keys[0], updateFunction);
+}
+
+export function useTimeout(timeoutTime, onTimeoutFn, dependencyList) {
+  React.useEffect(() => {
+    const timer = setTimeout(onTimeoutFn, timeoutTime);
+    return () => clearTimeout(timer);
+  }, dependencyList);
 }
