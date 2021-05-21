@@ -1,10 +1,5 @@
-import reportWebVitals from 'reportWebVitals';
-
-import approximateSearch from 'utils/search';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 import { BrowserRouter } from 'react-router-dom';
 
 import 'index.css';
@@ -45,8 +40,6 @@ import App from 'App';
           document.getElementById('root')
         );
       }
-
-      reportWebVitals();
     });
 
   ReactDOM.render(
