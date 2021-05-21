@@ -1,19 +1,2 @@
 @import '/src/styles/variables';
 
-.searchResult {
-  & *{
-    display: inline;
-    font-size: 0.875rem;
-    color: darken($alternative, 15);
-    margin: 0;
-    padding: 0;
-  }
-
-  li {
-    list-style-type: none;
-    } 
-
-  br {
-    display: none !important;
-  }
-}

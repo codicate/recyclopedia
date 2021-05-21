@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useTimeout } from 'utils/functions.js';
 import styles from 'components/Searchbar/Searchbar.module.scss';
 
@@ -6,7 +6,7 @@ export default function Searchbar({ returnInput }) {
   const [input, setInput] = useState('');
   const searchbar = useRef(null);
 
-  useTimeout(500, () => {returnInput(input);}, [input] );
+  useTimeout(500, () => { returnInput(input); }, [input]);
 
   return (
     <div id={styles.searchbar}>
@@ -16,7 +16,7 @@ export default function Searchbar({ returnInput }) {
         placeholder='Search'
         ref={searchbar}
         value={input}
-        onChange={(e)=> setInput(e.target.value)}
+        onChange={(e) => setInput(e.target.value)}
       />
       <div id={styles.clearDiv}>
         <span

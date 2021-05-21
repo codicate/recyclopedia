@@ -8,6 +8,7 @@ import { buildFromJSON } from "components/Article/Article";
 
 import Header from 'pages/Header/Header';
 import Homepage from "pages/Homepage/Homepage";
+import IndexPage from "pages/Index/IndexPage";
 import Admin from "pages/Admin/Admin";
 
 
@@ -27,10 +28,13 @@ function App({ api }) {
       setAdminState: setIsAdmin,
     }}>
 
-      <Header />
+      <Header articlesData={articlesData}/>
 
       <main id={styles.main}>
         <Switch>
+          <Route exact path='/index'>
+            <IndexPage articlesData={articlesData} />
+          </Route>
           <Route exact path='/'>
             <Homepage articlesData={articlesData} />
           </Route>
@@ -43,15 +47,15 @@ function App({ api }) {
           </Route>
 
           {
-              (isAdmin) ?
-                  (articlesData.articles
-                   .map((article) =>
-                        buildFromJSON({ article: {... article}, api, articlesData, setArticlesData })))
-                  :
-                  (articlesData.articles
-                   .filter((article) => article.draftStatus === false || article.draftStatus === undefined)
-                   .map((article) =>
-                        buildFromJSON({ article: {... article}, api, articlesData, setArticlesData })))
+            (isAdmin) ?
+              (articlesData.articles
+                .map((article) =>
+                  buildFromJSON({ article: { ...article }, api, articlesData, setArticlesData })))
+              :
+              (articlesData.articles
+                .filter((article) => article.draftStatus === false || article.draftStatus === undefined)
+                .map((article) =>
+                  buildFromJSON({ article: { ...article }, api, articlesData, setArticlesData })))
           }
 
           <Route path='*'>
@@ -63,7 +67,7 @@ function App({ api }) {
       <footer id={styles.footer}>
 
       </footer>
-      
+
     </ApplicationContext.Provider >
   );
 }
