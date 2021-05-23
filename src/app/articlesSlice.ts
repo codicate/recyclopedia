@@ -4,9 +4,10 @@ import { RootState } from 'app/store';
 import { App, User, Credentials } from "realm-web";
 
 
-interface Article {
+export interface Article {
   name: string;
   content: string;
+  draftStatus: boolean;
 }
 
 const databaseApi: {

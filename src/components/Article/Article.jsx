@@ -21,10 +21,10 @@ const md = require('markdown-it')(
   }
 );
 
-export function buildFromJSON({ article, api, articlesData, setArticlesData }) {
+export function buildFromJSON({ article }) {
   return (
     <Route key={article.name} exact path={validPageLink(article.name)}>
-      <Article article={article} api={api} articlesData={articlesData} setArticlesData={setArticlesData} />
+      <Article article={article} />
     </Route>
   );
 }
@@ -69,14 +69,14 @@ export function Article({ article, api, articlesData, setArticlesData }) {
         </>
       )
     }
-    { (isAdmin && adminEditView)
-      ? (<Admin
+    {(
+      isAdmin && adminEditView
+    ) ? (
+      <Admin
         currentArticle={article}
-        api={api}
-        articlesData={articlesData}
-        setArticlesData={setArticlesData} />
-      ) :
+      />
+    ) : (
       <ArticleRender name={name} content={content} />
-    }
+    )}
   </>;
 }

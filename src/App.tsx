@@ -28,7 +28,7 @@ function App() {
       <main id={styles.main}>
         <Switch>
           <Route exact path='/index'>
-            <IndexPage articlesData={articlesData} />
+            <IndexPage />
           </Route>
           <Route exact path='/'>
             <Homepage />
@@ -36,7 +36,7 @@ function App() {
           <Route exact path='/admin'>
             {
               isAdmin
-                ? <Admin />
+                ? <Admin currentArticle={undefined}/>
                 : <Redirect to='/' />
             }
           </Route>

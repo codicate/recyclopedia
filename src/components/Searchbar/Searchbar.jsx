@@ -6,7 +6,7 @@ export default function Searchbar({ returnInput }) {
   const [input, setInput] = useState('');
   const searchbar = useRef(null);
 
-  useTimeout(500, () => { returnInput(input); }, [input]);
+  useTimeout(() => returnInput(input), 500);
 
   return (
     <div id={styles.searchbar}>
