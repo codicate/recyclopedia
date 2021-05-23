@@ -6,7 +6,7 @@ import { useAppSelector } from 'app/hooks';
 import { selectArticlesData } from 'app/articlesSlice';
 
 import { validPageLink } from 'utils/functions';
-import { MarkdownRender } from 'components/Article/RenderMarkdown.jsx';
+import MarkdownRender from 'components/Article/MarkdownRender';
 
 import Searchbar from 'components/Searchbar/Searchbar';
 

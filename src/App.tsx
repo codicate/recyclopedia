@@ -7,7 +7,7 @@ import { initApi, selectStatus, selectArticlesData } from 'app/articlesSlice';
 import { selectIsAdmin } from 'app/adminSlice';
 
 import { Secrets } from 'secrets';
-import { buildFromJSON } from "components/Article/Article";
+import Article from "components/Article/Article";
 
 import Header from 'pages/Header/Header';
 import Homepage from "pages/Homepage/Homepage";
@@ -36,23 +36,24 @@ function App() {
           <Route exact path='/admin'>
             {
               isAdmin
-                ? <Admin currentArticle={undefined}/>
+                ? <Admin currentArticle={undefined} />
                 : <Redirect to='/' />
             }
           </Route>
 
-          {
-            (isAdmin)
-              ? articlesData.articles.map((article) =>
-                buildFromJSON({ article: { ...article } })
-              )
-              : articlesData.articles.filter((article) =>
-                article.draftStatus === false || article.draftStatus === undefined
-              ).map((article) =>
-                buildFromJSON({ article: { ...article } })
-              )
-          }
-
+          {(
+            isAdmin
+          ) ? (
+            articlesData.articles.map((article) =>
+              <Article article={article} />
+            )
+          ) : (
+            articlesData.articles.filter((article) =>
+              article.draftStatus === false || article.draftStatus === undefined
+            ).map((article) =>
+              <Article article={article} />
+            )
+          )}
           <Route path='*'>404</Route>
         </Switch>
       </main>

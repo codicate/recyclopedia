@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { preprocessMarkdown } from 'utils/preprocessMarkdown';
 import { uploadImage, retrieveImageData } from 'utils/functions';
 
-import { renderMarkdown } from "components/Article/RenderMarkdown";
+import renderMarkdown from "components/Article/MarkdownRender";
 import { renderDomAsMarkdown } from 'utils/DOMIntoMarkdown';
 import { dictionaryUpdateKey, dictionaryUpdateKeyNested } from 'utils/functions';
 import { widgets, toggleWidgetActiveState, flattenWidgetStateTypes } from './RichTextEditWidgetInformation.js';

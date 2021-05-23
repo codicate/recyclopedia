@@ -2,7 +2,6 @@ import styles from 'pages/Header/Header.module.scss';
 import { Link } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { selectArticlesData } from 'app/articlesSlice';
 import { selectIsAdmin, setIsAdmin } from 'app/adminSlice';
 
 import approximateSearch from 'utils/search';
@@ -13,7 +12,6 @@ import Search, { renderHoverboxSearch } from 'pages/Header/Search';
 
 const Header = () => {
   const dispatch = useAppDispatch();
-  const articlesData = useAppSelector(selectArticlesData);
   const isAdmin = useAppSelector(selectIsAdmin);
 
   return (
@@ -23,7 +21,7 @@ const Header = () => {
         <Link to="/">
           <div id={styles.logoDiv}></div>
         </Link>
-        <Search articlesData={articlesData}
+        <Search
           searchFunction={approximateSearch}
           renderFunction={renderHoverboxSearch}
         />
