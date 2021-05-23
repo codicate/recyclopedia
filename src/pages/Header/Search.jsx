@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import styles from 'pages/Header/Search.module.scss';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+
+import { useAppSelector } from 'app/hooks';
+import { selectArticlesData } from 'app/articlesSlice';
 
 import { validPageLink } from 'utils/functions';
 import { MarkdownRender } from 'components/Article/RenderMarkdown.jsx';
@@ -24,7 +27,7 @@ export function renderHoverboxSearch(searchResults) {
   return (searchResults) ? (
     <div className={styles.hoverBox}>
       {
-        searchResults.slice(0,5).map(({ name, content }) => (
+        searchResults.slice(0, 5).map(({ name, content }) => (
           <Link to={validPageLink(name)}>
             <u><p>{name}</p></u>
           </Link>))
@@ -33,7 +36,8 @@ export function renderHoverboxSearch(searchResults) {
   ) : (<></>);
 }
 
-function Search({ articlesData, searchFunction, renderFunction }) {
+function Search({ searchFunction, renderFunction }) {
+  const articlesData = useAppSelector(selectArticlesData);
   const [searchResult, setSearchResult] = useState(null);
 
   function returnInputCallback(input) {

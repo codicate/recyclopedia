@@ -1,12 +1,18 @@
 import styles from 'pages/Index/IndexPage.module.scss';
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
+
+import { useAppSelector } from 'app/hooks';
+import { selectArticlesData } from 'app/articlesSlice';
+
 import { ApplicationContext } from 'App';
 import { validPageLink } from 'utils/functions';
 
 
-function Index({ articlesData }) {
+function IndexPage() {
   const context = useContext(ApplicationContext);
+  const articlesData = useAppSelector(selectArticlesData);
+
   return (
     <div>
       {
@@ -34,12 +40,4 @@ function Index({ articlesData }) {
   );
 }
 
-function IndexPage({ articlesData }) {
-  return (
-    <>
-      <Index articlesData={articlesData} />
-    </>
-  );
-}
-
-export default Index;
+export default IndexPage;
