@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom';
-
 import styles from 'pages/Homepage/Homepage.module.scss';
 import { randomElt } from 'utils/functions';
 import { MarkdownRender } from 'components/Article/RenderMarkdown';
@@ -8,8 +6,7 @@ import { useState, useContext } from 'react';
 import { ApplicationContext } from 'App';
 
 function ArticleShowcase({articlesData: {articles}}) {
-  const {name, content} = randomElt(articles);
-  // console.log( randomElt(articlesData));
+  const {name, content} = (articles.length) ? randomElt(articles) : {name: "no article name", content: "no articles"};
   return (
     <>
       <h2>Featured Article</h2>
@@ -46,9 +43,10 @@ function ArticleShowcase({articlesData: {articles}}) {
   );
 }
 
-function Homepage({ api, articlesData }) {
+function Homepage({ articlesData }) {
   const context = useContext(ApplicationContext);
-
+  console.log(articlesData);
+  
   return (
     <>
       <h1>Welcome to Recyclopedia</h1>

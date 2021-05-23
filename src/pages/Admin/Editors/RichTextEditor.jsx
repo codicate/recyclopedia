@@ -12,70 +12,70 @@ import richWidgetBarStyle from './richWidgetBar.module.scss';
 import styles from 'pages/Admin/Admin.module.scss';
 import Button from 'components/Form/Button';
 
-function editorHandleKeybindings({saveDocument,
-                                  toggleWidget,
-                                  executeRichTextCommand,
-                                  updateDirtyFlag}) {
-    return function (event) {
-        let {key, shiftKey, ctrlKey} = event;
-        let disableDefaultBehavior = false;
-        if (ctrlKey) {
-            if (!shiftKey) {
-                switch (key) {
-                case 's':
-                    saveDocument();
-                    disableDefaultBehavior = true;
-                    break;
-                case 'b':
-                    toggleWidget("bold");
-                    executeRichTextCommand("bold");
-                    disableDefaultBehavior = true;
-                    break;
-                case 'i':
-                    toggleWidget("italic");
-                    executeRichTextCommand("italic");
-                    disableDefaultBehavior = true;
-                    break;
-                case 'u':
-                    toggleWidget("underline");
-                    executeRichTextCommand("underline");
-                    disableDefaultBehavior = true;
-                    break;
-                case '1': case '2': case '3': case '4': case '5': case '6':
-                    toggleWidget(`h${key}`, "heading");
-                    executeRichTextCommand("heading", `H${key}`);
-                    disableDefaultBehavior = true;
-                    break;
-                }
-            } else {
-                console.log("CTRL and SHIFT", key);
-                switch (key) {
-                case 'U':
-                    console.log("unordered list");
-                    executeRichTextCommand("insertunorderedlist");
-                    disableDefaultBehavior = true;
-                    break;
-                case 'O':
-                    executeRichTextCommand("insertorderedlist");
-                    disableDefaultBehavior = true;
-                    break;
-                }
-            }
+function editorHandleKeybindings({ saveDocument,
+  toggleWidget,
+  executeRichTextCommand,
+  updateDirtyFlag }) {
+  return function (event) {
+    let { key, shiftKey, ctrlKey } = event;
+    let disableDefaultBehavior = false;
+    if (ctrlKey) {
+      if (!shiftKey) {
+        switch (key) {
+          case 's':
+            saveDocument();
+            disableDefaultBehavior = true;
+            break;
+          case 'b':
+            toggleWidget("bold");
+            executeRichTextCommand("bold");
+            disableDefaultBehavior = true;
+            break;
+          case 'i':
+            toggleWidget("italic");
+            executeRichTextCommand("italic");
+            disableDefaultBehavior = true;
+            break;
+          case 'u':
+            toggleWidget("underline");
+            executeRichTextCommand("underline");
+            disableDefaultBehavior = true;
+            break;
+          case '1': case '2': case '3': case '4': case '5': case '6':
+            toggleWidget(`h${key}`, "heading");
+            executeRichTextCommand("heading", `H${key}`);
+            disableDefaultBehavior = true;
+            break;
         }
-
-        if (disableDefaultBehavior) {
-            event.preventDefault();
-            event.stopPropagation();
-        } else {
-            updateDirtyFlag(true);
+      } else {
+        console.log("CTRL and SHIFT", key);
+        switch (key) {
+          case 'U':
+            console.log("unordered list");
+            executeRichTextCommand("insertunorderedlist");
+            disableDefaultBehavior = true;
+            break;
+          case 'O':
+            executeRichTextCommand("insertorderedlist");
+            disableDefaultBehavior = true;
+            break;
         }
+      }
     }
+
+    if (disableDefaultBehavior) {
+      event.preventDefault();
+      event.stopPropagation();
+    } else {
+      updateDirtyFlag(true);
+    }
+  };
 }
 
 export function RichTextEditor({ submissionHandler,
-                                 currentArticle,
-                                 updateDirtyFlag,
-                                 toggleDraftStatus}) {
+  currentArticle,
+  updateDirtyFlag,
+  toggleDraftStatus }) {
   const editableTitleDOMRef = useRef();
   const editableAreaDOMRef = useRef();
 
@@ -91,41 +91,41 @@ export function RichTextEditor({ submissionHandler,
 
   // would only apply to a few relevant states.
   function _toggleWidgetActiveState(widgetId, categoryValue) {
-      updateWidgetState(toggleWidgetActiveState(widgetStates, widgetId, categoryValue));
+    updateWidgetState(toggleWidgetActiveState(widgetStates, widgetId, categoryValue));
   }
 
   function _flattenWidgetStateTypes() {
-      return flattenWidgetStateTypes(widgetStates);
+    return flattenWidgetStateTypes(widgetStates);
   }
 
   function executeRichTextCommand(commandName, optionalArgument) {
     if (editableAreaDOMRef.current) {
-        if (commandName === "@_insertImage") {
-            {
-                let fileDialog = document.createElement("input");
-                fileDialog.type = "file";
-                fileDialog.click();
-                function fileHandlerOnChange({target}) {
-                    retrieveImageData(target.files[0], 
-                                      function (imgData) {
-                                          uploadImage(imgData).then(
-                                              function (imgURL) {
-                                                  if (imgURL.success) {
-                                                      document.execCommand("insertImage", false, imgURL.data.url);
-                                                  } else {
-                                                      console.error("IMGBB is down. Tony pls get us a server");
-                                                  }
-                                              }
-                                          );
-                                      });
-                }
-                // TODO(jerry): cleanup
-                fileDialog.addEventListener("change", fileHandlerOnChange);
-            }
-        } else {
-            document.execCommand(commandName, false, optionalArgument);
-            editableAreaDOMRef.current.focus();
+      if (commandName === "@_insertImage") {
+        {
+          let fileDialog = document.createElement("input");
+          fileDialog.type = "file";
+          fileDialog.click();
+          function fileHandlerOnChange({ target }) {
+            retrieveImageData(target.files[0],
+              function (imgData) {
+                uploadImage(imgData).then(
+                  function (imgURL) {
+                    if (imgURL.success) {
+                      document.execCommand("insertImage", false, imgURL.data.url);
+                    } else {
+                      console.error("IMGBB is down. Tony pls get us a server");
+                    }
+                  }
+                );
+              });
+          }
+          // TODO(jerry): cleanup
+          fileDialog.addEventListener("change", fileHandlerOnChange);
         }
+      } else {
+        document.execCommand(commandName, false, optionalArgument);
+        editableAreaDOMRef.current.focus();
+      }
     }
   }
 
@@ -150,7 +150,7 @@ export function RichTextEditor({ submissionHandler,
     );
   }
 
-  const editModeInlineStyle = { 
+  const editModeInlineStyle = {
     borderColor: "black",
     borderWidth: "1px",
     margin: "0.3em",
@@ -161,22 +161,22 @@ export function RichTextEditor({ submissionHandler,
     <>
       <div className={richWidgetBarStyle.main}> {/*requires styling*/}
         {
-            Object.entries(_flattenWidgetStateTypes()).map(
-                ([widgetId, widget]) => (<button
-                                           key={widgetId}
-                                           id={widgetId}
-                                           className={
-                                               ((widgetStates[(widget.category !== undefined) ?
-                                                              widget.category : widgetId].active) === widgetId) ?
-                                                   richWidgetBarStyle.active : richWidgetBarStyle.button
-                                           }
-                                           onClick={
-                                               (_) => {
-                                                   _toggleWidgetActiveState(widgetId, widget.category);
-                                                   executeRichTextCommand(widget.command, widget.argument);
-                                               }
-                                           }>{(widget.display) ? widget.display : widget.name}</button>)
-            )
+          Object.entries(_flattenWidgetStateTypes()).map(
+            ([widgetId, widget]) => (<button
+              key={widgetId}
+              id={widgetId}
+              className={
+                ((widgetStates[(widget.category !== undefined) ?
+                  widget.category : widgetId].active) === widgetId) ?
+                  richWidgetBarStyle.active : richWidgetBarStyle.button
+              }
+              onClick={
+                (_) => {
+                  _toggleWidgetActiveState(widgetId, widget.category);
+                  executeRichTextCommand(widget.command, widget.argument);
+                }
+              }>{(widget.display) ? widget.display : widget.name}</button>)
+          )
         }
       </div>
       <h1 className={styles.title} contentEditable={(currentArticle) ? "false" : "true"} ref={editableTitleDOMRef}>
@@ -188,13 +188,13 @@ export function RichTextEditor({ submissionHandler,
           className={styles.article}
           onSelect={synchronizeCommandStateToWidgetBar}
           onKeyDown={editorHandleKeybindings({
-              saveDocument: saveDocument,
-              toggleWidget: _toggleWidgetActiveState,
-              executeRichTextCommand: executeRichTextCommand,
-              updateDirtyFlag: updateDirtyFlag,
+            saveDocument: saveDocument,
+            toggleWidget: _toggleWidgetActiveState,
+            executeRichTextCommand: executeRichTextCommand,
+            updateDirtyFlag: updateDirtyFlag,
           })}
           dangerouslySetInnerHTML={
-              { __html: renderMarkdown(preprocessMarkdown((currentArticle) ? currentArticle.content : "Begin typing your article.")) }
+            { __html: renderMarkdown(preprocessMarkdown((currentArticle) ? currentArticle.content : "Begin typing your article.")) }
           }
           ref={editableAreaDOMRef}>
         </div>
@@ -202,13 +202,13 @@ export function RichTextEditor({ submissionHandler,
       <br></br>
       <br></br>
       <div className={bottomToolbarStyle.main}>
-        <Button onClick={() => {toggleDraftStatus();} }>
+        <Button onClick={() => { toggleDraftStatus(); }}>
           Toggle Draft Status
         </Button>
         <Button onClick={saveDocument}>
           {(currentArticle)
-           ? "Save Article"
-           : "Submit Article"}
+            ? "Save Article"
+            : "Submit Article"}
         </Button>
       </div>
     </>

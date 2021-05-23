@@ -1,9 +1,12 @@
 import styles from 'App.module.scss';
-import { useEffect, useState, createContext } from 'react';
+import { useEffect, createContext } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import useLocalStorageState from 'hooks/useLocalStorageState';
 
-import globalArticlesData from 'data/articles.json';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
+import { initApi, selectStatus, selectArticlesData } from 'app/articlesSlice';
+
+import { Secrets } from 'secrets';
 import { buildFromJSON } from "components/Article/Article";
 
 import Header from 'pages/Header/Header';
@@ -14,12 +17,8 @@ import Admin from "pages/Admin/Admin";
 
 export const ApplicationContext = createContext({});
 
-function App({ api }) {
-  const [articlesData, setArticlesData] = useState(globalArticlesData);
-  useEffect(() => {
-    (async () => setArticlesData(await api.queryForArticles()))();
-  }, [api]);
-
+function App() {
+  const articlesData = useAppSelector(selectArticlesData);
   const [isAdmin, setIsAdmin] = useLocalStorageState('isAdmin', false);
 
   return (
@@ -28,7 +27,7 @@ function App({ api }) {
       setAdminState: setIsAdmin,
     }}>
 
-      <Header articlesData={articlesData}/>
+      <Header />
 
       <main id={styles.main}>
         <Switch>
@@ -36,26 +35,22 @@ function App({ api }) {
             <IndexPage articlesData={articlesData} />
           </Route>
           <Route exact path='/'>
-            <Homepage articlesData={articlesData} />
+            <Homepage articlesData={articlesData}/>
           </Route>
           <Route exact path='/admin'>
-            <Admin
-              api={api}
-              articlesData={articlesData}
-              setArticlesData={setArticlesData}
-            />
+            <Admin />
           </Route>
 
           {
-            (isAdmin) ?
-              (articlesData.articles
-                .map((article) =>
-                  buildFromJSON({ article: { ...article }, api, articlesData, setArticlesData })))
-              :
-              (articlesData.articles
-                .filter((article) => article.draftStatus === false || article.draftStatus === undefined)
-                .map((article) =>
-                  buildFromJSON({ article: { ...article }, api, articlesData, setArticlesData })))
+            (isAdmin)
+              ? articlesData.articles.map((article) =>
+                buildFromJSON({ article: { ...article } })
+              )
+              : articlesData.articles.filter((article) =>
+                article.draftStatus === false || article.draftStatus === undefined
+              ).map((article) =>
+                buildFromJSON({ article: { ...article } })
+              )
           }
 
           <Route path='*'>
@@ -63,13 +58,25 @@ function App({ api }) {
           </Route>
         </Switch>
       </main>
-
-      <footer id={styles.footer}>
-
-      </footer>
-
     </ApplicationContext.Provider >
   );
 }
 
-export default App;
+function InitializingApp() {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(initApi(Secrets.RECYCLOPEDIA_APPLICATION_ID));
+  }, [dispatch]);
+
+  const status = useAppSelector(selectStatus);
+
+  if (status === 'failed')
+    return <p>MongoDB is probably offline. Crap.</p>;
+
+  if (status === 'succeed')
+    return <App />;
+
+  return <p>Please wait! Loading Recyclopedia...</p>;
+}
+
+export default InitializingApp;

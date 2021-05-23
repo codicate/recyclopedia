@@ -2,6 +2,7 @@
   "name": "template",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://projectenv.github.io/recyclopedia/",
   "dependencies": {
     "@reduxjs/toolkit": "^1.5.1",
     "@testing-library/jest-dom": "^4.2.4",
@@ -13,6 +14,7 @@
     "@types/react-dom": "^16.9.0",
     "@types/react-redux": "^7.1.7",
     "markdown-it": "^12.0.6",
+    "node-sass": "^6.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.0",
@@ -26,6 +28,8 @@
     "lint": "eslint src --ext .js --ext .jsx",
     "lint:fix": "eslint src --ext .js --ext .jsx --fix",
     "start": "react-scripts start",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
