@@ -4,7 +4,6 @@ import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { selectArticlesData, insertArticle, Article } from 'app/articlesSlice';
 
 import { NoticeBanner } from './Editors/NoticeBanner';
-import { MarkdownEditor } from "./Editors/MarkdownEditor";
 import { RichTextEditor } from "./Editors/RichTextEditor";
 import { TagEditor } from 'pages/Admin/TagEditor';
 
@@ -14,8 +13,6 @@ export default function Admin({
   currentArticle?: Article;
 }) {
   const dispatch = useAppDispatch();
-
-  const [editorMode, setEditorMode] = useState("richtext");
   const [dirtyFlag, updateDirtyFlag] = useState(false);
 
   const [draftStatus, updateDraftStatus] = useState(
@@ -25,8 +22,6 @@ export default function Admin({
         ? false
         : currentArticle.draftStatus
   );
-
-  type OnFinishedCallback = (submissionData: Article) => void;
 
   function submitHandler(
     input: Article,
@@ -56,37 +51,14 @@ export default function Admin({
 
   return (
     <>
-      <select
-        value={editorMode}
-        onChange={
-          function (event) {
-            setEditorMode(event.target.value);
-          }
-        }>
-        <option value="markdown">Manual Markdown Editor</option>
-        <option value="richtext">Experimental Rich Text Editor</option>
-      </select>
-
       <h2>{(draftStatus) ? "DRAFT*" : "WILL PUBLISH ON SAVE"}</h2>
       <NoticeBanner dirtyFlag={dirtyFlag}>You have unsaved changes!</NoticeBanner>
-
-      {(
-        editorMode === "richtext"
-      ) ? (
-        <RichTextEditor
-          submissionHandler={submissionHandler}
-          currentArticle={currentArticle}
-          updateDirtyFlag={updateDirtyFlag}
-          toggleDraftStatus={() => updateDraftStatus(!draftStatus)}
-        />
-      ) : (
-        <MarkdownEditor
-          submissionHandler={submissionHandler}
-          currentArticle={currentArticle}
-          updateDirtyFlag={updateDirtyFlag}
-          toggleDraftStatus={() => updateDraftStatus(!draftStatus)}
-        />
-      )}
+      <RichTextEditor
+        submissionHandler={submissionHandler}
+        currentArticle={currentArticle}
+        updateDirtyFlag={updateDirtyFlag}
+        toggleDraftStatus={() => updateDraftStatus(!draftStatus)}
+      />
 
       {/* <TagEditor currentArticle={currentArticle}/> */}
     </>
