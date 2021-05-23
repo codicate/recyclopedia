@@ -12,59 +12,59 @@ import { ApplicationContext } from 'App';
 import { deleteArticle } from 'app/articlesSlice';
 import { useAppDispatch } from 'app/hooks';
 
-export function buildFromJSON({ article, api, articlesData, setArticlesData }) {
-    return (
-        <Route key={article.name} exact path={validPageLink(article.name)}>
-          <Article article={article} api={api} articlesData={articlesData} setArticlesData={setArticlesData} />
-        </Route>
-    );
+export function buildFromJSON({ article }) {
+  return (
+    <Route key={article.name} exact path={validPageLink(article.name)}>
+      <Article article={article}/>
+    </Route>
+  );
 }
 
 export function ArticleRender({ name, content }) {
-    return (
-        <div>
-          <h1 className={styles.title}> {name} </h1>
-          <MarkdownRender className={styles.article}>
-            {preprocessMarkdown(content)}
-          </MarkdownRender>
-        </div>
-    );
+  return (
+    <div>
+      <h1 className={styles.title}> {name} </h1>
+      <MarkdownRender className={styles.article}>
+        {preprocessMarkdown(content)}
+      </MarkdownRender>
+    </div>
+  );
 }
 
 
 export function Article({ article }) {
-    const [adminEditView, updateAdminEditView] = React.useState(false);
-    const history = useHistory();
+  const [adminEditView, updateAdminEditView] = React.useState(false);
+  const history = useHistory();
 
-    const context = useContext(ApplicationContext);
-    const {name, content} = article;
+  const context = useContext(ApplicationContext);
+  const { name, content } = article;
 
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
-    return <>
-             {
-                 (context.isAdmin) && (
-                     <>
-                       <button
-                         onClick={() => { 
-                           history.push("/") ;
-                           dispatch(deleteArticle(name));
-                          }}
-                       >
-                         Delete Page
+  return <>
+    {
+      (context.isAdmin) && (
+        <>
+          <button
+            onClick={() => {
+              history.push("/");
+              dispatch(deleteArticle(name));
+            }}
+          >
+            Delete Page
                        </button>
-                       <button
-                         onClick={() => updateAdminEditView(!adminEditView)}
-                       >
-                         Edit This Page
+          <button
+            onClick={() => updateAdminEditView(!adminEditView)}
+          >
+            Edit This Page
                        </button>
-                     </>
-                 )
-             }
-             { (adminEditView)
-               ? (<Admin currentArticle={article}/>
-                 ) : 
-               <ArticleRender name={name} content={content} />
-             }
-           </>;
+        </>
+      )
+    }
+    { (adminEditView)
+      ? (<Admin currentArticle={article} />
+      ) :
+      <ArticleRender name={name} content={content} />
+    }
+  </>;
 }

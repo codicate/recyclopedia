@@ -19,7 +19,6 @@ function submitHandler(input, dispatch, onFinishedCallback) {
 
 export default function Admin({ currentArticle }) {
   const dispatch = useAppDispatch();
-  const articlesData = useAppSelector(selectArticlesData);
 
   const [editorMode, setEditorMode] = useState("richtext");
   const [dirtyFlag, updateDirtyFlag] = useState(false);
@@ -75,7 +74,7 @@ export default function Admin({ currentArticle }) {
         </MarkdownEditor>
       )}
 
-      {/* <TagEditor articlesData={articlesData} setArticlesData={setArticlesData} currentArticle={currentArticle}/> */}
+      {/* <TagEditor currentArticle={currentArticle}/> */}
     </>
   );
 }
