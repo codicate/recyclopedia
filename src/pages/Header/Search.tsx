@@ -17,8 +17,6 @@ export function renderAsParagraphs(searchResults: Article[]) {
   );
 }
 
-type RenderFunction = (rf: Article[]) => JSX.Element | null;
-
 export function renderSearchLink(searchResults: Article[]) {
   return searchResults.map(({ name, content }) => (
     <Link to={validPageLink(name)}>
@@ -48,7 +46,7 @@ function Search({
   searchFunction, renderFunction
 }: {
   searchFunction: (articles: Article[], input: string) => Article[];
-  renderFunction: RenderFunction;
+  renderFunction: (article: Article[]) => JSX.Element | null;
 }) {
   const articlesData = useAppSelector(selectArticlesData);
   const [searchResult, setSearchResult] = useState<Article[]>([]);
