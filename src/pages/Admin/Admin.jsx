@@ -9,15 +9,7 @@ import { RichTextEditor } from "./Editors/RichTextEditor";
 import { TagEditor } from 'pages/Admin/TagEditor.jsx';
 
 
-function submitHandler(currentArticle, input, dispatch, onFinishedCallback) {
-  // setArticlesData({
-  //   ...articlesData,
-  //   articles: articlesData.articles.map(item => ({
-  //     name: item.name,
-  //     content: (item.name === input.name) ? input.content : item.content,
-  //   }))
-  // });
-
+function submitHandler(input, dispatch, onFinishedCallback) {
   dispatch(insertArticle(input));
 
   if (onFinishedCallback) {
@@ -41,7 +33,6 @@ export default function Admin({ currentArticle }) {
 
   const submissionHandler = function (submissionData) {
     submitHandler(
-      currentArticle,
       { ...submissionData, draftStatus: draftStatus },
       dispatch,
       function ({ name, content }) {

@@ -9,6 +9,8 @@ import { MarkdownRender } from "components/Article/RenderMarkdown";
 import Admin from 'pages/Admin/Admin';
 
 import { ApplicationContext } from 'App';
+import { deleteArticle } from 'app/articlesSlice';
+import { useAppDispatch } from 'app/hooks';
 
 export function buildFromJSON({ article, api, articlesData, setArticlesData }) {
     return (
@@ -29,24 +31,25 @@ export function ArticleRender({ name, content }) {
     );
 }
 
-export function Article({ article, api, articlesData, setArticlesData }) {
+
+export function Article({ article }) {
     const [adminEditView, updateAdminEditView] = React.useState(false);
     const history = useHistory();
 
     const context = useContext(ApplicationContext);
     const {name, content} = article;
 
+    const dispatch = useAppDispatch();
+
     return <>
              {
                  (context.isAdmin) && (
                      <>
                        <button
-                         onClick={() => {
-                             api.deleteArticle(name);
-                             history.push('/');
-                             articlesData.articles = articlesData.articles.filter(item => item.name !== name);
-                             setArticlesData(articlesData);
-                         }}
+                         onClick={() => { 
+                           history.push("/") ;
+                           dispatch(deleteArticle(name));
+                          }}
                        >
                          Delete Page
                        </button>
@@ -59,11 +62,7 @@ export function Article({ article, api, articlesData, setArticlesData }) {
                  )
              }
              { (adminEditView)
-               ? (<Admin
-                         currentArticle={article}
-                         api={api}
-                         articlesData={articlesData}
-                         setArticlesData={setArticlesData} />
+               ? (<Admin currentArticle={article}/>
                  ) : 
                <ArticleRender name={name} content={content} />
              }
