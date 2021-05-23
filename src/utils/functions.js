@@ -61,3 +61,7 @@ export function useTimeout(timeoutTime, onTimeoutFn, dependencyList) {
     return () => clearTimeout(timer);
   }, dependencyList);
 }
+
+export function randomElt(array) {
+  return array[Math.floor(Math.random() * array.length)];
+}
