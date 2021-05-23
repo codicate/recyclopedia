@@ -10,15 +10,6 @@ import Admin from 'pages/Admin/Admin';
 
 import { ApplicationContext } from 'App';
 
-const md = require('markdown-it')(
-    {
-        html: true,
-        breaks: true,
-        linkify: true,
-        typographer: true,
-    }
-);
-
 export function buildFromJSON({ article, api, articlesData, setArticlesData }) {
     return (
         <Route key={article.name} exact path={validPageLink(article.name)}>
