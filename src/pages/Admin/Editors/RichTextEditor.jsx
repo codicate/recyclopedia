@@ -81,6 +81,7 @@ export function RichTextEditor({
   updateDirtyFlag,
   toggleDraftStatus
 }) {
+  const [initialArticleState, _] = useState(currentArticle);
   const editableTitleDOMRef = useRef();
   const editableAreaDOMRef = useRef();
 
@@ -90,9 +91,9 @@ export function RichTextEditor({
   function saveDocument() {
     if (editableAreaDOMRef.current && editableTitleDOMRef) {
       const markdownText = renderDomAsMarkdown(editableAreaDOMRef.current);
-      submissionHandler({ name: (currentArticle) ? currentArticle.name : editableTitleDOMRef.current.textContent, content: markdownText });
+      submissionHandler({ name: (initialArticleState) ? initialArticleState.name : editableTitleDOMRef.current.textContent, content: markdownText });
 
-      if (currentArticle === undefined) {
+      if (initialArticleState === undefined) {
         editableAreaDOMRef.current.innerHTML = renderMarkdown(preprocessMarkdown(markdownText));
       }
     }
@@ -186,7 +187,7 @@ export function RichTextEditor({
           )
         }
       </div>
-      <h1 className={styles.title} contentEditable={(currentArticle) ? "false" : "true"} ref={editableTitleDOMRef}>
+      <h1 className={styles.title} contentEditable={(initialArticleState) ? "false" : "true"} ref={editableTitleDOMRef}>
         {(currentArticle) ? currentArticle.name : "Edit New Title"}
       </h1>
       <div style={editModeInlineStyle}>
@@ -201,7 +202,7 @@ export function RichTextEditor({
             updateDirtyFlag: updateDirtyFlag,
           })}
           dangerouslySetInnerHTML={
-            { __html: renderMarkdown(preprocessMarkdown((currentArticle) ? currentArticle.content : "Begin typing your article.")) }
+            { __html: renderMarkdown(preprocessMarkdown((initialArticleState) ? initialArticleState.content : "Begin typing your article.")) }
           }
           ref={editableAreaDOMRef}>
         </div>
@@ -213,7 +214,7 @@ export function RichTextEditor({
           Toggle Draft Status
         </Button>
         <Button onClick={saveDocument}>
-          {(currentArticle)
+          {(initialArticleState)
             ? "Save Article"
             : "Submit Article"}
         </Button>
