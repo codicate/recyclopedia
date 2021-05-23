@@ -1,15 +1,26 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-
 import 'index.css';
 import 'styles/global.scss';
 
-import { Secrets } from 'secrets';
-import approximateSearch from 'utils/search';
-import { RecyclopediaApplicationContext } from 'utils/RecyclopediaApplicationContext';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { store } from 'app/store';
 
 import App from 'App';
+
+
+ReactDOM.render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <BrowserRouter basename='/recyclopedia'>
+        <App />
+      </BrowserRouter>
+    </Provider>
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+
 
 /*
   This weird wrapping mess is kind of necessary as the connection to mongodb realm/atlas
@@ -18,33 +29,3 @@ import App from 'App';
 
   Something to put into consideration though.
 */
-(async function () {
-  new RecyclopediaApplicationContext(
-    Secrets.RECYCLOPEDIA_APPLICATION_ID,
-    function (errored) {
-      if (errored) {
-        ReactDOM.render(
-          <React.StrictMode>
-            <p>MongoDB is probably offline. Crap.</p>
-          </React.StrictMode>,
-          document.getElementById('root')
-        );
-      } else {
-        ReactDOM.render(
-          <React.StrictMode>
-            <BrowserRouter basename='/recyclopedia'>
-              <App api={this} />
-            </BrowserRouter>
-          </React.StrictMode>,
-          document.getElementById('root')
-        );
-      }
-    });
-
-  ReactDOM.render(
-    <React.StrictMode>
-      <p>Please wait! Loading Recyclopedia...</p>
-    </React.StrictMode>,
-    document.getElementById('root')
-  );
-})();

@@ -39,7 +39,7 @@ const widgets = {
   italic: {
     active: null,
     types: {
-      italic: { name: "Italic", display: <emph>I</emph>, command: "italic" }
+      italic: { name: "Italic", display: <em>I</em>, command: "italic" }
     }
   },
   underline: {

@@ -1,11 +1,19 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 
-import apiReducer from 'app/apiSlice';
+import articlesReducer from 'app/articlesSlice';
 
 export const store = configureStore({
   reducer: {
-    api: apiReducer
+    articles: articlesReducer
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: {
+      ignoredActions: [
+        'articles/queryForArticles/fulfilled'
+      ],
+      ignoredPaths: ['articles.articlesData']
+    }
+  })
 });
 
 export type RootState = ReturnType<typeof store.getState>;
