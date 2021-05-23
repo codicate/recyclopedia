@@ -1,13 +1,13 @@
 import styles from 'App.module.scss';
 import { useEffect, createContext } from 'react';
-import { Route, Switch } from 'react-router-dom';
-import useLocalStorageState from 'hooks/useLocalStorageState';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { initApi, selectStatus, selectArticlesData } from 'app/articlesSlice';
+import { selectIsAdmin } from 'app/adminSlice';
 
 import { Secrets } from 'secrets';
-import { buildFromJSON } from "components/Article/Article";
+import Article from "components/Article/Article";
 
 import Header from 'pages/Header/Header';
 import Homepage from "pages/Homepage/Homepage";
@@ -19,46 +19,45 @@ export const ApplicationContext = createContext({});
 
 function App() {
   const articlesData = useAppSelector(selectArticlesData);
-  const [isAdmin, setIsAdmin] = useLocalStorageState('isAdmin', false);
+  const isAdmin = useAppSelector(selectIsAdmin);
 
   return (
-    <ApplicationContext.Provider value={{
-      isAdmin: isAdmin,
-      setAdminState: setIsAdmin,
-    }}>
-
+    <>
       <Header />
 
       <main id={styles.main}>
         <Switch>
           <Route exact path='/index'>
-            <IndexPage articlesData={articlesData} />
+            <IndexPage />
           </Route>
           <Route exact path='/'>
             <Homepage articlesData={articlesData}/>
           </Route>
           <Route exact path='/admin'>
-            <Admin />
+            {
+              isAdmin
+                ? <Admin currentArticle={undefined} />
+                : <Redirect to='/' />
+            }
           </Route>
 
-          {
-            (isAdmin)
-              ? articlesData.articles.map((article) =>
-                buildFromJSON({ article: { ...article } })
-              )
-              : articlesData.articles.filter((article) =>
-                article.draftStatus === false || article.draftStatus === undefined
-              ).map((article) =>
-                buildFromJSON({ article: { ...article } })
-              )
-          }
-
-          <Route path='*'>
-            404
-          </Route>
+          {(
+            isAdmin
+          ) ? (
+            articlesData.articles.map((article) =>
+              <Article article={article} />
+            )
+          ) : (
+            articlesData.articles.filter((article) =>
+              article.draftStatus === false || article.draftStatus === undefined
+            ).map((article) =>
+              <Article article={article} />
+            )
+          )}
+          <Route path='*'>404</Route>
         </Switch>
       </main>
-    </ApplicationContext.Provider >
+    </>
   );
 }
 

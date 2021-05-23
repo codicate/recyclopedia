@@ -1,39 +1,40 @@
 import styles from 'pages/Header/Header.module.scss';
 import { Link } from 'react-router-dom';
 
+import { useAppDispatch, useAppSelector } from 'app/hooks';
+import { selectIsAdmin, setIsAdmin } from 'app/adminSlice';
+
 import approximateSearch from 'utils/search';
-import Search, {renderHoverboxSearch} from 'pages/Header/Search';
-
-import { ApplicationContext } from 'App';
-import { useContext } from 'react';
-
 import { Secrets } from 'secrets';
 
+import Search, { renderHoverboxSearch } from 'pages/Header/Search';
 
-const Header = ({articlesData}) => {
-  const context = useContext(ApplicationContext);
+
+const Header = () => {
+  const dispatch = useAppDispatch();
+  const isAdmin = useAppSelector(selectIsAdmin);
 
   return (
     <header id={styles.header}>
       <nav id={styles.navbar}>
-        
+
         <Link to="/">
           <div id={styles.logoDiv}></div>
         </Link>
-        <Search articlesData={articlesData}
-        searchFunction={approximateSearch}
-        renderFunction={renderHoverboxSearch}
-      />
+        <Search
+          searchFunction={approximateSearch}
+          renderFunction={renderHoverboxSearch}
+        />
         <Link to='/index'>Index</Link>
         {(
-          context.isAdmin
+          isAdmin
         ) ? (
           <>
             <Link to="/admin">
               Create New Article
                   </Link>
             <button onClick={() => {
-              context.setAdminState(false);
+              dispatch(setIsAdmin(false));
             }}
             >
               Logout
@@ -43,7 +44,7 @@ const Header = ({articlesData}) => {
           <button
             onClick={() => {
               if (prompt("Enter Admin Password") === Secrets.ADMIN_PASSWORD) {
-                context.setAdminState(true);
+                dispatch(setIsAdmin(true));
               }
             }}
           >
@@ -51,7 +52,7 @@ const Header = ({articlesData}) => {
           </button>
         )}
       </nav>
-    </header>
+    </header >
   );
 };
 

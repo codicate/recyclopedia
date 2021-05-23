@@ -1,12 +1,17 @@
-import React, { useState, useRef } from 'react';
-import { useTimeout } from 'utils/functions.js';
 import styles from 'components/Searchbar/Searchbar.module.scss';
+import { useState, useRef } from 'react';
+import { useTimeout } from 'utils/functions.js';
 
-export default function Searchbar({ returnInput }) {
+
+export default function Searchbar(
+  { returnInput }: {
+    returnInput: (input: string) => void;
+  }
+) {
   const [input, setInput] = useState('');
-  const searchbar = useRef(null);
+  const searchbar = useRef<null | HTMLInputElement>(null);
 
-  useTimeout(500, () => { returnInput(input); }, [input]);
+  useTimeout(() => returnInput(input), 500);
 
   return (
     <div id={styles.searchbar}>

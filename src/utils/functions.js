@@ -1,6 +1,6 @@
-import React from "react";
+import { useEffect, useRef } from 'react';
 import { Secrets } from "secrets";
-import { useEffect } from 'react';
+
 //Return the current property of a ref if it is a ref
 export const getRefCurrent = (ref) => {
   return ref.hasOwnProperty("current")
@@ -22,32 +22,32 @@ export async function uploadImage(image_name) {
 }
 
 export async function retrieveImageData(imageFileName, whenRetrieved) {
-    const image_file = imageFileName;
-    const img = document.createElement('img');
-    img.src = URL.createObjectURL(image_file);
-    img.onload = async function () {
-        const canvas = document.createElement("canvas");
-        const canvas_context = canvas.getContext("2d");
+  const image_file = imageFileName;
+  const img = document.createElement('img');
+  img.src = URL.createObjectURL(image_file);
+  img.onload = async function () {
+    const canvas = document.createElement("canvas");
+    const canvas_context = canvas.getContext("2d");
 
-        canvas.width = img.width;
-        canvas.height = img.height;
+    canvas.width = img.width;
+    canvas.height = img.height;
 
-        canvas_context.drawImage(img, 0, 0);
-        const imgData = canvas.toDataURL().split(',')[1];
-        whenRetrieved(imgData);
-    };
+    canvas_context.drawImage(img, 0, 0);
+    const imgData = canvas.toDataURL().split(',')[1];
+    whenRetrieved(imgData);
+  };
 }
 
 export function dictionaryUpdateKey(dictionary, key, updateFunction) {
-  let newDictionary = {...dictionary};
+  let newDictionary = { ...dictionary };
   newDictionary[key] = updateFunction(dictionary[key]);
   return newDictionary;
 }
 
 export function dictionaryUpdateKeyNested(dictionary, keys, updateFunction) {
-  if (keys.length > 1)  {
+  if (keys.length > 1) {
     let shallowClone = { ...dictionary };
-    shallowClone[keys[0]] = 
+    shallowClone[keys[0]] =
       dictionaryUpdateKeyNested(shallowClone[keys[0]], keys.slice(1), updateFunction);
     return shallowClone;
   }
@@ -55,12 +55,20 @@ export function dictionaryUpdateKeyNested(dictionary, keys, updateFunction) {
   return dictionaryUpdateKey(dictionary, keys[0], updateFunction);
 }
 
-export function useTimeout(timeoutTime, onTimeoutFn, dependencyList) {
-  React.useEffect(() => {
-    const timer = setTimeout(onTimeoutFn, timeoutTime);
-    return () => clearTimeout(timer);
-  }, dependencyList);
-}
+export const useTimeout = (callback, delay) => {
+  const savedCallback = useRef();
+
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  useEffect(() => {
+    if (delay) {
+      const timer = setTimeout(() => savedCallback.current(), delay);
+      return () => clearTimeout(timer);
+    }
+  }, [delay]);
+};
 
 export function randomElt(array) {
   return array[Math.floor(Math.random() * array.length)];

@@ -5,6 +5,11 @@ const Button = ({
   type = 'button',
   styleOption,
   ...props
+}: {
+  children?: React.ReactNode;
+  type?: 'submit' | 'reset' | 'button';
+  styleOption?: string;
+  onClick?(): void;
 }) => {
   return (
     <button

@@ -1,8 +1,8 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { preprocessMarkdown } from 'utils/preprocessMarkdown';
 import { uploadImage, retrieveImageData } from 'utils/functions';
 
-import { renderMarkdown } from "components/Article/RenderMarkdown";
+import renderMarkdown from "components/Article/MarkdownRender";
 import { renderDomAsMarkdown } from 'utils/DOMIntoMarkdown';
 import { dictionaryUpdateKey, dictionaryUpdateKeyNested } from 'utils/functions';
 import { widgets, toggleWidgetActiveState, flattenWidgetStateTypes } from './RichTextEditWidgetInformation.js';
@@ -12,10 +12,12 @@ import richWidgetBarStyle from './richWidgetBar.module.scss';
 import styles from 'pages/Admin/Admin.module.scss';
 import Button from 'components/Form/Button';
 
-function editorHandleKeybindings({ saveDocument,
+function editorHandleKeybindings({
+  saveDocument,
   toggleWidget,
   executeRichTextCommand,
-  updateDirtyFlag }) {
+  updateDirtyFlag
+}) {
   return function (event) {
     let { key, shiftKey, ctrlKey } = event;
     let disableDefaultBehavior = false;
@@ -72,10 +74,12 @@ function editorHandleKeybindings({ saveDocument,
   };
 }
 
-export function RichTextEditor({ submissionHandler,
+export function RichTextEditor({
+  submissionHandler,
   currentArticle,
   updateDirtyFlag,
-  toggleDraftStatus }) {
+  toggleDraftStatus
+}) {
   const editableTitleDOMRef = useRef();
   const editableAreaDOMRef = useRef();
 
@@ -101,27 +105,25 @@ export function RichTextEditor({ submissionHandler,
   function executeRichTextCommand(commandName, optionalArgument) {
     if (editableAreaDOMRef.current) {
       if (commandName === "@_insertImage") {
-        {
-          let fileDialog = document.createElement("input");
-          fileDialog.type = "file";
-          fileDialog.click();
-          function fileHandlerOnChange({ target }) {
-            retrieveImageData(target.files[0],
-              function (imgData) {
-                uploadImage(imgData).then(
-                  function (imgURL) {
-                    if (imgURL.success) {
-                      document.execCommand("insertImage", false, imgURL.data.url);
-                    } else {
-                      console.error("IMGBB is down. Tony pls get us a server");
-                    }
+        let fileDialog = document.createElement("input");
+        fileDialog.type = "file";
+        fileDialog.click();
+        function fileHandlerOnChange({ target }) {
+          retrieveImageData(target.files[0],
+            function (imgData) {
+              uploadImage(imgData).then(
+                function (imgURL) {
+                  if (imgURL.success) {
+                    document.execCommand("insertImage", false, imgURL.data.url);
+                  } else {
+                    console.error("IMGBB is down. Tony pls get us a server");
                   }
-                );
-              });
-          }
-          // TODO(jerry): cleanup
-          fileDialog.addEventListener("change", fileHandlerOnChange);
+                }
+              );
+            });
         }
+        // TODO(jerry): cleanup
+        fileDialog.addEventListener("change", fileHandlerOnChange);
       } else {
         document.execCommand(commandName, false, optionalArgument);
         editableAreaDOMRef.current.focus();
