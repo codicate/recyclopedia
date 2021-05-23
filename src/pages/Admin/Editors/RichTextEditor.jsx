@@ -10,6 +10,7 @@ import { widgets, toggleWidgetActiveState, flattenWidgetStateTypes } from './Ric
 import bottomToolbarStyle from './bottomToolbar.module.scss';
 import richWidgetBarStyle from './richWidgetBar.module.scss';
 import styles from 'pages/Admin/Admin.module.scss';
+import articleStyles from 'components/Article/Article.module.scss';
 import Button from 'components/Form/Button';
 
 function editorHandleKeybindings({
@@ -83,7 +84,7 @@ export function RichTextEditor({
   const editableTitleDOMRef = useRef();
   const editableAreaDOMRef = useRef();
 
-  document.execCommand("defaultParagraphSeparator", false, "p");
+  document.execCommand("defaultParagraphSeparator", false, "br");
   const [widgetStates, updateWidgetState] = useState(widgets);
 
   function saveDocument() {
@@ -187,7 +188,7 @@ export function RichTextEditor({
       <div style={editModeInlineStyle}>
         <div
           contentEditable={true}
-          className={styles.article}
+          className={articleStyles.article}
           onSelect={synchronizeCommandStateToWidgetBar}
           onKeyDown={editorHandleKeybindings({
             saveDocument: saveDocument,

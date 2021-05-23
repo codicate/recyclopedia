@@ -57,7 +57,7 @@ export default function Admin({
   return (
     <>
       <select
-        value='richtext'
+        value={editorMode}
         onChange={
           function (event) {
             setEditorMode(event.target.value);
