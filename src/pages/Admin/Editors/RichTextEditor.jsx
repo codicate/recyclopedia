@@ -92,6 +92,10 @@ export function RichTextEditor({
       const markdownText = renderDomAsMarkdown(editableAreaDOMRef.current);
       console.log(markdownText);
       submissionHandler({ name: (currentArticle) ? currentArticle.name : editableTitleDOMRef.current.textContent, content: markdownText });
+
+      if (currentArticle === undefined) {
+        editableAreaDOMRef.current.innerHTML = renderMarkdown(preprocessMarkdown(markdownText));
+      }
     }
   }
 

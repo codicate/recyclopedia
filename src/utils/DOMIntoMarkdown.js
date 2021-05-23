@@ -86,7 +86,7 @@ function renderElement(root, text_contents) {
       return result;
     }
 
-    return (root.tagName === "P") ? "\\\n" : "";
+    return (root.tagName === "P" || root.tagName === "BR") ? "\\\n" : "";
   }
 }
 

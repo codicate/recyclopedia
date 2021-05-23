@@ -12,7 +12,11 @@ export function preprocessMarkdown(input, onImageFound = undefined) {
   while (input.stillParsing()) {
     if (input.requireCharacter('\\')) {
       const nextCharacter = input.eatCharacter();
-      result += nextCharacter;
+      if (nextCharacter === '\n') {
+        result += "<br/>\n";
+      } else {
+        result += nextCharacter;
+      }
     } else if (input.requireCharacter('@')) {
       if (input.requireCharacter('@')) {
         let has_end = false;
