@@ -17,66 +17,64 @@ import { widgets, flattenWidgetStateTypes } from './RichTextEditWidgetInformatio
 
   The current input may not be able to do that, so this is a "stub"
  */
-function editorHandleKeybindings({saveDocument,
-                                  updateDirtyFlag,
-                                  appendToTextArea}) {
-    return function (event) {
-        let {key, shiftKey, ctrlKey} = event;
-        let disableDefaultBehavior = false;
-        if (ctrlKey) {
-            if (!shiftKey) {
-                switch (key) {
-                case 's':
-                    saveDocument();
-                    disableDefaultBehavior = true;
-                    break;
-                case 'b':
-                    appendToTextArea("**bold text**");
-                    disableDefaultBehavior = true;
-                    break;
-                case 'i':
-                    appendToTextArea("_Italic text_");
-                    disableDefaultBehavior = true;
-                    break;
-                case 'u':
-                    appendToTextArea("__Underlined Text__");
-                    disableDefaultBehavior = true;
-                    break;
-                case '1': case '2': case '3': case '4': case '5': case '6':
-                    appendToTextArea("#".repeat(Number(key)) + " Heading");
-                    disableDefaultBehavior = true;
-                    break;
-                }
-            } else {
-                switch (key) {
-                case 'U':
-                case 'O':
-                    alert("This editor does not support automatically inserted list items!");
-                    disableDefaultBehavior = true;
-                    break;
-                }
-            }
+function editorHandleKeybindings({ saveDocument,
+  updateDirtyFlag,
+  appendToTextArea }) {
+  return function (event) {
+    let { key, shiftKey, ctrlKey } = event;
+    let disableDefaultBehavior = false;
+    if (ctrlKey) {
+      if (!shiftKey) {
+        switch (key) {
+          case 's':
+            saveDocument();
+            disableDefaultBehavior = true;
+            break;
+          case 'b':
+            appendToTextArea("**bold text**");
+            disableDefaultBehavior = true;
+            break;
+          case 'i':
+            appendToTextArea("_Italic text_");
+            disableDefaultBehavior = true;
+            break;
+          case 'u':
+            appendToTextArea("__Underlined Text__");
+            disableDefaultBehavior = true;
+            break;
+          case '1': case '2': case '3': case '4': case '5': case '6':
+            appendToTextArea("#".repeat(Number(key)) + " Heading");
+            disableDefaultBehavior = true;
+            break;
         }
-
-        if (disableDefaultBehavior) {
-            event.preventDefault();
-            event.stopPropagation();
-        } else {
-            updateDirtyFlag(true);
+      } else {
+        switch (key) {
+          case 'U':
+          case 'O':
+            alert("This editor does not support automatically inserted list items!");
+            disableDefaultBehavior = true;
+            break;
         }
+      }
     }
+
+    if (disableDefaultBehavior) {
+      event.preventDefault();
+      event.stopPropagation();
+    } else {
+      updateDirtyFlag(true);
+    }
+  };
 }
 
 export function MarkdownEditor({ submissionHandler, currentArticle, updateDirtyFlag, toggleDraftStatus }) {
-  const [imageURLs, updateImageURLs] = useState(
-    function () {
-      let existing_images = [];
-      if (currentArticle?.content) {
-        preprocessMarkdown(currentArticle.content, (img) => existing_images.push([img, img]));
-      }
-      return existing_images;
-    }()
-  );
+  const [imageURLs, updateImageURLs] = useState((() => {
+    let existing_images = [];
+    if (currentArticle?.content) {
+      preprocessMarkdown(currentArticle.content, (img) => existing_images.push([img, img]));
+    }
+    return existing_images;
+  })());
 
   return (
     <>
@@ -88,16 +86,16 @@ export function MarkdownEditor({ submissionHandler, currentArticle, updateDirtyF
               id={widgetId}
               onClick={
                 (_) => {
-                    editorHandleKeybindings({
-                        saveDocument: function() {
-                            console.log("STUB: saveDocument!");
-                        },
-                        updateDirtyFlag: updateDirtyFlag,
-                        appendToTextArea: function(text) {
-                            console.log("STUB ", text);
-                        }
-                    });
-                    console.log(widgetId, widget.category, widget.command, widget.argument);
+                  editorHandleKeybindings({
+                    saveDocument: function () {
+                      console.log("STUB: saveDocument!");
+                    },
+                    updateDirtyFlag: updateDirtyFlag,
+                    appendToTextArea: function (text) {
+                      console.log("STUB ", text);
+                    }
+                  });
+                  console.log(widgetId, widget.category, widget.command, widget.argument);
                 }
               }>{(widget.display) ? widget.display : widget.name}</button>)
           )
@@ -105,27 +103,28 @@ export function MarkdownEditor({ submissionHandler, currentArticle, updateDirtyF
       </div>
       <h2>Upload Media</h2>
       {
-        imageURLs.map((info) => <MediaPreview updateImageURLs={updateImageURLs} imagePreviewInfo={info} />)
+        imageURLs.map((info) =>
+          <MediaPreview
+            imagePreviewInfo={info}
+            updateImageURLs={updateImageURLs}
+          />
+        )
       }
       <form>
         <input
           type="file"
-          onChange={
-              ({ target }) => {
-                  retrieveImageData(target.files[0], 
-                      function (imgData) {
-                          uploadImage(imgData).then(
-                              function (imgURL) {
-                                  if (imgURL.success) {
-                                      updateImageURLs(imageURLs.concat([[imgURL.data.thumb.url, imgURL.data.url]]));
-                                  } else {
-                                      console.error("IMGBB is down. Tony pls get us a server");
-                                  }
-                              }
-                          );
-                      });
-              }
-          }
+          onChange={({ target }) => retrieveImageData(
+            target.files[0],
+            (imgData) => {
+              uploadImage(imgData).then((imgURL) => {
+                if (imgURL.success) {
+                  updateImageURLs(imageURLs.concat([[imgURL.data.thumb.url, imgURL.data.url]]));
+                } else {
+                  console.error("IMGBB is down. Tony pls get us a server");
+                }
+              });
+            }
+          )}
         />
       </form>
 
@@ -148,13 +147,13 @@ export function MarkdownEditor({ submissionHandler, currentArticle, updateDirtyF
           ]
         ]}
       >
-        <Button onClick={() => {toggleDraftStatus();} }>
+        <Button onClick={() => { toggleDraftStatus(); }}>
           Toggle Draft Status
         </Button>
         <Button type='submit'>
           {(currentArticle)
-           ? "Save Article"
-           : "Submit Article"}
+            ? "Save Article"
+            : "Submit Article"}
         </Button>
       </Form>
     </>

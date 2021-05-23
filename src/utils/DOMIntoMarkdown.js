@@ -2,30 +2,30 @@
     Inhouse DOM to Markdown interpreter.
 */
 function surrounder(sym) {
-    return function (content) {
-        let spacesLeft = 0;
-        let spacesRight = 0;
-        for (let i = 0; i < content.length; ++i) {
-            if (content[i] !== ' ') {
-                spacesLeft = i-1;
-                break;
-            }
-        }
-        for (let i = content.length - 1; i > 0; --i) {
-            if (content[i] !== ' ') {
-                break;
-            }
-            spacesRight++;
-        }
-        return `${spacesLeft > 0 ? " ".repeat(spacesLeft) : ""}${sym}${content.trim()}${sym}${spacesRight > 0 ? " ".repeat(spacesRight) : ""}`;
+  return function (content) {
+    let spacesLeft = 0;
+    let spacesRight = 0;
+    for (let i = 0; i < content.length; ++i) {
+      if (content[i] !== ' ') {
+        spacesLeft = i - 1;
+        break;
+      }
     }
+    for (let i = content.length - 1; i > 0; --i) {
+      if (content[i] !== ' ') {
+        break;
+      }
+      spacesRight++;
+    }
+    return `${spacesLeft > 0 ? " ".repeat(spacesLeft) : ""}${sym}${content.trim()}${sym}${spacesRight > 0 ? " ".repeat(spacesRight) : ""}`;
+  };
 }
 const surrounders = {
-    "B": surrounder("**"),
-    "STRONG": surrounder("**"),
-    "I": surrounder("_"),
-    "EM": surrounder("_"),
-    "U": surrounder("__"),
+  "B": surrounder("**"),
+  "STRONG": surrounder("**"),
+  "I": surrounder("_"),
+  "EM": surrounder("_"),
+  "U": surrounder("__"),
 };
 const safe_call = (fn, ...rest) => (...rest) => (fn) ? fn(...rest) : rest[0];
 /*
@@ -42,64 +42,64 @@ This is entirely recursive, and because it's recursive it loses some information
 cleaner and probably easier rendering...
 */
 function renderElement(root, text_contents) {
-    if (text_contents !== "") {
-        if (root.tagName === "P") {
-            console.log("paragraph");
-            console.log(root.parentElement);
-            if (root.parentElement && (root.parentElement.tagName === "LI")) {
-                console.log("Parent was list?");
-                return text_contents;
-            } else {
-                return text_contents + "\n";
-            }
-        } else if (root.tagName[0] === 'H') {
-            return "#".repeat(Number(root.tagName[1])) + " " + text_contents + "\n";
-        } else if (root.tagName === "OL") {
-            let i = 0;
-            return Array.from(root.children).reduce(
-                function (accumulator, listItem) {
-                    const childText = renderDomAsMarkdown(listItem);
-                    if (childText !== "") {
-                        return accumulator + `${((i++) + 1)}. ${childText}\n`;
-                    } else {
-                        return accumulator;
-                    }
-                } , "");
-        } else if (root.tagName === "UL") {
-            return Array.from(root.children).reduce(
-                function (accumulator, listItem) {
-                    const childText = renderDomAsMarkdown(listItem);
-                    if (childText !== "") {
-                        return accumulator + `- ${childText}\n`;
-                    } else {
-                        return "";
-                    }
-                } , "");
-        }
-        
-        console.log("going to try and root out tags friends", root.tagName);
-        return safe_call(surrounders[root.tagName])(text_contents);
-    } else {
-        if (root.tagName === "IMG") {
-            const src = root.getAttribute("src");
-            const result = `@@ src = '${src}' @@\n`;
-            return result;
-        }
-
-        return (root.tagName === "P") ? "\\\n" : "";
+  if (text_contents !== "") {
+    if (root.tagName === "P") {
+      console.log("paragraph");
+      console.log(root.parentElement);
+      if (root.parentElement && (root.parentElement.tagName === "LI")) {
+        console.log("Parent was list?");
+        return text_contents;
+      } else {
+        return text_contents + "\n";
+      }
+    } else if (root.tagName[0] === 'H') {
+      return "#".repeat(Number(root.tagName[1])) + " " + text_contents + "\n";
+    } else if (root.tagName === "OL") {
+      let i = 0;
+      return Array.from(root.children).reduce(
+        function (accumulator, listItem) {
+          const childText = renderDomAsMarkdown(listItem);
+          if (childText !== "") {
+            return accumulator + `${((i++) + 1)}. ${childText}\n`;
+          } else {
+            return accumulator;
+          }
+        }, "");
+    } else if (root.tagName === "UL") {
+      return Array.from(root.children).reduce(
+        function (accumulator, listItem) {
+          const childText = renderDomAsMarkdown(listItem);
+          if (childText !== "") {
+            return accumulator + `- ${childText}\n`;
+          } else {
+            return "";
+          }
+        }, "");
     }
+
+    console.log("going to try and root out tags friends", root.tagName);
+    return safe_call(surrounders[root.tagName])(text_contents);
+  } else {
+    if (root.tagName === "IMG") {
+      const src = root.getAttribute("src");
+      const result = `@@ src = '${src}' @@\n`;
+      return result;
+    }
+
+    return (root.tagName === "P") ? "\\\n" : "";
+  }
 }
 
 export function renderDomAsMarkdown(root) {
-    if (root.nodeType === 3) {
-        return root.textContent;
-    } else if (root.hasChildNodes()) {
-        const childrenStrings = Array.from(root.childNodes).reduce((output, node) => { return output + renderDomAsMarkdown(node) }, "");
-        const res = renderElement(root, childrenStrings);
-        return res;
-    } else {
-        return renderElement(root, "");
-    }
+  if (root.nodeType === 3) {
+    return root.textContent;
+  } else if (root.hasChildNodes()) {
+    const childrenStrings = Array.from(root.childNodes).reduce((output, node) => { return output + renderDomAsMarkdown(node); }, "");
+    const res = renderElement(root, childrenStrings);
+    return res;
+  } else {
+    return renderElement(root, "");
+  }
 
-    return "";
+  return "";
 }

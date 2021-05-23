@@ -1,13 +1,13 @@
 import styles from 'components/Searchbar/Searchbar.module.scss';
 import { useState, useRef } from 'react';
-import { useTimeout } from 'utils/functions.js';
+import { useTimeout } from 'utils/functions';
 
 
-export default function Searchbar(
-  { returnInput }: {
-    returnInput: (input: string) => void;
-  }
-) {
+export default function Searchbar({
+  returnInput
+}: {
+  returnInput: (input: string) => void;
+}) {
   const [input, setInput] = useState('');
   const searchbar = useRef<null | HTMLInputElement>(null);
 

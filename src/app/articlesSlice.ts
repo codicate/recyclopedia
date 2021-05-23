@@ -3,13 +3,20 @@ import { RootState } from 'app/store';
 
 import { App, User, Credentials } from "realm-web";
 
-
 export interface Article {
   name: string;
   content: string;
   draftStatus: boolean;
   tags?: string[];
 }
+
+export interface ArticlesData {
+  articles: Article[];
+};
+
+export type ArticlesDataProperties = {
+  articlesData: ArticlesData
+};
 
 const databaseApi: {
   application: App | undefined | null;
@@ -21,9 +28,7 @@ const databaseApi: {
 
 const initialState: {
   status: 'idle' | 'loading' | 'succeed' | 'failed';
-  articlesData: {
-    articles: Article[];
-  };
+  articlesData: ArticlesData;
 } = {
   status: 'idle',
   articlesData: {

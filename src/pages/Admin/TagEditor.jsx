@@ -15,7 +15,7 @@ function findTag(articles, tags) {
   return articles.filter(function (article) { return anyInside(article.tags, tags); });
 }
 
-export function TagEditor({ articlesData, setArticlesData, currentArticle }) {
+export function TagEditor({ currentArticle }) {
   return <>
     <ul>
       {console.log(currentArticle)}

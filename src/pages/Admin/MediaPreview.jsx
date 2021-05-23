@@ -1,7 +1,8 @@
-function ImageURL({ children }) {
+function ImageURL({
+  children
+}) {
   return (
-    <a
-      href="#"
+    <button
       onClick={
         () => {
           navigator.clipboard.writeText(`@@src='${children}'@@`).then(
@@ -9,13 +10,16 @@ function ImageURL({ children }) {
               alert("copied to clipboard");
             }
           );
-        }}>
+        }}
+    >
       {children}
-    </a>
+    </button>
   );
 }
 
-export function MediaPreview({ imagePreviewInfo, updateImageURLs }) {
+export function MediaPreview({
+  imagePreviewInfo, updateImageURLs
+}) {
   const [thumbnail, image] = imagePreviewInfo;
 
   return (
@@ -23,9 +27,11 @@ export function MediaPreview({ imagePreviewInfo, updateImageURLs }) {
       <img key={thumbnail} src={thumbnail} alt={image} width="80px"></img>
       <ImageURL>{image}</ImageURL>
       <button
-        onClick={() => {
-          updateImageURLs(imageURLs => imageURLs.filter(([previewName]) => (previewName !== thumbnail)));
-        }}
+        onClick={() => updateImageURLs(imageURLs =>
+          imageURLs.filter(([previewName]) =>
+            (previewName !== thumbnail)
+          )
+        )}
       >
         X
       </button>

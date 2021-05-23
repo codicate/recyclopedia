@@ -1,11 +1,12 @@
 import styles from 'pages/Homepage/Homepage.module.scss';
 import { randomElt } from 'utils/functions';
-import { MarkdownRender } from 'components/Article/RenderMarkdown';
+import MarkdownRender from 'components/Article/MarkdownRender';
 
 import { useState, useContext } from 'react';
 import { ApplicationContext } from 'App';
+import { ArticlesDataProperties } from 'app/articlesSlice';
 
-function ArticleShowcase({articlesData: {articles}}) {
+function ArticleShowcase({articlesData: {articles}} : ArticlesDataProperties) {
   const {name, content} = (articles.length) ? randomElt(articles) : {name: "no article name", content: "no articles"};
   return (
     <>
@@ -43,7 +44,7 @@ function ArticleShowcase({articlesData: {articles}}) {
   );
 }
 
-function Homepage({ articlesData }) {
+function Homepage({ articlesData } : ArticlesDataProperties) {
   const context = useContext(ApplicationContext);
   console.log(articlesData);
   
