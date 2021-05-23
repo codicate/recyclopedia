@@ -1,10 +1,10 @@
 import styles from 'App.module.scss';
 import { useEffect, createContext } from 'react';
-import { Route, Switch } from 'react-router-dom';
-import useLocalStorageState from 'hooks/useLocalStorageState';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { initApi, selectStatus, selectArticlesData } from 'app/articlesSlice';
+import { selectIsAdmin } from 'app/adminSlice';
 
 import { Secrets } from 'secrets';
 import { buildFromJSON } from "components/Article/Article";
@@ -19,18 +19,13 @@ export const ApplicationContext = createContext({});
 
 function App() {
   const articlesData = useAppSelector(selectArticlesData);
-  const [isAdmin, setIsAdmin] = useLocalStorageState('isAdmin', false);
+  const isAdmin = useAppSelector(selectIsAdmin);
 
   return (
-    <ApplicationContext.Provider value={{
-      isAdmin: isAdmin,
-      setAdminState: setIsAdmin,
-    }}>
-
+    <>
       <Header />
 
       <main id={styles.main}>
-        <p>Please wait! Loading Recyclopedia...</p>
         <Switch>
           <Route exact path='/index'>
             <IndexPage articlesData={articlesData} />
@@ -54,12 +49,10 @@ function App() {
               )
           }
 
-          <Route path='*'>
-            404
-          </Route>
+          <Route path='*'>404</Route>
         </Switch>
       </main>
-    </ApplicationContext.Provider >
+    </>
   );
 }
 

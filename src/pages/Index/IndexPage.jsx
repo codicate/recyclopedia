@@ -1,22 +1,21 @@
 import styles from 'pages/Index/IndexPage.module.scss';
-import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import { useAppSelector } from 'app/hooks';
 import { selectArticlesData } from 'app/articlesSlice';
+import { selectIsAdmin } from 'app/adminSlice';
 
-import { ApplicationContext } from 'App';
 import { validPageLink } from 'utils/functions';
 
 
 function IndexPage() {
-  const context = useContext(ApplicationContext);
   const articlesData = useAppSelector(selectArticlesData);
+  const isAdmin = useAppSelector(selectIsAdmin);
 
   return (
     <div>
       {
-        (context.isAdmin) ?
+        (isAdmin) ?
           articlesData.articles.map(({ name, draftStatus }) => (
             <p key={name} >
               <Link to={validPageLink(name)}>
