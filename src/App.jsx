@@ -34,7 +34,11 @@ function App() {
             <Homepage />
           </Route>
           <Route exact path='/admin'>
-            <Admin />
+            {
+              isAdmin
+                ? <Admin />
+                : <Redirect to='/' />
+            }
           </Route>
 
           {

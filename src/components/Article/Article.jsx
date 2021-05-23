@@ -69,7 +69,7 @@ export function Article({ article, api, articlesData, setArticlesData }) {
         </>
       )
     }
-    { (adminEditView)
+    { (isAdmin && adminEditView)
       ? (<Admin
         currentArticle={article}
         api={api}
