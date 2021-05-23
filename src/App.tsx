@@ -31,7 +31,7 @@ function App() {
             <IndexPage />
           </Route>
           <Route exact path='/'>
-            <Homepage />
+            <Homepage articlesData={articlesData}/>
           </Route>
           <Route exact path='/admin'>
             {
@@ -63,7 +63,6 @@ function App() {
 
 function InitializingApp() {
   const dispatch = useAppDispatch();
-
   useEffect(() => {
     dispatch(initApi(Secrets.RECYCLOPEDIA_APPLICATION_ID));
   }, [dispatch]);
