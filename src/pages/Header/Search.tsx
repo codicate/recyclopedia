@@ -9,7 +9,6 @@ import { validPageLink } from 'utils/functions';
 import MarkdownRender from 'components/Article/MarkdownRender';
 
 import Searchbar from 'components/Searchbar/Searchbar';
-import { JsxElement } from 'typescript';
 
 export function renderAsParagraphs(searchResults: Article[]) {
   return searchResults.map(({ name }) =>
@@ -38,8 +37,8 @@ export function renderHoverboxSearch(searchResults: Article[]) {
           </Link>))
       }
     </div>
-  ) : 
-  <></>;
+  ) :
+    <></>;
 }
 
 function Search({
@@ -62,7 +61,7 @@ function Search({
 
   return (
     <div className={styles.searchbar}>
-    <Searchbar
+      <Searchbar
         returnInput={returnInputCallback}
       />
       { renderFunction(searchResult)}

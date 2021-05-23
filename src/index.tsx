@@ -11,7 +11,6 @@ import { store, persistor } from 'app/store';
 
 import App from 'App';
 
-
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>

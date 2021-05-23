@@ -13,6 +13,7 @@ import Header from 'pages/Header/Header';
 import Homepage from "pages/Homepage/Homepage";
 import IndexPage from "pages/Index/IndexPage";
 import Admin from "pages/Admin/Admin";
+import { validPageLink } from 'utils/functions';
 
 
 export const ApplicationContext = createContext({});
@@ -41,19 +42,14 @@ function App() {
             }
           </Route>
 
-          {(
-            isAdmin
-          ) ? (
-            articlesData.articles.map((article) =>
-              <Article article={article} />
-            )
-          ) : (
-            articlesData.articles.filter((article) =>
-              article.draftStatus === false || article.draftStatus === undefined
-            ).map((article) =>
-              <Article article={article} />
-            )
-          )}
+          {((isAdmin) ? 
+            articlesData.articles :
+            articlesData.articles.filter((article) => !article.draftStatus))
+            .map((article) =>
+              <Route key={article.name} exact path={validPageLink(article.name)}>
+                <Article article={article} />
+              </Route>
+            )}
           <Route path='*'>404</Route>
         </Switch>
       </main>

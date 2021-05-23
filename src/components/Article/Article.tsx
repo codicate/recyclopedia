@@ -12,8 +12,6 @@ import { preprocessMarkdown } from 'utils/preprocessMarkdown';
 import MarkdownRender from "components/Article/MarkdownRender";
 import Admin from 'pages/Admin/Admin';
 
-
-
 function ArticleComponent({
   article
 }: {
@@ -27,7 +25,7 @@ function ArticleComponent({
   const [adminEditView, updateAdminEditView] = useState(false);
 
   return (
-    <Route key={article.name} exact path={validPageLink(article.name)}>
+    <>
       {
         isAdmin && (
           <>
@@ -61,7 +59,7 @@ function ArticleComponent({
           </MarkdownRender>
         </>
       )}
-    </Route>
+    </>
   );
 }
 
