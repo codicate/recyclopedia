@@ -50,7 +50,7 @@ function renderElement(root, text_contents) {
         console.log("Parent was list?");
         return text_contents;
       } else {
-        return text_contents + "\n";
+        return text_contents + "\n\n";
       }
     } else if (root.tagName[0] === 'H') {
       return "#".repeat(Number(root.tagName[1])) + " " + text_contents + "\n";

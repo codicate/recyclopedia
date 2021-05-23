@@ -90,6 +90,7 @@ export function RichTextEditor({
   function saveDocument() {
     if (editableAreaDOMRef.current && editableTitleDOMRef) {
       const markdownText = renderDomAsMarkdown(editableAreaDOMRef.current);
+      console.log(markdownText);
       submissionHandler({ name: (currentArticle) ? currentArticle.name : editableTitleDOMRef.current.textContent, content: markdownText });
     }
   }
