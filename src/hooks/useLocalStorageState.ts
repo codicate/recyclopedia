@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function useLocalStorageState(itemName, initialValue) {
+function useLocalStorageState<T>(itemName: string, initialValue: T) {
   const [state, setState] = useState(() => {
     try {
       const item = localStorage.getItem(itemName);
@@ -16,7 +16,7 @@ function useLocalStorageState(itemName, initialValue) {
     }
   });
 
-  const syncStateToLocalStorage = (value) => {
+  const syncStateToLocalStorage = (value: T) => {
     try {
       const valueToStore = value instanceof Function
         ? value(state)

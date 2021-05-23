@@ -3,11 +3,11 @@ import { useState, useRef } from 'react';
 import { useTimeout } from 'utils/functions.js';
 
 
-export default function Searchbar(
-  { returnInput }: {
-    returnInput: (input: string) => void;
-  }
-) {
+export default function Searchbar({
+  returnInput
+}: {
+  returnInput: (input: string) => void;
+}) {
   const [input, setInput] = useState('');
   const searchbar = useRef<null | HTMLInputElement>(null);
 

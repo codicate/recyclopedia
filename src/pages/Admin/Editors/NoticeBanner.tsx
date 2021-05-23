@@ -1,15 +1,20 @@
 import noticeBannerStyles from './NoticeBanner.module.scss';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-export function NoticeBanner({children, dirtyFlag}) {
+export function NoticeBanner({
+  children, dirtyFlag
+}: {
+  children: React.ReactNode;
+  dirtyFlag: boolean;
+}) {
   const styles = [noticeBannerStyles.dropOut, noticeBannerStyles.dropIn];
 
   const [selfDirtyFlag, updateSelfDirtyFlag] = useState(dirtyFlag);
   const [style, updateStyle] = useState(0);
 
   if (dirtyFlag !== selfDirtyFlag) {
-      updateStyle((style+1));
-      updateSelfDirtyFlag(!selfDirtyFlag);
+    updateStyle((style + 1));
+    updateSelfDirtyFlag(!selfDirtyFlag);
   }
 
   return (

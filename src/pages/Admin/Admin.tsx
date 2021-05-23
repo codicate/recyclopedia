@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { selectArticlesData, insertArticle, Article } from 'app/articlesSlice';
 
-import { NoticeBanner } from './Editors/NoticeBanner.jsx';
+import { NoticeBanner } from './Editors/NoticeBanner';
 import { MarkdownEditor } from "./Editors/MarkdownEditor";
 import { RichTextEditor } from "./Editors/RichTextEditor";
-import { TagEditor } from 'pages/Admin/TagEditor.jsx';
+import { TagEditor } from 'pages/Admin/TagEditor';
 
 
 export default function Admin({
