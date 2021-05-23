@@ -16,7 +16,9 @@ export async function uploadImage(image_name: string) {
 
   const expirationValue = 600;
   const requestUrl = `https://api.imgbb.com/1/upload?expiration${expirationValue}&key=${Secrets.IMGBB_KEY}`;
+  console.log(requestUrl);
   const res = await fetch(requestUrl, { method: "POST", body: form_data, });
+  console.log("waiting...");
 
   return await res.json();
 }
@@ -32,6 +34,7 @@ retrieveImageData(
   const image_file = imageFileName;
   const img = document.createElement('img');
   img.src = URL.createObjectURL(image_file);
+  console.log("attempting to load: ", image_file);
   img.onload = async function () {
     const canvas = document.createElement("canvas");
     const canvas_context = canvas.getContext("2d");
@@ -41,7 +44,10 @@ retrieveImageData(
 
       canvas_context.drawImage(img, 0, 0);
       const imgData = canvas.toDataURL().split(',')[1];
+      console.log("image data retrieved");
       whenRetrieved(imgData);
+    } else {
+      console.log("null canvas?");
     }
   };
 }

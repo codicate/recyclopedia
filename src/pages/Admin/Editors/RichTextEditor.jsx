@@ -111,16 +111,20 @@ export function RichTextEditor({
   function executeRichTextCommand(commandName, optionalArgument) {
     if (editableAreaDOMRef.current) {
       if (commandName === "@_insertImage") {
+        console.log("image handling");
         let fileDialog = document.createElement("input");
         fileDialog.type = "file";
         fileDialog.click();
         function fileHandlerOnChange({ target }) {
+          console.log("does this work?");
           retrieveImageData(target.files[0],
             function (imgData) {
+              console.log("callback");
               uploadImage(imgData).then(
                 function (imgURL) {
                   if (imgURL.success) {
                     document.execCommand("insertImage", false, imgURL.data.url);
+                    console.log("cool...");
                   } else {
                     console.error("IMGBB is down. Tony pls get us a server");
                   }
