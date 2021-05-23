@@ -25,7 +25,7 @@ export function renderHoverboxSearch(searchResults) {
     <div className={styles.hoverBox}>
       {
         searchResults.slice(0,5).map(({ name, content }) => (
-          <Link to={validPageLink(name)}>
+          <Link className={styles.searchResult} to={validPageLink(name)}>
             <u><p>{name}</p></u>
           </Link>))
       }

@@ -14,22 +14,20 @@
 }
 
 .hoverBox {
-  background-color: beige;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 3px;
+  padding-left: 1em;
 }
 
 .searchResult {
+  border: 1px solid darkgray;
   & * {
-    position: absolute;
-    display: inline;
-    font-size: 0.875rem;
-    color: darken($alternative, 15);
-    margin: 0;
-    padding: 0;
-
-  }
-
-  li {
-    list-style-type: none;
+    // position: absolute;
+    // display: inline;
+    color: darken($alternative, 25);
+    margin: 0.1em;
+    padding: 0.125em;
   }
 
   br {
