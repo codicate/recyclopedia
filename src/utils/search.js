@@ -25,7 +25,8 @@ export default function approximateSearch(entries, key) {
     // be trouble.
     copy = copy.sort(
         (x, y) => {
-            let matched = [matched_characters(x, key), matched_characters(y, key)];
+            // TODO(jerry or anyone else):  remove this dependency.
+            let matched = [matched_characters(x.name, key), matched_characters(y.name, key)];
             if (matched[0] !== 0 || matched[1] !== 0) {
                 // Closer matches get pushed forwards.
                 if (matched[0] > matched[1]) {

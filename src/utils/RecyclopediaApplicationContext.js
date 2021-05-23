@@ -49,10 +49,13 @@ export class RecyclopediaApplicationContext {
     }
   }
 
-  insertArticle(articleContents) {
+  insertArticle(articleContents, onFinish) {
     if (this.applicationUser) {
       (async function () {
         await this.applicationUser.functions.createOrUpdateArticle(articleContents);
+        if (onFinish) {
+          onFinish();
+        }
       }).bind(this)();
     } else {
       console.error("No user? This is bad news.");

@@ -22,7 +22,9 @@ function surrounder(sym) {
 }
 const surrounders = {
     "B": surrounder("**"),
+    "STRONG": surrounder("**"),
     "I": surrounder("_"),
+    "EM": surrounder("_"),
     "U": surrounder("__"),
 };
 const safe_call = (fn, ...rest) => (...rest) => (fn) ? fn(...rest) : rest[0];
@@ -74,9 +76,16 @@ function renderElement(root, text_contents) {
                     }
                 } , "");
         }
-
+        
+        console.log("going to try and root out tags friends", root.tagName);
         return safe_call(surrounders[root.tagName])(text_contents);
     } else {
+        if (root.tagName === "IMG") {
+            const src = root.getAttribute("src");
+            const result = `@@ src = '${src}' @@\n`;
+            return result;
+        }
+
         return (root.tagName === "P") ? "\\\n" : "";
     }
 }
@@ -88,6 +97,8 @@ export function renderDomAsMarkdown(root) {
         const childrenStrings = Array.from(root.childNodes).reduce((output, node) => { return output + renderDomAsMarkdown(node) }, "");
         const res = renderElement(root, childrenStrings);
         return res;
+    } else {
+        return renderElement(root, "");
     }
 
     return "";

@@ -11,6 +11,7 @@ import { buildFromJSON } from "components/Article/Article";
 
 import Header from 'pages/Header/Header';
 import Homepage from "pages/Homepage/Homepage";
+import IndexPage from "pages/Index/IndexPage";
 import Admin from "pages/Admin/Admin";
 
 
@@ -25,11 +26,15 @@ function App() {
       isAdmin: isAdmin,
       setAdminState: setIsAdmin,
     }}>
+
       <Header />
 
       <main id={styles.main}>
         <p>Please wait! Loading Recyclopedia...</p>
         <Switch>
+          <Route exact path='/index'>
+            <IndexPage articlesData={articlesData} />
+          </Route>
           <Route exact path='/'>
             <Homepage />
           </Route>
@@ -38,9 +43,15 @@ function App() {
           </Route>
 
           {
-            articlesData.articles.map(({ name, content }) =>
-              buildFromJSON({ name, content })
-            )
+            (isAdmin)
+              ? articlesData.articles.map((article) =>
+                buildFromJSON({ article: { ...article } })
+              )
+              : articlesData.articles.filter((article) =>
+                article.draftStatus === false || article.draftStatus === undefined
+              ).map((article) =>
+                buildFromJSON({ article: { ...article } })
+              )
           }
 
           <Route path='*'>

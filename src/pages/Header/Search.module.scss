@@ -1,0 +1,48 @@
+@import '/src/styles/variables';
+
+.searchbar {
+  position: absolute;
+  height: 100%;
+  width: 30em;
+
+  top: 0;
+  left: 50vw;
+  transform: translateX(-50%);
+
+  display: flex;
+  flex-flow: row wrap;
+  justify-items: center;
+  justify-content: center;
+
+  &>*{
+    width: 100%;
+  }
+}
+
+.hoverBox {
+
+  background-color: beige;
+
+
+  //   transform: translateY(30%);
+}
+
+.searchResult {
+  & * {
+    position: absolute;
+    display: inline;
+    font-size: 0.875rem;
+    color: darken($alternative, 15);
+    margin: 0;
+    padding: 0;
+
+  }
+
+  li {
+    list-style-type: none;
+  }
+
+  br {
+    display: none !important;
+  }
+}
