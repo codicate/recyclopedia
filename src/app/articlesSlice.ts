@@ -45,7 +45,9 @@ export async function loginWith(information?: {email: string, password: string})
     credentials = Credentials.emailPassword(information.email, information.password);
   }
 
-  return databaseApi.application?.logIn(credentials);
+  let user = await databaseApi.application?.logIn(credentials);
+  databaseApi.applicationUser = user;
+  return user;
 }
 
 export const initApi = createAsyncThunk(

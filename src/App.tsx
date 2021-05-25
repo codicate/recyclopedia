@@ -41,6 +41,7 @@ function LoginPage(_: {}) {
           try {
             const loginResult = await loginWith({ email: userName, password });
             if (loginResult) {
+              console.log(loginResult.customData);
               dispatch(setIsAdmin(loginResult.customData.status === "admin"));
             }
           } catch (error) {
