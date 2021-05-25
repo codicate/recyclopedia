@@ -4,7 +4,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { initApi, selectStatus, selectArticlesData } from 'app/articlesSlice';
-import { selectIsAdmin } from 'app/adminSlice';
+import { selectIsAdmin, setIsAdmin } from 'app/adminSlice';
 
 import { Secrets } from 'secrets';
 import Article from "components/Article/Article";
@@ -15,6 +15,7 @@ import IndexPage from "pages/Index/IndexPage";
 import Admin from "pages/Admin/Admin";
 import { validPageLink } from 'utils/functions';
 
+import { loginWith } from 'app/articlesSlice';
 
 export const ApplicationContext = createContext({});
 
@@ -28,11 +29,33 @@ function RegisterPage(_: {}) {
 }
 
 function LoginPage(_: {}) {
+  // someone do this later
+  const dispatch = useAppDispatch();
+  useEffect(
+    function () {
+      const userName = prompt("Enter Username");
+      const password = prompt("Enter Password");
+
+      (async function () {
+        if (userName && password) {
+          try {
+            const loginResult = await loginWith({ email: userName, password });
+            if (loginResult) {
+              dispatch(setIsAdmin(loginResult.customData.status === "admin"));
+            }
+          } catch (error) {
+            console.log(error);
+            alert("Unrecognized user credentials.");
+          }
+        }
+      })();
+    },
+  []);
+
   return (
     <>
       <h1>Login With Your Account!</h1>
-      <p>a</p>
-      <p>b</p>
+      <Redirect to="/"></Redirect>
     </>
   );
 }
@@ -69,8 +92,12 @@ function App() {
                 <Article article={article} />
               </Route>
             )}
-          <Route path="/login"></Route>
-          <Route path="/register"></Route>
+          <Route path="/login">
+            <LoginPage></LoginPage>
+          </Route>
+          <Route path="/register">
+            <RegisterPage></RegisterPage>
+          </Route>
           <Route path='*'>404</Route>
         </Switch>
       </main>
