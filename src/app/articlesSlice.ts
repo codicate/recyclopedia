@@ -36,14 +36,24 @@ const initialState: {
   },
 };
 
+export async function loginWith(information?: {email: string, password: string}) {
+  let credentials: Credentials;
+
+  if (information === undefined) {
+    credentials = Credentials.anonymous();
+  } else {
+    credentials = Credentials.emailPassword(information.email, information.password);
+  }
+
+  return databaseApi.application?.logIn(credentials);
+}
 
 export const initApi = createAsyncThunk(
   'articles/initApi',
   async (appId: string, { dispatch, rejectWithValue }) => {
     try {
-      const anonymousCredentials = Credentials.anonymous();
       databaseApi.application = new App({ id: appId });
-      databaseApi.applicationUser = await databaseApi.application.logIn(anonymousCredentials);
+      databaseApi.applicationUser = await loginWith();
 
       dispatch(queryForArticles(undefined));
     } catch (error) {

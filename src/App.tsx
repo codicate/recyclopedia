@@ -18,6 +18,25 @@ import { validPageLink } from 'utils/functions';
 
 export const ApplicationContext = createContext({});
 
+function RegisterPage(_: {}) {
+  return (
+    <>
+      <h1>Register a New Account (TODO)</h1>
+      <p>asdf</p>
+    </>
+  );
+}
+
+function LoginPage(_: {}) {
+  return (
+    <>
+      <h1>Login With Your Account!</h1>
+      <p>a</p>
+      <p>b</p>
+    </>
+  );
+}
+
 function App() {
   const articlesData = useAppSelector(selectArticlesData);
   const isAdmin = useAppSelector(selectIsAdmin);
@@ -50,6 +69,8 @@ function App() {
                 <Article article={article} />
               </Route>
             )}
+          <Route path="/login"></Route>
+          <Route path="/register"></Route>
           <Route path='*'>404</Route>
         </Switch>
       </main>

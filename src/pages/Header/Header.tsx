@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { selectIsAdmin, setIsAdmin } from 'app/adminSlice';
+import { loginWith } from 'app/articlesSlice';
 
 import approximateSearch from 'utils/search';
 import { Secrets } from 'secrets';
 
 import Search, { renderHoverboxSearch } from 'pages/Header/Search';
+import { User } from 'realm-web';
 
 
 const Header = () => {
@@ -41,15 +43,10 @@ const Header = () => {
                   </button>
           </>
         ) : (
-          <button
-            onClick={() => {
-              if (prompt("Enter Admin Password") === Secrets.ADMIN_PASSWORD) {
-                dispatch(setIsAdmin(true));
-              }
-            }}
-          >
-            Admin
-          </button>
+          <>
+            <Link to="/register">Register</Link>
+            <Link to="/login">Login</Link>
+          </>
         )}
       </nav>
     </header >
