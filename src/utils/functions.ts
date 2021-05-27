@@ -66,7 +66,6 @@ export function dictionaryUpdateKey(
 ) {
   let newDictionary = { ...dictionary };
   newDictionary[key] = updateFunction(dictionary[key]);
-  // must return
   return newDictionary;
 }
 
@@ -79,7 +78,6 @@ export function dictionaryUpdateKeyNested(
     let shallowClone = { ...dictionary };
     shallowClone[keys[0]] =
       dictionaryUpdateKeyNested(shallowClone[keys[0]], keys.slice(1), updateFunction);
-    // other return path
     return shallowClone;
   }
 
