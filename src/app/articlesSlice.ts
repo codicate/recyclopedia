@@ -37,15 +37,11 @@ const initialState: {
 };
 
 export async function loginWith(information?: { email: string, password: string; }) {
-  let credentials: Credentials;
+  const credentials = (!information)
+    ? Credentials.anonymous()
+    : Credentials.emailPassword(information.email, information.password);
 
-  if (information === undefined) {
-    credentials = Credentials.anonymous();
-  } else {
-    credentials = Credentials.emailPassword(information.email, information.password);
-  }
-
-  let user = await databaseApi.application?.logIn(credentials);
+  const user = await databaseApi.application?.logIn(credentials);
   databaseApi.applicationUser = user;
   return user;
 }

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { selectArticlesData, insertArticle, Article } from 'app/articlesSlice';
+import { useAppDispatch } from 'app/hooks';
+import { insertArticle, Article } from 'app/articlesSlice';
 
 import { NoticeBanner } from './Editors/NoticeBanner';
 import { RichTextEditor } from "./Editors/RichTextEditor";
@@ -42,7 +42,7 @@ export default function Admin({
   ) => {
     submitHandler(
       { ...submissionData, draftStatus: draftStatus },
-      ({ name, content }) => {
+      ({ name }) => {
         console.log(`Article ${name} written!`);
         updateDirtyFlag(false);
       }

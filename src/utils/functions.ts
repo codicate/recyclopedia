@@ -11,7 +11,7 @@ export const getRefCurrent = (ref: React.MutableRefObject<any>) => {
 export const validPageLink = (originalName: string) => `/${originalName.toLowerCase().trim().replace(/ +/g, '_')}`;
 
 export async function uploadImage(image_name: string) {
-  let form_data = new FormData();
+  const form_data = new FormData();
   form_data.append("image", image_name);
 
   const expirationValue = 600;
@@ -64,7 +64,7 @@ export function dictionaryUpdateKey(
   key: any,
   updateFunction: (f: unknown) => unknown
 ) {
-  let newDictionary = { ...dictionary };
+  const newDictionary = { ...dictionary };
   newDictionary[key] = updateFunction(dictionary[key]);
   return newDictionary;
 }
@@ -75,7 +75,7 @@ export function dictionaryUpdateKeyNested(
   updateFunction: (f: unknown) => unknown
 ) {
   if (keys.length > 1) {
-    let shallowClone = { ...dictionary };
+    const shallowClone = { ...dictionary };
     shallowClone[keys[0]] =
       dictionaryUpdateKeyNested(shallowClone[keys[0]], keys.slice(1), updateFunction);
     return shallowClone;

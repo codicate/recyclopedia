@@ -77,7 +77,7 @@ export function flattenWidgetStateTypes(widgets: WidgetCategoryDic): WidgetInfor
     function (accumulator, [id, { types }]) {
       return Object.entries(types).reduce(
         function (accumulator, [key, value]) {
-          let copy = { ...accumulator as WidgetInformationDic };
+          const copy = { ...accumulator as WidgetInformationDic };
           copy[key] = value;
           return copy;
         },

@@ -45,7 +45,7 @@ function editorHandleKeybindings({
   updateDirtyFlag: React.Dispatch<boolean>,
 }): KeyboardEventHandler<HTMLDivElement> {
   return function (event) {
-    let { key, shiftKey, ctrlKey } = event;
+    const { key, shiftKey, ctrlKey } = event;
     let disableDefaultBehavior = false;
     if (ctrlKey) {
       if (!shiftKey) {
@@ -143,7 +143,7 @@ export function RichTextEditor({
     if (editableAreaDOMRef.current) {
       if (commandName === "@_insertImage") {
         console.log("image handling");
-        let fileDialog = document.createElement("input");
+        const fileDialog = document.createElement("input");
         fileDialog.type = "file";
         fileDialog.click();
 

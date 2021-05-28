@@ -3,6 +3,7 @@
 
 #header {
   position: sticky;
+  top: 0;
 
   display: flex;
   justify-content: space-between;
@@ -60,10 +61,14 @@
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 950px) {
   #header {
     &>:first-child {
       padding: .5em;
+    }
+
+    &>:nth-child(2) {
+      width: clamp(12em,60vw, 30em);
     }
 
     #logoDiv::after {

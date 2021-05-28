@@ -1,5 +1,5 @@
 import styles from 'App.module.scss';
-import { useEffect, createContext } from 'react';
+import { useEffect } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from 'app/hooks';
@@ -16,8 +16,6 @@ import Admin from "pages/Admin/Admin";
 import { validPageLink } from 'utils/functions';
 
 import { loginWith } from 'app/articlesSlice';
-
-export const ApplicationContext = createContext({});
 
 function RegisterPage(_: {}) {
   return (
@@ -51,7 +49,7 @@ function LoginPage(_: {}) {
         }
       })();
     },
-  []);
+    [dispatch]);
 
   return (
     <>
@@ -75,7 +73,7 @@ function App() {
             <IndexPage />
           </Route>
           <Route exact path='/'>
-            <Homepage articlesData={articlesData}/>
+            <Homepage articlesData={articlesData} />
           </Route>
           <Route exact path='/admin'>
             {
@@ -85,8 +83,7 @@ function App() {
             }
           </Route>
 
-{
-          /*
+          {/*
             For obvious reasons getting ALL the articles is kind of dumb. I believe it
             would be better if we fetched articles on the 404 path.
 
@@ -105,15 +102,15 @@ function App() {
               getAllArticles().slice(bucketIndex * bucketSize, (bucketIndex+1) * bucketSize);
               but since it's on the server side, it reduces the load to send all of them.
 
-           Then in the wildcard route we simply try to make the article component request the article
-           in the URL. If it can't do it, then we just display normal 404.
+            Then in the wildcard route we simply try to make the article component request the article
+            in the URL. If it can't do it, then we just display normal 404.
 
-           We only have 1 million free api requests from MongoDB so this might ironically be worse since
-           each article will take a request from the API (even though it uses less storage space on the
-           client side).
-          */
-}
-          {((isAdmin) ? 
+            We only have 1 million free api requests from MongoDB so this might ironically be worse since
+            each article will take a request from the API (even though it uses less storage space on the
+            client side).
+          */}
+
+          {((isAdmin) ?
             articlesData.articles :
             articlesData.articles.filter((article) => !article.draftStatus))
             .map((article) =>
@@ -122,10 +119,10 @@ function App() {
               </Route>
             )}
           <Route path="/login">
-            <LoginPage></LoginPage>
+            <LoginPage />
           </Route>
           <Route path="/register">
-            <RegisterPage></RegisterPage>
+            <RegisterPage />
           </Route>
           <Route path='*'>404</Route>
         </Switch>

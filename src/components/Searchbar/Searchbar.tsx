@@ -1,6 +1,5 @@
 import styles from 'components/Searchbar/Searchbar.module.scss';
 import { useState, useRef } from 'react';
-import { useTimeout } from 'utils/functions';
 
 
 export default function Searchbar({
