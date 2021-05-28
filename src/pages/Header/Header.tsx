@@ -14,36 +14,41 @@ const Header = () => {
 
   return (
     <header id={styles.header}>
+      <Link to="/">
+        <div id={styles.logoDiv}></div>
+      </Link>
+      <Search
+        searchFunction={approximateSearch}
+        renderFunction={renderHoverboxSearch}
+      />
       <nav id={styles.navbar}>
-
-        <Link to="/">
-          <div id={styles.logoDiv}></div>
-        </Link>
-        <Search
-          searchFunction={approximateSearch}
-          renderFunction={renderHoverboxSearch}
-        />
-        <Link to='/index'>Index</Link>
-        {(
-          isAdmin
-        ) ? (
-          <>
-            <Link to="/admin">
-              Create New Article
-                  </Link>
-            <button onClick={() => {
-              dispatch(setIsAdmin(false));
-            }}
-            >
-              Logout
-                  </button>
-          </>
-        ) : (
-          <>
-            <Link to="/register">Register</Link>
-            <Link to="/login">Login</Link>
-          </>
-        )}
+        <button className={'material-icons ' + styles.menu}>
+          menu
+        </button>
+        <button className={styles.links}>
+          <Link to='/index'>Index</Link>
+          {(
+            isAdmin
+          ) ? (
+            <>
+              <Link to="/admin">
+                Create New Article
+            </Link>
+              <button
+                onClick={() => {
+                  dispatch(setIsAdmin(false));
+                }}
+              >
+                Logout
+            </button>
+            </>
+          ) : (
+            <>
+              <Link to="/register">Register</Link>
+              <Link to="/login">Login</Link>
+            </>
+          )}
+        </button>
       </nav>
     </header >
   );

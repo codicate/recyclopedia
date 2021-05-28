@@ -1,32 +1,22 @@
 @import "/src/styles/variables";
 @import "/src/styles/components";
 
-#header {}
-
-#navbar {
+#header {
   position: sticky;
-  
+
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
 
   width: 100%;
-
   padding: 1em;
 
   color: $text-color;
-
   background-color: white;
   box-shadow: 0 1px 1px hsl(0, 0%, 93%);
 
-  &>:first-child {
-    margin-right: auto;
-  }
-
-  button,
   a {
-    margin: 0 1em;
-    padding: 0.25em 0.5em;
+    padding: 0.5em 1em;
 
     background-color: transparent;
     border: none;
@@ -34,8 +24,19 @@
     &:hover,
     &:focus {
       color: lighten($text-color, 12%);
+      background-color: hsla(0, 0%, 70%, 0.25);
     }
   }
+
+  .menu {
+    display: none;
+    font-size: 1.75rem;
+  }
+}
+
+#navbar {
+  display: flex;
+  align-items: center;
 }
 
 #logoDiv {
@@ -56,5 +57,62 @@
 
     font-size: large;
     font-weight: bold;
+  }
+}
+
+@media (max-width: 1100px) {
+  #header {
+    &>:first-child {
+      padding: .5em;
+    }
+
+    #logoDiv::after {
+      display: none;
+    }
+
+    #navbar {
+      &:focus-within {
+        .links {
+          position: fixed;
+          top: 0;
+          right: 0;
+
+          height: 100vh;
+          margin: 0;
+          padding: 2em 4em;
+
+          display: flex;
+          flex-flow: column;
+
+          background-color: white;
+          box-shadow:
+            0 0 0 99999px hsla(0, 0%, 50%, 0.5),
+            0 0 6px hsl(0, 0%, 20%);
+
+          &>* {
+            padding: 1.25em 2em;
+          }
+        }
+      }
+    }
+
+    .menu {
+      display: block;
+      padding: 0.5rem;
+
+      border-radius: 50%;
+
+      &:hover {
+        background-color: hsla(0, 0%, 70%, 0.25);
+      }
+
+      &:focus-within {
+        background-color: hsla(0, 0%, 50%, 0.25);
+      }
+    }
+
+    .links {
+      display: none;
+    }
   }
 }

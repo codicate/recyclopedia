@@ -34,4 +34,6 @@ textarea {
   font-size: inherit;
   line-height: inherit;
   text-decoration: none;
+  background-color: white;
+  border: none;
 }
