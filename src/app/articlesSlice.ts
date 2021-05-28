@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk, createDraftSafeSelector } from '@reduxjs/toolkit';
 import { RootState } from 'app/store';
+import { selectAccountDetails } from 'app/adminSlice'
+import ArticleComponent from 'components/Article/Article';
 
 import { App, User, Credentials } from "realm-web";
 
@@ -43,15 +45,20 @@ export async function loginWith(information?: { email: string, password: string;
 
   const user = await databaseApi.application?.logIn(credentials);
   databaseApi.applicationUser = user;
+
   return user;
 }
 
 export const initApi = createAsyncThunk(
   'articles/initApi',
-  async (appId: string, { dispatch, rejectWithValue }) => {
+  async (appId: string, { getState, dispatch, rejectWithValue }) => {
+    const state = getState() as RootState;
     try {
       databaseApi.application = new App({ id: appId });
-      databaseApi.applicationUser = await loginWith();
+
+      const accountDetails = state.admin.accountDetails;
+      console.log(accountDetails);
+      databaseApi.applicationUser = await loginWith(accountDetails);
 
       dispatch(queryForArticles(undefined));
     } catch (error) {

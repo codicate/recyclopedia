@@ -4,7 +4,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { initApi, selectStatus, selectArticlesData } from 'app/articlesSlice';
-import { selectIsAdmin, setIsAdmin } from 'app/adminSlice';
+import { selectIsAdmin, logout, loginWithEmailAndPassword } from 'app/adminSlice';
 
 import { Secrets } from 'secrets';
 import Article from "components/Article/Article";
@@ -15,7 +15,7 @@ import IndexPage from "pages/Index/IndexPage";
 import Admin from "pages/Admin/Admin";
 import { validPageLink } from 'utils/functions';
 
-import { loginWith } from 'app/articlesSlice';
+
 
 function RegisterPage(_: {}) {
   return (
@@ -34,20 +34,9 @@ function LoginPage(_: {}) {
       const userName = prompt("Enter Username");
       const password = prompt("Enter Password");
 
-      (async function () {
-        if (userName && password) {
-          try {
-            const loginResult = await loginWith({ email: userName, password });
-            if (loginResult) {
-              console.log(loginResult.customData);
-              dispatch(setIsAdmin(loginResult.customData.status === "admin"));
-            }
-          } catch (error) {
-            console.log(error);
-            alert("Unrecognized user credentials.");
-          }
-        }
-      })();
+      if (userName && password) {
+        dispatch(loginWithEmailAndPassword({ email: userName, password }));
+      }
     },
     [dispatch]);
 

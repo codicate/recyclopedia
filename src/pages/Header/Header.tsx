@@ -2,7 +2,7 @@ import styles from 'pages/Header/Header.module.scss';
 import { Link } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { selectIsAdmin, setIsAdmin } from 'app/adminSlice';
+import { selectIsAdmin, logout } from 'app/adminSlice';
 
 import approximateSearch from 'utils/search';
 import Search, { renderHoverboxSearch } from 'pages/Header/Search';
@@ -36,7 +36,7 @@ const Header = () => {
             </Link>
               <button
                 onClick={() => {
-                  dispatch(setIsAdmin(false));
+                  dispatch(logout());
                 }}
               >
                 Logout
