@@ -26,12 +26,11 @@ export async function uploadImage(image_name: string) {
 // for now this is an alias.
 type Base64String = string;
 type RetrievedImageCallback = (f: Base64String) => void;
-export async function 
-retrieveImageData(
-  imageFileName: string,
-  whenRetrieved: RetrievedImageCallback
-) {
-  const image_file = imageFileName;
+export async function retrieveImageData(
+    imageFile: File,
+    whenRetrieved: RetrievedImageCallback
+  ) {
+  const image_file = imageFile;
   const img = document.createElement('img');
   img.src = URL.createObjectURL(image_file);
   console.log("attempting to load: ", image_file);
@@ -59,13 +58,22 @@ retrieveImageData(
   Javascript allows you to use anything as a key technically for dictionaries,
   but this is as close I can get to that I suppose...
  */
-export function dictionaryUpdateKey(dictionary: {[key: string]: any}, key: any, updateFunction: (f: any) => any) {
+
+export function dictionaryUpdateKey(
+  dictionary: {[key: string]: any}, 
+  key: any,
+  updateFunction: (f: unknown) => unknown
+) {
   let newDictionary = { ...dictionary };
   newDictionary[key] = updateFunction(dictionary[key]);
   return newDictionary;
 }
 
-export function dictionaryUpdateKeyNested(dictionary: {[key: string]: any}, keys: any[], updateFunction: (f: any) => any) {
+export function dictionaryUpdateKeyNested(
+  dictionary: {[key: string]: any}, 
+  keys: any[],
+  updateFunction: (f: unknown) => unknown
+) {
   if (keys.length > 1) {
     let shallowClone = { ...dictionary };
     shallowClone[keys[0]] =
@@ -73,10 +81,11 @@ export function dictionaryUpdateKeyNested(dictionary: {[key: string]: any}, keys
     return shallowClone;
   }
 
+  // returns
   return dictionaryUpdateKey(dictionary, keys[0], updateFunction);
 }
 
-export const useTimeout = (callback : (f: void) => void, delay: number) => {
+export const useTimeout = (callback: (f: void) => void, delay: number) => {
   useEffect(() => {
     const timer = setTimeout(() => callback(), delay);
     return () => clearTimeout(timer);

@@ -1,11 +1,13 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, KeyboardEventHandler, } from 'react';
 import { preprocessMarkdown } from 'utils/preprocessMarkdown';
 import { uploadImage, retrieveImageData } from 'utils/functions';
 
-import { renderMarkdown }  from "components/Article/MarkdownRender";
+import { renderMarkdown } from "components/Article/MarkdownRender";
 import { renderDomAsMarkdown } from 'utils/DOMIntoMarkdown';
-import { dictionaryUpdateKey, dictionaryUpdateKeyNested } from 'utils/functions';
-import { widgets, toggleWidgetActiveState, flattenWidgetStateTypes } from './RichTextEditWidgetInformation.js';
+import { dictionaryUpdateKeyNested } from 'utils/functions';
+import { widgets, toggleWidgetActiveState, flattenWidgetStateTypes, WidgetCategory } from './RichTextEditWidgetInformation';
+
+import { Article } from 'app/articlesSlice';
 
 import bottomToolbarStyle from './bottomToolbar.module.scss';
 import richWidgetBarStyle from './richWidgetBar.module.scss';
@@ -13,12 +15,35 @@ import styles from 'pages/Admin/Admin.module.scss';
 import articleStyles from 'components/Article/Article.module.scss';
 import Button from 'components/Form/Button';
 
+function fileHandlerOnChange({ target }: Event): void {
+  const probablyFile = (target as HTMLInputElement).files?.[0];
+
+  if (probablyFile)
+    retrieveImageData(probablyFile,
+      function (imgData) {
+        uploadImage(imgData).then(
+          function (imgURL) {
+            if (imgURL.success) {
+              document.execCommand("insertImage", false, imgURL.data.url);
+            } else {
+              console.error("IMGBB is down. Tony pls get us a server");
+            }
+          }
+        );
+      });
+}
+
 function editorHandleKeybindings({
   saveDocument,
   toggleWidget,
   executeRichTextCommand,
   updateDirtyFlag
-}) {
+}: {
+  saveDocument: () => void,
+  toggleWidget: (widgetId: string, categoryValue?: string) => void,
+  executeRichTextCommand: (command: string, argument?: string) => void,
+  updateDirtyFlag: React.Dispatch<boolean>,
+}): KeyboardEventHandler<HTMLDivElement> {
   return function (event) {
     let { key, shiftKey, ctrlKey } = event;
     let disableDefaultBehavior = false;
@@ -80,18 +105,24 @@ export function RichTextEditor({
   currentArticle,
   updateDirtyFlag,
   toggleDraftStatus
-}) {
+}:
+  {
+    submissionHandler: (f: { name: string, content: string }) => void,
+    currentArticle?: Article,
+    updateDirtyFlag: React.Dispatch<React.SetStateAction<boolean>>,
+    toggleDraftStatus: () => void,
+  }) {
   const [initialArticleState, _] = useState(currentArticle);
-  const editableTitleDOMRef = useRef();
-  const editableAreaDOMRef = useRef();
+  const editableTitleDOMRef = useRef<HTMLHeadingElement>(null);
+  const editableAreaDOMRef = useRef<HTMLDivElement>(null);
 
   document.execCommand("defaultParagraphSeparator", false, "br");
   const [widgetStates, updateWidgetState] = useState(widgets);
 
   function saveDocument() {
-    if (editableAreaDOMRef.current && editableTitleDOMRef) {
+    if (editableAreaDOMRef.current && editableTitleDOMRef.current) {
       const markdownText = renderDomAsMarkdown(editableAreaDOMRef.current);
-      submissionHandler({ name: (initialArticleState) ? initialArticleState.name : editableTitleDOMRef.current.textContent, content: markdownText });
+      submissionHandler({ name: (initialArticleState) ? initialArticleState.name : (editableTitleDOMRef.current.textContent || ""), content: markdownText });
 
       if (initialArticleState === undefined) {
         editableAreaDOMRef.current.innerHTML = renderMarkdown(preprocessMarkdown(markdownText));
@@ -100,7 +131,7 @@ export function RichTextEditor({
   }
 
   // would only apply to a few relevant states.
-  function _toggleWidgetActiveState(widgetId, categoryValue) {
+  function _toggleWidgetActiveState(widgetId: string, categoryValue?: string) {
     updateWidgetState(toggleWidgetActiveState(widgetStates, widgetId, categoryValue));
   }
 
@@ -108,30 +139,14 @@ export function RichTextEditor({
     return flattenWidgetStateTypes(widgetStates);
   }
 
-  function executeRichTextCommand(commandName, optionalArgument) {
+  function executeRichTextCommand(commandName: string, optionalArgument?: string) {
     if (editableAreaDOMRef.current) {
       if (commandName === "@_insertImage") {
         console.log("image handling");
         let fileDialog = document.createElement("input");
         fileDialog.type = "file";
         fileDialog.click();
-        function fileHandlerOnChange({ target }) {
-          console.log("does this work?");
-          retrieveImageData(target.files[0],
-            function (imgData) {
-              console.log("callback");
-              uploadImage(imgData).then(
-                function (imgURL) {
-                  if (imgURL.success) {
-                    document.execCommand("insertImage", false, imgURL.data.url);
-                    console.log("cool...");
-                  } else {
-                    console.error("IMGBB is down. Tony pls get us a server");
-                  }
-                }
-              );
-            });
-        }
+        
         // TODO(jerry): cleanup
         fileDialog.addEventListener("change", fileHandlerOnChange);
       } else {
@@ -141,7 +156,7 @@ export function RichTextEditor({
     }
   }
 
-  function queryRichTextCommand(command, wantedValue) {
+  function queryRichTextCommand(command: string, wantedValue?: boolean) {
     if (wantedValue) {
       return document.queryCommandValue(command);
     } else {
@@ -174,7 +189,8 @@ export function RichTextEditor({
       <div className={richWidgetBarStyle.main}> {/*requires styling*/}
         {
           Object.entries(_flattenWidgetStateTypes()).map(
-            ([widgetId, widget]) => (<button
+            ([widgetId, widget]) => 
+            <button
               key={widgetId}
               id={widgetId}
               className={
@@ -187,11 +203,16 @@ export function RichTextEditor({
                   _toggleWidgetActiveState(widgetId, widget.category);
                   executeRichTextCommand(widget.command, widget.argument);
                 }
-              }>{(widget.display) ? widget.display : widget.name}</button>)
+              }>{(widget.display) ? widget.display : widget.name}
+              </button>
           )
         }
       </div>
-      <h1 className={styles.title} contentEditable={(initialArticleState) ? "false" : "true"} ref={editableTitleDOMRef}>
+      <h1
+        className={styles.title}
+        contentEditable={(initialArticleState) ? "false" : "true"}
+        ref={editableTitleDOMRef}
+      >
         {(currentArticle) ? currentArticle.name : "Edit New Title"}
       </h1>
       <div style={editModeInlineStyle}>
