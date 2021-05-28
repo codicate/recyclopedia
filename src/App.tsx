@@ -1,6 +1,6 @@
 import styles from 'App.module.scss';
 import { useEffect } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { initApi, selectStatus, selectArticlesData } from 'app/articlesSlice';
@@ -15,7 +15,8 @@ import IndexPage from "pages/Index/IndexPage";
 import Admin from "pages/Admin/Admin";
 import { validPageLink } from 'utils/functions';
 
-
+import Form from 'components/Form/Form';
+import Button from 'components/Form/Button'
 
 function RegisterPage(_: {}) {
   return (
@@ -29,21 +30,37 @@ function RegisterPage(_: {}) {
 function LoginPage(_: {}) {
   // someone do this later
   const dispatch = useAppDispatch();
-  useEffect(
-    function () {
-      const userName = prompt("Enter Username");
-      const password = prompt("Enter Password");
-
-      if (userName && password) {
-        dispatch(loginWithEmailAndPassword({ email: userName, password }));
-      }
-    },
-    [dispatch]);
-
+  const history = useHistory();
+  const isAdmin = useAppSelector(selectIsAdmin);
   return (
     <>
       <h1>Login With Your Account!</h1>
-      <Redirect to="/"></Redirect>
+      <Form
+        inputItems={{
+          email: {
+            selectAllOnFocus: true,
+            placeholder: 'Email',
+            required: true,
+          },
+          password: {
+            selectAllOnFocus: true,
+            placeholder: 'Password',
+            required: true,
+          }
+        }}
+        submitFn={function (input) {
+          
+          dispatch(loginWithEmailAndPassword(input));
+
+          if (isAdmin) {
+            history.push('/');
+          } else {
+            alert('bad login');
+          }
+        }}
+      >
+        <Button type='submit'>Login</Button>
+      </Form>
     </>
   );
 }
@@ -128,13 +145,6 @@ function InitializingApp() {
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(initApi(Secrets.RECYCLOPEDIA_APPLICATION_ID));
-
-    /*
-    Something like this.
-
-    const {userName, password} = useAppSelector(SavedLoggedInCredentials);
-    loginWith(userName, password);
-    */
   }, [dispatch]);
 
   const status = useAppSelector(selectStatus);
