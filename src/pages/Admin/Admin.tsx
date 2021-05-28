@@ -1,13 +1,11 @@
 import { useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { selectArticlesData, insertArticle, Article } from 'app/articlesSlice';
+import { useAppDispatch } from 'app/hooks';
+import { insertArticle, Article } from 'app/articlesSlice';
 
 import { NoticeBanner } from './Editors/NoticeBanner';
-import { MarkdownEditor } from "./Editors/MarkdownEditor";
 import { RichTextEditor } from "./Editors/RichTextEditor";
 import { TagEditor } from 'pages/Admin/TagEditor';
-
 
 export default function Admin({
   currentArticle
@@ -15,9 +13,6 @@ export default function Admin({
   currentArticle?: Article;
 }) {
   const dispatch = useAppDispatch();
-  const articlesData = useAppSelector(selectArticlesData);
-
-  const [editorMode, setEditorMode] = useState("richtext");
   const [dirtyFlag, updateDirtyFlag] = useState(false);
 
   const [draftStatus, updateDraftStatus] = useState(
@@ -28,20 +23,10 @@ export default function Admin({
         : currentArticle.draftStatus
   );
 
-  type OnFinishedCallback = (submissionData: Article) => void;
-
   function submitHandler(
     input: Article,
     onFinishedCallback: (input: Article) => void
   ) {
-    // setArticlesData({
-    //   ...articlesData,
-    //   articles: articlesData.articles.map(item => ({
-    //     name: item.name,
-    //     content: (item.name === input.name) ? input.content : item.content,
-    //   }))
-    // });
-
     dispatch(insertArticle(input));
 
     if (onFinishedCallback) {
@@ -57,7 +42,7 @@ export default function Admin({
   ) => {
     submitHandler(
       { ...submissionData, draftStatus: draftStatus },
-      ({ name, content }) => {
+      ({ name }) => {
         console.log(`Article ${name} written!`);
         updateDirtyFlag(false);
       }
@@ -66,39 +51,16 @@ export default function Admin({
 
   return (
     <>
-      <select
-        value='richtext'
-        onChange={
-          function (event) {
-            setEditorMode(event.target.value);
-          }
-        }>
-        <option value="markdown">Manual Markdown Editor</option>
-        <option value="richtext">Experimental Rich Text Editor</option>
-      </select>
-
       <h2>{(draftStatus) ? "DRAFT*" : "WILL PUBLISH ON SAVE"}</h2>
       <NoticeBanner dirtyFlag={dirtyFlag}>You have unsaved changes!</NoticeBanner>
+      <RichTextEditor
+        submissionHandler={submissionHandler}
+        currentArticle={currentArticle}
+        updateDirtyFlag={updateDirtyFlag}
+        toggleDraftStatus={() => updateDraftStatus(!draftStatus)}
+      />
 
-      {(
-        editorMode === "richtext"
-      ) ? (
-        <RichTextEditor
-          submissionHandler={submissionHandler}
-          currentArticle={currentArticle}
-          updateDirtyFlag={updateDirtyFlag}
-          toggleDraftStatus={() => updateDraftStatus(!draftStatus)}
-        />
-      ) : (
-        <MarkdownEditor
-          submissionHandler={submissionHandler}
-          currentArticle={currentArticle}
-          updateDirtyFlag={updateDirtyFlag}
-          toggleDraftStatus={() => updateDraftStatus(!draftStatus)}
-        />
-      )}
-
-      {/* <TagEditor articlesData={articlesData} setArticlesData={setArticlesData} currentArticle={currentArticle}/> */}
+      {/* <TagEditor currentArticle={currentArticle}/> */}
     </>
   );
 }

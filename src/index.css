@@ -18,6 +18,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+
+  word-wrap: break-word;
 }
 
 code {
@@ -34,4 +37,6 @@ textarea {
   font-size: inherit;
   line-height: inherit;
   text-decoration: none;
+  background-color: white;
+  border: none;
 }

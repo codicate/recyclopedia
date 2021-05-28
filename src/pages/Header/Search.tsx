@@ -12,14 +12,17 @@ import Searchbar from 'components/Searchbar/Searchbar';
 
 export function renderAsParagraphs(searchResults: Article[]) {
   return searchResults.map(({ name }) =>
-    <p>{name}</p>
+    <p key={name}>{name}</p>
   );
 }
 
 export function renderSearchLink(searchResults: Article[]) {
   return searchResults.map(({ name, content }) => (
-    <Link to={validPageLink(name)}>
-      <u><p>{name}</p></u>
+    <Link
+      key={name}
+      to={validPageLink(name)}
+    >
+      <p>{name}</p>
       <MarkdownRender className={styles.searchResult}>
         {`${content.substr(0, 320).replaceAll(/(@@.*)|(@@.*@@)/g, '')}...`}
       </MarkdownRender>
@@ -28,12 +31,15 @@ export function renderSearchLink(searchResults: Article[]) {
 }
 
 export function renderHoverboxSearch(searchResults: Article[]) {
-  return (searchResults === []) ? (
+  return (searchResults.length > 0) ? (
     <div className={styles.hoverBox}>
       {
-        searchResults.slice(0, 5).map(({ name, content }) => (
-          <Link to={validPageLink(name)}>
-            <u><p>{name}</p></u>
+        searchResults.slice(0, 5).map(({ name }) => (
+          <Link
+            key={name}
+            to={validPageLink(name)}
+          >
+            <p>{name}</p>
           </Link>))
       }
     </div>
@@ -44,7 +50,7 @@ function Search({
   searchFunction, renderFunction
 }: {
   searchFunction: (articles: Article[], input: string) => Article[];
-  renderFunction: any;
+  renderFunction: (article: Article[]) => JSX.Element | null;
 }) {
   const articlesData = useAppSelector(selectArticlesData);
   const [searchResult, setSearchResult] = useState<Article[]>([]);
@@ -60,10 +66,10 @@ function Search({
 
   return (
     <div className={styles.searchbar}>
-    <Searchbar
+      <Searchbar
         returnInput={returnInputCallback}
       />
-      { renderFunction(searchResult)}
+      {renderFunction(searchResult)}
     </div>
   );
 }

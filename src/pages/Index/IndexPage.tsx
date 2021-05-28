@@ -13,7 +13,7 @@ function IndexPage() {
   const isAdmin = useAppSelector(selectIsAdmin);
 
   return (
-    <div>
+    <div className={styles.index}>
       {
         (isAdmin) ?
           articlesData.articles.map(({ name, draftStatus }) => (

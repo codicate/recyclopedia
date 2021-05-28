@@ -1,6 +1,5 @@
 import styles from 'components/Searchbar/Searchbar.module.scss';
 import { useState, useRef } from 'react';
-import { useTimeout } from 'utils/functions.js';
 
 
 export default function Searchbar({
@@ -9,9 +8,8 @@ export default function Searchbar({
   returnInput: (input: string) => void;
 }) {
   const [input, setInput] = useState('');
+  const lastTimeTyping = useRef(new Date().getTime());
   const searchbar = useRef<null | HTMLInputElement>(null);
-
-  useTimeout(() => returnInput(input), 500);
 
   return (
     <div id={styles.searchbar}>
@@ -21,7 +19,14 @@ export default function Searchbar({
         placeholder='Search'
         ref={searchbar}
         value={input}
-        onChange={(e) => setInput(e.target.value)}
+        onChange={(e) => {
+          setInput(e.target.value);
+          lastTimeTyping.current = new Date().getTime();
+          setTimeout(() => {
+            if (new Date().getTime() - lastTimeTyping.current >= 500)
+              returnInput(e.target.value);
+          }, 500);
+        }}
       />
       <div id={styles.clearDiv}>
         <span

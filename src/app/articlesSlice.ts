@@ -3,12 +3,20 @@ import { RootState } from 'app/store';
 
 import { App, User, Credentials } from "realm-web";
 
-
 export interface Article {
   name: string;
   content: string;
   draftStatus: boolean;
+  tags?: string[];
 }
+
+export interface ArticlesData {
+  articles: Article[];
+};
+
+export type ArticlesDataProperties = {
+  articlesData: ArticlesData;
+};
 
 const databaseApi: {
   application: App | undefined | null;
@@ -20,9 +28,7 @@ const databaseApi: {
 
 const initialState: {
   status: 'idle' | 'loading' | 'succeed' | 'failed';
-  articlesData: {
-    articles: Article[];
-  };
+  articlesData: ArticlesData;
 } = {
   status: 'idle',
   articlesData: {
@@ -30,16 +36,24 @@ const initialState: {
   },
 };
 
+export async function loginWith(information?: { email: string, password: string; }) {
+  const credentials = (!information)
+    ? Credentials.anonymous()
+    : Credentials.emailPassword(information.email, information.password);
+
+  const user = await databaseApi.application?.logIn(credentials);
+  databaseApi.applicationUser = user;
+  return user;
+}
 
 export const initApi = createAsyncThunk(
   'articles/initApi',
   async (appId: string, { dispatch, rejectWithValue }) => {
     try {
-      const anonymousCredentials = Credentials.anonymous();
       databaseApi.application = new App({ id: appId });
-      databaseApi.applicationUser = await databaseApi.application.logIn(anonymousCredentials);
+      databaseApi.applicationUser = await loginWith();
 
-      dispatch(queryForArticles());
+      dispatch(queryForArticles(undefined));
     } catch (error) {
       console.error("Failed to login because: ", error);
       return rejectWithValue(error.response.data);
@@ -49,7 +63,11 @@ export const initApi = createAsyncThunk(
 
 export const queryForArticles = createAsyncThunk(
   'articles/queryForArticles',
-  async (query: string | undefined, { rejectWithValue }) => {
+  /*
+    the query is actually a dictionary, but it is very varied, I'll fill this out
+    later.
+  */
+  async (query: any | undefined, { rejectWithValue }) => {
     // I should "lazy-init" login this
     // however I forced a buffer load, before anything happens
     // so I am guaranteed to have a user unless we couldn't login for some reason.
@@ -71,7 +89,7 @@ export const deleteArticle = createAsyncThunk(
     try {
       if (databaseApi.applicationUser) {
         await databaseApi.applicationUser.functions.removeArticle(name);
-        dispatch(queryForArticles());
+        dispatch(queryForArticles(undefined));
       } else {
         throw new Error('No user? This is bad news');
       }
@@ -89,7 +107,7 @@ export const insertArticle = createAsyncThunk(
     try {
       if (databaseApi.applicationUser) {
         await databaseApi.applicationUser.functions.createOrUpdateArticle(articleContent);
-        dispatch(queryForArticles());
+        dispatch(queryForArticles(undefined));
       } else {
         throw new Error('No user? This is bad news');
       }
@@ -130,9 +148,6 @@ const articlesSlice = createSlice({
   }
 });
 
-// export const {
-
-// } = apiSlice.actions;
 export default articlesSlice.reducer;
 
 const selectSelf = (state: RootState) => state.articles;

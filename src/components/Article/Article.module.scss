@@ -1,6 +1,13 @@
 .title {
   font-size: 4em;
+  overflow-wrap: break-word;
 }
 
 .article {
+  width: 100%;
+  overflow-wrap: break-word;
+}
+
+img {
+  max-width: 100%;
 }

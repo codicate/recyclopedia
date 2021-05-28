@@ -2,13 +2,16 @@
 
 .searchbar {
   position: absolute;
+  top: 0;
+  left: 50vw;
+
   height: 100%;
-  width: 30em;
+  width: clamp(12em, 40vw, 30em);
+  padding: 1em 0;
 
-  top: 1em;
-  left: calc(50% - 15em);
+  transform: translateX(-50%);
 
-  &>*{
+  &>* {
     width: 100%;
   }
 }
@@ -16,21 +19,24 @@
 .hoverBox {
   background-color: white;
   border: 1px solid black;
+  border-top: none;
   border-radius: 3px;
   padding-left: 1em;
+
+  text-decoration: underline;
 }
 
-.searchResult {
-  border: 1px solid darkgray;
-  & * {
-    // position: absolute;
-    // display: inline;
-    color: darken($alternative, 25);
-    margin: 0.1em;
-    padding: 0.125em;
-  }
+// .searchResult {
+//   border: 1px solid darkgray;
+//   background-color: white;
 
-  br {
-    display: none !important;
-  }
-}
+//   & * {
+//     color: darken($alternative, 10);
+//     margin: 0.1em;
+//     padding: 0.125em;
+//   }
+
+//   br {
+//     display: none !important;
+//   }
+// }

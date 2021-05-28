@@ -22,6 +22,18 @@ const rootReducer = combineReducers({
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+/*
+NOTE(jerry):
+
+Persist store, will not work unless we store additional information, and I only have enough
+knowledge to know how to turn off the persistant store and understand that it is a persistant
+store.
+
+We just need to store the currently logged user credentials, and we can go from there. Basically
+on app reinitialization we need to try to login using the existing credentials.
+
+So now we don't really have a true or false anymore...
+*/
 
 export const store = configureStore({
   reducer: persistedReducer,

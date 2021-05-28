@@ -1,6 +1,7 @@
 /*
     Inhouse DOM to Markdown interpreter.
 */
+function log_message(msg) {}
 function surrounder(sym) {
   return function (content) {
     let spacesLeft = 0;
@@ -44,13 +45,13 @@ cleaner and probably easier rendering...
 function renderElement(root, text_contents) {
   if (text_contents !== "") {
     if (root.tagName === "P") {
-      console.log("paragraph");
-      console.log(root.parentElement);
+      log_message("paragraph");
+      log_message(root.parentElement);
       if (root.parentElement && (root.parentElement.tagName === "LI")) {
-        console.log("Parent was list?");
+        log_message("Parent was list?");
         return text_contents;
       } else {
-        return text_contents + "\n";
+        return text_contents + "\n\n";
       }
     } else if (root.tagName[0] === 'H') {
       return "#".repeat(Number(root.tagName[1])) + " " + text_contents + "\n";
@@ -77,7 +78,7 @@ function renderElement(root, text_contents) {
         }, "");
     }
 
-    console.log("going to try and root out tags friends", root.tagName);
+    log_message("going to try and root out tags friends", root.tagName);
     return safe_call(surrounders[root.tagName])(text_contents);
   } else {
     if (root.tagName === "IMG") {
@@ -86,7 +87,7 @@ function renderElement(root, text_contents) {
       return result;
     }
 
-    return (root.tagName === "P") ? "\\\n" : "";
+    return (root.tagName === "P" || root.tagName === "BR") ? "\\\n" : "";
   }
 }
 

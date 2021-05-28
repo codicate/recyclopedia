@@ -1,6 +1,24 @@
+import React from 'react';
+
 import { dictionaryUpdateKey, dictionaryUpdateKeyNested } from 'utils/functions';
 
-export const widgets = {
+export type WidgetCategoryDic = Record<string,WidgetCategory>;
+export type WidgetInformationDic = Record<string, WidgetInformation>;
+
+export interface WidgetInformation {
+  name: string,
+  display?: JSX.Element,
+  command: string,
+  argument?: string,
+  category?: string,
+};
+
+export interface WidgetCategory {
+  active: string | null,
+  types: WidgetInformationDic
+};
+
+export const widgets: WidgetCategoryDic = {
   heading: {
     active: null,
     types: {
@@ -46,7 +64,7 @@ export const widgets = {
   },
 };
 
-export function toggleWidgetActiveState(widgets, widgetId, categoryValue) {
+export function toggleWidgetActiveState(widgets: WidgetCategoryDic, widgetId: string, categoryValue?: string) {
   return dictionaryUpdateKeyNested(
     widgets,
     [(categoryValue) ? (categoryValue) : (widgetId), "active"],
@@ -54,15 +72,12 @@ export function toggleWidgetActiveState(widgets, widgetId, categoryValue) {
   );
 }
 
-// I should've probably just manually flattened it, since this is much more confusing
-// to read...
-export function flattenWidgetStateTypes(widgets) {
+export function flattenWidgetStateTypes(widgets: WidgetCategoryDic): WidgetInformationDic {
   return Object.entries(widgets).reduce(
     function (accumulator, [id, { types }]) {
       return Object.entries(types).reduce(
         function (accumulator, [key, value]) {
-          // can probably use updateKeyValue, but not trying it here.
-          let copy = { ...accumulator };
+          const copy = { ...accumulator as WidgetInformationDic };
           copy[key] = value;
           return copy;
         },
