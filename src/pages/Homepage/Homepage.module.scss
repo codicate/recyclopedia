@@ -1,2 +1,7 @@
 @import '/src/styles/variables';
 
+.articleDisplay {
+  border: 1px solid black;
+  padding: 0.5em;
+  max-height: 30%;
+}

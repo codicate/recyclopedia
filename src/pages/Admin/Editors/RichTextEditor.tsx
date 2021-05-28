@@ -1,4 +1,4 @@
-import React, { useState, useRef, KeyboardEventHandler, } from 'react';
+import { useState, useRef, KeyboardEventHandler, } from 'react';
 import { preprocessMarkdown } from 'utils/preprocessMarkdown';
 import { uploadImage, retrieveImageData } from 'utils/functions';
 
@@ -107,7 +107,7 @@ export function RichTextEditor({
   toggleDraftStatus
 }:
   {
-    submissionHandler: (f: { name: string, content: string }) => void,
+    submissionHandler: (f: { name: string, content: string; }) => void,
     currentArticle?: Article,
     updateDirtyFlag: React.Dispatch<React.SetStateAction<boolean>>,
     toggleDraftStatus: () => void,
@@ -146,7 +146,7 @@ export function RichTextEditor({
         let fileDialog = document.createElement("input");
         fileDialog.type = "file";
         fileDialog.click();
-        
+
         // TODO(jerry): cleanup
         fileDialog.addEventListener("change", fileHandlerOnChange);
       } else {
@@ -189,21 +189,21 @@ export function RichTextEditor({
       <div className={richWidgetBarStyle.main}> {/*requires styling*/}
         {
           Object.entries(_flattenWidgetStateTypes()).map(
-            ([widgetId, widget]) => 
-            <button
-              key={widgetId}
-              id={widgetId}
-              className={
-                ((widgetStates[(widget.category !== undefined) ?
-                  widget.category : widgetId].active) === widgetId) ?
-                  richWidgetBarStyle.active : richWidgetBarStyle.button
-              }
-              onClick={
-                (_) => {
-                  _toggleWidgetActiveState(widgetId, widget.category);
-                  executeRichTextCommand(widget.command, widget.argument);
+            ([widgetId, widget]) =>
+              <button
+                key={widgetId}
+                id={widgetId}
+                className={
+                  ((widgetStates[(widget.category !== undefined) ?
+                    widget.category : widgetId].active) === widgetId) ?
+                    richWidgetBarStyle.active : richWidgetBarStyle.button
                 }
-              }>{(widget.display) ? widget.display : widget.name}
+                onClick={
+                  (_) => {
+                    _toggleWidgetActiveState(widgetId, widget.category);
+                    executeRichTextCommand(widget.command, widget.argument);
+                  }
+                }>{(widget.display) ? widget.display : widget.name}
               </button>
           )
         }

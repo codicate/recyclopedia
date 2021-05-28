@@ -15,7 +15,7 @@ export interface ArticlesData {
 };
 
 export type ArticlesDataProperties = {
-  articlesData: ArticlesData
+  articlesData: ArticlesData;
 };
 
 const databaseApi: {
@@ -36,7 +36,7 @@ const initialState: {
   },
 };
 
-export async function loginWith(information?: {email: string, password: string}) {
+export async function loginWith(information?: { email: string, password: string; }) {
   let credentials: Credentials;
 
   if (information === undefined) {
@@ -71,7 +71,7 @@ export const queryForArticles = createAsyncThunk(
     the query is actually a dictionary, but it is very varied, I'll fill this out
     later.
   */
-  async (query: any  | undefined, { rejectWithValue }) => {
+  async (query: any | undefined, { rejectWithValue }) => {
     // I should "lazy-init" login this
     // however I forced a buffer load, before anything happens
     // so I am guaranteed to have a user unless we couldn't login for some reason.
