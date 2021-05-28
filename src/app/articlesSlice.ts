@@ -67,9 +67,8 @@ export const initApi = createAsyncThunk(
       databaseApi.application = new App({ id: appId });
 
       const accountDetails = state.admin.accountDetails;
-      dispatch(loginWithEmailAndPassword(accountDetails));
-
-      dispatch(queryForArticles(undefined));
+      await dispatch(loginWithEmailAndPassword(accountDetails));
+      await dispatch(queryForArticles(undefined));
     } catch (error) {
       console.error("Failed to login because: ", error);
       return rejectWithValue(error.response.data);
@@ -97,11 +96,7 @@ export const queryForArticles = createAsyncThunk(
     } catch (error) {
       console.error("Failed to login because: ", error);
       return rejectWithValue(error.response.data);
-    } finally {
-      alert('finally')
     }
-
-    alert("asd");
   }
 );
 
