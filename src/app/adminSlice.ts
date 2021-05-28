@@ -32,6 +32,7 @@ export const loginWithEmailAndPassword = createAsyncThunk(
       return true;
     }
 
+    console.log('this is a anonymous user')
     return false;
   }
 )

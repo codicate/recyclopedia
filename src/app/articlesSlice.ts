@@ -65,14 +65,14 @@ export const initApi = createAsyncThunk(
     const state = getState() as RootState;
     try {
       databaseApi.application = new App({ id: appId });
-
       const accountDetails = state.admin.accountDetails;
+      
       await dispatch(loginWithEmailAndPassword(accountDetails));
       await dispatch(queryForArticles(undefined));
     } catch (error) {
       console.error("Failed to login because: ", error);
       return rejectWithValue(error.response.data);
-    }   
+    }
   }
 );
 
@@ -88,9 +88,9 @@ export const queryForArticles = createAsyncThunk(
     // so I am guaranteed to have a user unless we couldn't login for some reason.
 
     try {
-      if (databaseApi.applicationUser) 
+      if (databaseApi.applicationUser)
         return await databaseApi.applicationUser.functions.getAllArticles();
-      else 
+      else
         throw new Error('No user? This is bad news');
       alert('oh no');
     } catch (error) {

@@ -48,9 +48,8 @@ function LoginPage(_: {}) {
             required: true,
           }
         }}
-        submitFn={function (input) {
-          
-          dispatch(loginWithEmailAndPassword(input));
+        submitFn={async (input) => {
+          await dispatch(loginWithEmailAndPassword(input));
 
           if (isAdmin) {
             history.push('/');
