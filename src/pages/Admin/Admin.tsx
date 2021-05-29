@@ -17,7 +17,7 @@ export default function Admin({
 
   const [draftStatus, updateDraftStatus] = useState((currentArticle?.draftStatus));
 
-  function submitHandler(input: Article, onFinishedCallback: (input: Article) => void) {
+  function submitHandler(input: Article, onFinishedCallback?: (input: Article) => void) {
     dispatch(insertArticle(input));
     onFinishedCallback?.(input);
   };

@@ -15,6 +15,28 @@ import styles from 'pages/Admin/Admin.module.scss';
 import articleStyles from 'components/Article/Article.module.scss';
 import Button from 'components/Form/Button';
 
+function executeRichTextCommand(commandName: string, optionalArgument?: string) {
+  if (commandName === "@_insertImage") {
+    console.log("image handling");
+    const fileDialog = document.createElement("input");
+    fileDialog.type = "file";
+    fileDialog.click();
+
+    // TODO(jerry): cleanup
+    fileDialog.addEventListener("change", fileHandlerOnChange);
+  } else {
+    document.execCommand(commandName, false, optionalArgument);
+  }
+}
+
+function queryRichTextCommand(command: string, wantedValue?: boolean) {
+  if (wantedValue) {
+    return document.queryCommandValue(command);
+  } else {
+    return document.queryCommandState(command);
+  }
+}
+
 function fileHandlerOnChange({ target }: Event): void {
   const probablyFile = (target as HTMLInputElement).files?.[0];
 
@@ -100,6 +122,13 @@ function editorHandleKeybindings({
   };
 }
 
+const editModeInlineStyle = {
+  borderColor: "black",
+  borderWidth: "1px",
+  margin: "0.3em",
+  borderStyle: "solid",
+};
+
 export function RichTextEditor({
   submissionHandler,
   currentArticle,
@@ -122,7 +151,10 @@ export function RichTextEditor({
   function saveDocument() {
     if (editableAreaDOMRef.current && editableTitleDOMRef.current) {
       const markdownText = renderDomAsMarkdown(editableAreaDOMRef.current);
-      submissionHandler({ name: (initialArticleState) ? initialArticleState.name : (editableTitleDOMRef.current.textContent || ""), content: markdownText });
+      submissionHandler({
+        name: (initialArticleState?.name) || (editableTitleDOMRef.current.textContent || ""),
+        content: markdownText
+      });
 
       if (initialArticleState === undefined) {
         editableAreaDOMRef.current.innerHTML = renderMarkdown(preprocessMarkdown(markdownText));
@@ -133,35 +165,6 @@ export function RichTextEditor({
   // would only apply to a few relevant states.
   function _toggleWidgetActiveState(widgetId: string, categoryValue?: string) {
     updateWidgetState(toggleWidgetActiveState(widgetStates, widgetId, categoryValue));
-  }
-
-  function _flattenWidgetStateTypes() {
-    return flattenWidgetStateTypes(widgetStates);
-  }
-
-  function executeRichTextCommand(commandName: string, optionalArgument?: string) {
-    if (editableAreaDOMRef.current) {
-      if (commandName === "@_insertImage") {
-        console.log("image handling");
-        const fileDialog = document.createElement("input");
-        fileDialog.type = "file";
-        fileDialog.click();
-
-        // TODO(jerry): cleanup
-        fileDialog.addEventListener("change", fileHandlerOnChange);
-      } else {
-        document.execCommand(commandName, false, optionalArgument);
-        editableAreaDOMRef.current.focus();
-      }
-    }
-  }
-
-  function queryRichTextCommand(command: string, wantedValue?: boolean) {
-    if (wantedValue) {
-      return document.queryCommandValue(command);
-    } else {
-      return document.queryCommandState(command);
-    }
   }
 
   function synchronizeCommandStateToWidgetBar() {
@@ -177,18 +180,11 @@ export function RichTextEditor({
     );
   }
 
-  const editModeInlineStyle = {
-    borderColor: "black",
-    borderWidth: "1px",
-    margin: "0.3em",
-    borderStyle: "solid",
-  };
-
   return (
     <>
       <div className={richWidgetBarStyle.main}> {/*requires styling*/}
         {
-          Object.entries(_flattenWidgetStateTypes()).map(
+          Object.entries(flattenWidgetStateTypes(widgetStates)).map(
             ([widgetId, widget]) =>
               <button
                 key={widgetId}
