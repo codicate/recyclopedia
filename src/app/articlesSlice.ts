@@ -20,7 +20,7 @@ export type ArticlesDataProperties = {
   articlesData: ArticlesData;
 };
 
-const databaseApi: {
+export const databaseApi: {
   application: App | undefined | null;
   applicationUser: User | undefined | null;
 } = {
@@ -37,24 +37,6 @@ const initialState: {
     articles: []
   },
 };
-
-export async function loginWith(information?: { email: string, password: string; }) {
-  const credentials = (!information)
-    ? Credentials.anonymous()
-    : Credentials.emailPassword(information.email, information.password);
-
-  console.log("details ", information);
-  let user = undefined;
-  try {
-    user = await databaseApi.application?.logIn(credentials);
-    return { type: "user", user };
-  } catch (error) {
-    user = await databaseApi.application?.logIn(Credentials.anonymous());
-    return { type: "anonymous", user };
-  } finally {
-    databaseApi.applicationUser = user;
-  }
-}
 
 function tryToCallWithUser(fn) {
   return async function(argument, thunkApi) {

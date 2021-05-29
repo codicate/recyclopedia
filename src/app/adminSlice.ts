@@ -1,7 +1,8 @@
 import { createSlice, createDraftSafeSelector, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'app/store';
-import { callbackify } from 'util';
-import { loginWith } from './articlesSlice';
+
+import { Credentials } from "realm-web";
+import { databaseApi } from 'app/articlesSlice':
 
 interface AccountDetails {
   email: string;
@@ -15,6 +16,24 @@ const initialState = {
     password: '',
   }
 };
+
+export async function loginWith(information?: { email: string, password: string; }) {
+  const credentials = (!information)
+    ? Credentials.anonymous()
+    : Credentials.emailPassword(information.email, information.password);
+
+  console.log("details ", information);
+  let user = undefined;
+  try {
+    user = await databaseApi.application?.logIn(credentials);
+    return { type: "user", user };
+  } catch (error) {
+    user = await databaseApi.application?.logIn(Credentials.anonymous());
+    return { type: "anonymous", user };
+  } finally {
+    databaseApi.applicationUser = user;
+  }
+}
 
 export const loginWithEmailAndPassword = createAsyncThunk(
   'admin/loginWithEmailAndPassword',
