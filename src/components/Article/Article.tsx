@@ -13,21 +13,19 @@ import Admin from 'pages/Admin/Admin';
 
 // @ts-ignore
 function TableOfContents({sectionHeaders} : {sectionHeaders: any[]}) {
-  console.log(sectionHeaders);
-  return (
+  return (sectionHeaders.length > 0) ? (<div style={
+    {
+      border: "1px dotted black",
+      margin: "2em",
+      padding: "1.5em"
+    }
+  }>
+    <h3>Table Of Contents</h3>
     <div style={
       {
-        border: "1px dotted black",
-        margin: "2em",
-        padding: "1.5em"
+        marginLeft: "3em",
       }
     }>
-      <h3>Table Of Contents</h3>
-      <div style= {
-        {
-          marginLeft: "3em",
-        }
-      }>
       {
         sectionHeaders.map(
           ({ level, text }) => {
@@ -43,7 +41,7 @@ function TableOfContents({sectionHeaders} : {sectionHeaders: any[]}) {
                 <p style=
                   {
                     {
-                      marginLeft: `${(level-1)*2}em`
+                      marginLeft: `${(level - 1) * 2}em`
                     }
                   }>&bull; {text}
                 </p>
@@ -52,9 +50,9 @@ function TableOfContents({sectionHeaders} : {sectionHeaders: any[]}) {
           }
         )
       }
-      </div>
     </div>
-  );
+  </div>
+  ) : null;
 }
 
 function ArticleComponent({
