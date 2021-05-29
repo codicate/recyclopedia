@@ -9,8 +9,13 @@ interface AccountDetails {
   password: string;
 }
 
+export interface LoginAttemptResult {
+  type: "anonymous" | "user" | "admin",
+  accountDetails?: AccountDetails,
+}
+
 const initialState = {
-  isAdmin: false,
+  isAdmin: true,
   accountDetails: {
     email: '',
     password: '',
@@ -38,21 +43,22 @@ export async function loginWith(information?: { email: string, password: string;
 export const loginWithEmailAndPassword = createAsyncThunk(
   'admin/loginWithEmailAndPassword',
   async (accountDetails: AccountDetails, { getState }) => {
-    const { admin } = getState() as RootState;
-    admin.accountDetails = accountDetails;
+    console.log("Does this work?");
+    const {type, user} = await loginWith(accountDetails);
 
-    const {type, user} = await loginWith(admin.accountDetails);
     console.log(type, user);
 
     if (type !== "anonymous") {
       console.log("??", user);
       console.log(user?.customData);
-
-      return true;
+      return {
+        accountDetails,
+        type: user?.customData.status || type,
+      } as LoginAttemptResult;
     }
 
     console.log('this is a anonymous user')
-    return false;
+    return { type } as LoginAttemptResult;
   }
 )
 
@@ -61,6 +67,9 @@ const adminSlice = createSlice({
   name: 'admin',
   initialState,
   reducers: {
+    _forceLogin: (state) => {
+      state.isAdmin = true;
+    },
     logout: (state) => {
       state.isAdmin = false;
     },
@@ -69,13 +78,28 @@ const adminSlice = createSlice({
     builder.addCase(
       loginWithEmailAndPassword.fulfilled,
       (state, action) => {
-        state.isAdmin = action.payload;
+        const payload = action.payload;
+
+        switch (payload.type) {
+          case 'user':
+          case 'admin':
+            /*
+              are there constraints in typescript? I know by this
+              point my login object has stuff, so I shouldn't have to check...
+            */
+            if (payload.accountDetails)
+              state.accountDetails = payload.accountDetails;
+            state.isAdmin = (payload.type === 'admin');
+          break;
+          default: break;
+        }
       }
     )
   }
 });
 
 export const {
+  _forceLogin,
   logout,
 } = adminSlice.actions;
 export default adminSlice.reducer;
