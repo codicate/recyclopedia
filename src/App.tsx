@@ -49,9 +49,9 @@ function LoginPage(_: {}) {
           }
         }}
         submitFn={async (input) => {
-          await dispatch(loginWithEmailAndPassword(input));
+          const loginResult = (await dispatch(loginWithEmailAndPassword(input))).payload;
 
-          if (isAdmin) {
+          if (loginResult === "user") {
             history.push('/');
           } else {
             alert('bad login');
@@ -136,10 +136,6 @@ function App() {
   );
 }
 
-/*
-  I said in store.ts that we should basically have another line of code
-  around here.
-*/
 function InitializingApp() {
   const dispatch = useAppDispatch();
   useEffect(() => {

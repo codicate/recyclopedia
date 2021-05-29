@@ -4,7 +4,6 @@ import { loginWithEmailAndPassword, selectAccountDetails } from 'app/adminSlice'
 import ArticleComponent from 'components/Article/Article';
 
 import { App, User, Credentials } from "realm-web";
-import { AnyMxRecord } from 'dns';
 
 export interface Article {
   name: string;
