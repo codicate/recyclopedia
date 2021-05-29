@@ -1,24 +1,63 @@
-import { createSlice, createDraftSafeSelector, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createDraftSafeSelector, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'app/store';
+import { callbackify } from 'util';
+import { loginWith } from './articlesSlice';
 
+interface AccountDetails {
+  email: string;
+  password: string;
+}
 
 const initialState = {
-  isAdmin: false
+  isAdmin: false,
+  accountDetails: {
+    email: '',
+    password: '',
+  }
 };
+
+export const loginWithEmailAndPassword = createAsyncThunk(
+  'admin/loginWithEmailAndPassword',
+  async (accountDetails: AccountDetails, { getState }) => {
+    const { admin } = getState() as RootState;
+    admin.accountDetails = accountDetails;
+
+    const {type, user} = await loginWith(admin.accountDetails);
+    console.log(type, user);
+
+    if (type !== "anonymous") {
+      console.log("??", user);
+      console.log(user?.customData);
+
+      return true;
+    }
+
+    console.log('this is a anonymous user')
+    return false;
+  }
+)
 
 
 const adminSlice = createSlice({
   name: 'admin',
   initialState,
   reducers: {
-    setIsAdmin: (state, action: PayloadAction<boolean>) => {
-      state.isAdmin = action.payload;
-    }
+    logout: (state) => {
+      state.isAdmin = false;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(
+      loginWithEmailAndPassword.fulfilled,
+      (state, action) => {
+        state.isAdmin = action.payload;
+      }
+    )
   }
 });
 
 export const {
-  setIsAdmin
+  logout,
 } = adminSlice.actions;
 export default adminSlice.reducer;
 
@@ -28,4 +67,9 @@ const selectSelf = (state: RootState) => state.admin;
 export const selectIsAdmin = createDraftSafeSelector(
   selectSelf,
   (admin) => admin.isAdmin
+);
+
+export const selectAccountDetails = createDraftSafeSelector(
+  selectSelf,
+  (admin) => admin.accountDetails
 );

@@ -1,10 +1,10 @@
 import styles from 'App.module.scss';
 import { useEffect } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { initApi, selectStatus, selectArticlesData } from 'app/articlesSlice';
-import { selectIsAdmin, setIsAdmin } from 'app/adminSlice';
+import { selectIsAdmin, logout, loginWithEmailAndPassword } from 'app/adminSlice';
 
 import { Secrets } from 'secrets';
 import Article from "components/Article/Article";
@@ -15,7 +15,8 @@ import IndexPage from "pages/Index/IndexPage";
 import Admin from "pages/Admin/Admin";
 import { validPageLink } from 'utils/functions';
 
-import { loginWith } from 'app/articlesSlice';
+import Form from 'components/Form/Form';
+import Button from 'components/Form/Button'
 
 function RegisterPage(_: {}) {
   return (
@@ -29,32 +30,36 @@ function RegisterPage(_: {}) {
 function LoginPage(_: {}) {
   // someone do this later
   const dispatch = useAppDispatch();
-  useEffect(
-    function () {
-      const userName = prompt("Enter Username");
-      const password = prompt("Enter Password");
-
-      (async function () {
-        if (userName && password) {
-          try {
-            const loginResult = await loginWith({ email: userName, password });
-            if (loginResult) {
-              console.log(loginResult.customData);
-              dispatch(setIsAdmin(loginResult.customData.status === "admin"));
-            }
-          } catch (error) {
-            console.log(error);
-            alert("Unrecognized user credentials.");
-          }
-        }
-      })();
-    },
-    [dispatch]);
-
+  const history = useHistory();
+  const isAdmin = useAppSelector(selectIsAdmin);
   return (
     <>
       <h1>Login With Your Account!</h1>
-      <Redirect to="/"></Redirect>
+      <Form
+        inputItems={{
+          email: {
+            selectAllOnFocus: true,
+            placeholder: 'Email',
+            required: true,
+          },
+          password: {
+            selectAllOnFocus: true,
+            placeholder: 'Password',
+            required: true,
+          }
+        }}
+        submitFn={async (input) => {
+          await dispatch(loginWithEmailAndPassword(input));
+
+          if (isAdmin) {
+            history.push('/');
+          } else {
+            alert('bad login');
+          }
+        }}
+      >
+        <Button type='submit'>Login</Button>
+      </Form>
     </>
   );
 }
@@ -139,13 +144,6 @@ function InitializingApp() {
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(initApi(Secrets.RECYCLOPEDIA_APPLICATION_ID));
-
-    /*
-    Something like this.
-
-    const {userName, password} = useAppSelector(SavedLoggedInCredentials);
-    loginWith(userName, password);
-    */
   }, [dispatch]);
 
   const status = useAppSelector(selectStatus);

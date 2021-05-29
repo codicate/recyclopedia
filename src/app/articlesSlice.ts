@@ -1,7 +1,10 @@
 import { createSlice, createAsyncThunk, createDraftSafeSelector } from '@reduxjs/toolkit';
 import { RootState } from 'app/store';
+import { loginWithEmailAndPassword, selectAccountDetails } from 'app/adminSlice'
+import ArticleComponent from 'components/Article/Article';
 
 import { App, User, Credentials } from "realm-web";
+import { AnyMxRecord } from 'dns';
 
 export interface Article {
   name: string;
@@ -41,19 +44,31 @@ export async function loginWith(information?: { email: string, password: string;
     ? Credentials.anonymous()
     : Credentials.emailPassword(information.email, information.password);
 
-  const user = await databaseApi.application?.logIn(credentials);
-  databaseApi.applicationUser = user;
-  return user;
+  console.log("details ", information);
+  try {
+    console.log("good?");
+    const user = await databaseApi.application?.logIn(credentials);
+    databaseApi.applicationUser = user;
+    return { type: "user", user };
+  } catch (error) {
+    console.log("bad?");
+    console.error(error);
+    const user = await databaseApi.application?.logIn(Credentials.anonymous());
+    databaseApi.applicationUser = user;
+    return { type: "anonymous", user };
+  }
 }
 
 export const initApi = createAsyncThunk(
   'articles/initApi',
-  async (appId: string, { dispatch, rejectWithValue }) => {
+  async (appId: string, { getState, dispatch, rejectWithValue }) => {
+    const state = getState() as RootState;
     try {
       databaseApi.application = new App({ id: appId });
-      databaseApi.applicationUser = await loginWith();
-
-      dispatch(queryForArticles(undefined));
+      const accountDetails = state.admin.accountDetails;
+      
+      await dispatch(loginWithEmailAndPassword(accountDetails));
+      await dispatch(queryForArticles(undefined));
     } catch (error) {
       console.error("Failed to login because: ", error);
       return rejectWithValue(error.response.data);
@@ -73,8 +88,11 @@ export const queryForArticles = createAsyncThunk(
     // so I am guaranteed to have a user unless we couldn't login for some reason.
 
     try {
-      if (databaseApi.applicationUser) return await databaseApi.applicationUser.functions.getAllArticles();
-      else throw new Error('No user? This is bad news');
+      if (databaseApi.applicationUser)
+        return await databaseApi.applicationUser.functions.getAllArticles();
+      else
+        throw new Error('No user? This is bad news');
+      alert('oh no');
     } catch (error) {
       console.error("Failed to login because: ", error);
       return rejectWithValue(error.response.data);
