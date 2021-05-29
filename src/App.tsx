@@ -19,16 +19,41 @@ import Form from 'components/Form/Form';
 import Button from 'components/Form/Button'
 
 function RegisterPage(_: {}) {
+  const dispatch = useAppDispatch();
+  const history = useHistory();
+
   return (
     <>
-      <h1>Register a New Account (TODO)</h1>
-      <p>asdf</p>
+      <h1>Register a New Account</h1>
+      <Form
+        inputItems={{
+          email: {
+            selectAllOnFocus: true,
+            placeholder: 'Email',
+            required: true,
+          },
+          password: {
+            selectAllOnFocus: true,
+            placeholder: 'Password',
+            required: true,
+          },
+          passwordConfirmation: {
+            selectAllOnFocus: true,
+            placeholder: 'Confirm Password',
+            required: true,
+          }
+        }}
+        submitFn={async (input) => {
+          alert("TODO, register actual account.");
+        }}
+      >
+        <Button type='submit'>Register Account</Button>
+      </Form>
     </>
   );
 }
 
 function LoginPage(_: {}) {
-  // someone do this later
   const dispatch = useAppDispatch();
   const history = useHistory();
   const isAdmin = useAppSelector(selectIsAdmin);
