@@ -44,97 +44,74 @@ export async function loginWith(information?: { email: string, password: string;
     : Credentials.emailPassword(information.email, information.password);
 
   console.log("details ", information);
+  let user = undefined;
   try {
-    console.log("good?");
-    const user = await databaseApi.application?.logIn(credentials);
-    databaseApi.applicationUser = user;
+    user = await databaseApi.application?.logIn(credentials);
     return { type: "user", user };
   } catch (error) {
-    console.log("bad?");
-    console.error(error);
-    const user = await databaseApi.application?.logIn(Credentials.anonymous());
-    databaseApi.applicationUser = user;
+    user = await databaseApi.application?.logIn(Credentials.anonymous());
     return { type: "anonymous", user };
+  } finally {
+    databaseApi.applicationUser = user;
+  }
+}
+
+function tryToCallWithUser(fn) {
+  return async function(argument, thunkApi) {
+    try {
+      if (databaseApi.applicationUser) {
+        return await fn(databaseApi.applicationUser, argument, thunkApi);
+      } else {
+        throw new Error("No user? This is some real bad news");
+      }
+    } catch (error) {
+      console.error("Call with user error: ", error);
+      return thunkApi.rejectWithValue(error.response.data);
+    }
   }
 }
 
 export const initApi = createAsyncThunk(
   'articles/initApi',
-  async (appId: string, { getState, dispatch, rejectWithValue }) => {
-    const state = getState() as RootState;
-    try {
-      databaseApi.application = new App({ id: appId });
+  tryToCallWithUser(
+    async function (user: Realm.User, appId: string, { getState, dispatch }) {
+      const state = getState() as RootState;
       const accountDetails = state.admin.accountDetails;
-      
+
       await dispatch(loginWithEmailAndPassword(accountDetails));
       await dispatch(queryForArticles(undefined));
-    } catch (error) {
-      console.error("Failed to login because: ", error);
-      return rejectWithValue(error.response.data);
     }
-  }
+  )
 );
 
 export const queryForArticles = createAsyncThunk(
   'articles/queryForArticles',
-  /*
-    the query is actually a dictionary, but it is very varied, I'll fill this out
-    later.
-  */
-  async (query: any | undefined, { rejectWithValue }) => {
-    // I should "lazy-init" login this
-    // however I forced a buffer load, before anything happens
-    // so I am guaranteed to have a user unless we couldn't login for some reason.
-
-    try {
-      if (databaseApi.applicationUser)
-        return await databaseApi.applicationUser.functions.getAllArticles();
-      else
-        throw new Error('No user? This is bad news');
-      alert('oh no');
-    } catch (error) {
-      console.error("Failed to login because: ", error);
-      return rejectWithValue(error.response.data);
+  tryToCallWithUser(
+    async function(user: Realm.User, query?: any, thunkApi: any) {
+      return await user.functions.getAllArticles();
     }
-  }
+  )
 );
 
 export const deleteArticle = createAsyncThunk(
   'articles/deleteArticle',
-  async (name: string, { dispatch, rejectWithValue }) => {
-
-    try {
-      if (databaseApi.applicationUser) {
-        await databaseApi.applicationUser.functions.removeArticle(name);
-        dispatch(queryForArticles(undefined));
-      } else {
-        throw new Error('No user? This is bad news');
-      }
-    } catch (error) {
-      console.error("Failed to login because: ", error);
-      return rejectWithValue(error.response.data);
+  tryToCallWithUser(
+    async function(user: Realm.User, name: string, {dispatch}) {
+      await user.functions.removeArticle(name);
+      dispatch(queryForArticles(undefined));
     }
-  }
+  )
 );
 
 export const insertArticle = createAsyncThunk(
-  'articles/deleteArticle',
-  async (articleContent: Article, { dispatch, rejectWithValue }) => {
-
-    try {
-      if (databaseApi.applicationUser) {
-        await databaseApi.applicationUser.functions.createOrUpdateArticle(articleContent);
-        dispatch(queryForArticles(undefined));
-      } else {
-        throw new Error('No user? This is bad news');
-      }
-    } catch (error) {
-      console.error("Failed to login because: ", error);
-      return rejectWithValue(error.response.data);
+  'articles/insertArticle',
+  tryToCallWithUser(
+    async function(user: Realm.User, articleContent: Article, {dispatch}) {
+      await user.functions.createOrUpdateArticle(articleContent);
+      dispatch(queryForArticles(undefined));
     }
-  }
+  )
 );
-
 
 const articlesSlice = createSlice({
   name: 'api',
@@ -166,9 +143,7 @@ const articlesSlice = createSlice({
 });
 
 export default articlesSlice.reducer;
-
 const selectSelf = (state: RootState) => state.articles;
-
 
 export const selectStatus = createDraftSafeSelector(
   selectSelf,
