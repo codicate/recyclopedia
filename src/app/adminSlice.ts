@@ -21,7 +21,7 @@ export interface LoginAttemptResult {
 }
 
 const initialState = {
-  isAdmin: true,
+  isAdmin: false,
   accountDetails: {
     email: '',
     password: '',
@@ -51,9 +51,11 @@ export const loginWithEmailAndPassword = createAsyncThunk(
     const {type, user} = await loginWith(accountDetails);
 
     if (type !== LoginType.Anonymous) {
+      const possiblyAdminLoginType = 
+        (user?.customData.status) === "admin" ? LoginType.Admin : false;
       return {
         accountDetails,
-        type: user?.customData.status || type,
+        type: possiblyAdminLoginType || type,
       };
     }
 

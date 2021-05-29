@@ -25,7 +25,6 @@ function ArticleShowcase({ articlesData: { articles } }: ArticlesDataProperties)
 }
 
 function Homepage({ articlesData }: ArticlesDataProperties) {
-  console.log(articlesData);
   return (
     <>
       <h1>Welcome to Recyclopedia</h1>
