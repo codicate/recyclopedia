@@ -15,23 +15,11 @@ export default function Admin({
   const dispatch = useAppDispatch();
   const [dirtyFlag, updateDirtyFlag] = useState(false);
 
-  const [draftStatus, updateDraftStatus] = useState(
-    (currentArticle === undefined)
-      ? false
-      : (currentArticle.draftStatus === undefined)
-        ? false
-        : currentArticle.draftStatus
-  );
+  const [draftStatus, updateDraftStatus] = useState((currentArticle?.draftStatus));
 
-  function submitHandler(
-    input: Article,
-    onFinishedCallback: (input: Article) => void
-  ) {
+  function submitHandler(input: Article, onFinishedCallback: (input: Article) => void) {
     dispatch(insertArticle(input));
-
-    if (onFinishedCallback) {
-      onFinishedCallback(input);
-    }
+    onFinishedCallback?.(input);
   };
 
   const submissionHandler = (
