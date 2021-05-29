@@ -38,7 +38,9 @@ const initialState: {
   },
 };
 
+// @ts-ignore
 function tryToCallWithUser(fn) {
+// @ts-ignore
   return async function(argument, thunkApi) {
     try {
       if (databaseApi.applicationUser) {
@@ -55,20 +57,25 @@ function tryToCallWithUser(fn) {
 
 export const initApi = createAsyncThunk(
   'articles/initApi',
-  tryToCallWithUser(
-    async function (user: Realm.User, appId: string, { getState, dispatch }) {
-      const state = getState() as RootState;
+  async (appId: string, { getState, dispatch, rejectWithValue }) => {
+    const state = getState() as RootState;
+    try {
+      databaseApi.application = new App({ id: appId });
       const accountDetails = state.admin.accountDetails;
-
+      
       await dispatch(loginWithEmailAndPassword(accountDetails));
       await dispatch(queryForArticles(undefined));
+    } catch (error) {
+      console.error("Failed to login because: ", error);
+      return rejectWithValue(error.response.data);
     }
-  )
+  }
 );
 
 export const queryForArticles = createAsyncThunk(
   'articles/queryForArticles',
   tryToCallWithUser(
+// @ts-ignore
     async function(user: Realm.User, query?: any, thunkApi: any) {
       return await user.functions.getAllArticles();
     }
@@ -78,6 +85,7 @@ export const queryForArticles = createAsyncThunk(
 export const deleteArticle = createAsyncThunk(
   'articles/deleteArticle',
   tryToCallWithUser(
+// @ts-ignore
     async function(user: Realm.User, name: string, {dispatch}) {
       await user.functions.removeArticle(name);
       dispatch(queryForArticles(undefined));
@@ -88,6 +96,7 @@ export const deleteArticle = createAsyncThunk(
 export const insertArticle = createAsyncThunk(
   'articles/insertArticle',
   tryToCallWithUser(
+// @ts-ignore
     async function(user: Realm.User, articleContent: Article, {dispatch}) {
       await user.functions.createOrUpdateArticle(articleContent);
       dispatch(queryForArticles(undefined));

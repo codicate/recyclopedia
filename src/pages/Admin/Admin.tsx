@@ -29,7 +29,7 @@ export default function Admin({
     }
   ) => {
     submitHandler(
-      { ...submissionData, draftStatus: draftStatus },
+      { ...submissionData, draftStatus: !!draftStatus },
       ({ name }) => {
         console.log(`Article ${name} written!`);
         updateDirtyFlag(false);

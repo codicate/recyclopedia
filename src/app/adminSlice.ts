@@ -2,7 +2,7 @@ import { createSlice, createDraftSafeSelector, PayloadAction, createAsyncThunk }
 import { RootState } from 'app/store';
 
 import { Credentials } from "realm-web";
-import { databaseApi } from 'app/articlesSlice':
+import { databaseApi } from 'app/articlesSlice';
 
 interface AccountDetails {
   email: string;
