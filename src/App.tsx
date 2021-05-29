@@ -4,7 +4,7 @@ import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { initApi, selectStatus, selectArticlesData } from 'app/articlesSlice';
-import { selectIsAdmin, logout, loginWithEmailAndPassword, LoginAttemptResult, LoginType } from 'app/adminSlice';
+import { logout, loginWithEmailAndPassword, LoginAttemptResult, LoginType, registerAccount, selectLoginType } from 'app/adminSlice';
 
 import { Secrets } from 'secrets';
 import Article from "components/Article/Article";
@@ -44,7 +44,11 @@ function RegisterPage(_: {}) {
           }
         }}
         submitFn={async (input) => {
-          alert("TODO, register actual account.");
+          if (input.password === input.passwordConfirmation) {
+              await registerAccount({email: input.email, password: input.password});
+          } else {
+              alert("Passwords do not match!");
+          }
         }}
       >
         <Button type='submit'>Register Account</Button>
@@ -56,7 +60,6 @@ function RegisterPage(_: {}) {
 function LoginPage(_: {}) {
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const isAdmin = useAppSelector(selectIsAdmin);
   return (
     <>
       <h1>Login With Your Account!</h1>
@@ -92,7 +95,7 @@ function LoginPage(_: {}) {
 
 function App() {
   const articlesData = useAppSelector(selectArticlesData);
-  const isAdmin = useAppSelector(selectIsAdmin);
+  const currentLoginType = useAppSelector(selectLoginType);
 
   return (
     <>
@@ -108,7 +111,7 @@ function App() {
           </Route>
           <Route exact path='/admin'>
             {
-              isAdmin
+              (currentLoginType === LoginType.Admin)
                 ? <Admin currentArticle={undefined} />
                 : <Redirect to='/' />
             }
@@ -141,7 +144,7 @@ function App() {
             client side).
           */}
 
-          {((isAdmin) ?
+          {((currentLoginType === LoginType.Admin) ?
             articlesData.articles :
             articlesData.articles.filter((article) => !article.draftStatus))
             .map((article) =>

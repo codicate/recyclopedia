@@ -5,12 +5,13 @@ import { Credentials } from "realm-web";
 import { databaseApi } from 'app/articlesSlice';
 
 export enum LoginType {
+  NotLoggedIn,
   Anonymous,
   User,
   Admin,
 }
 
-interface AccountDetails {
+export interface AccountDetails {
   email: string;
   password: string;
 }
@@ -20,15 +21,24 @@ export interface LoginAttemptResult {
   accountDetails?: AccountDetails,
 }
 
-const initialState = {
-  isAdmin: false,
+interface ApplicationState {
+  loginType: LoginType | null,
+  accountDetails: AccountDetails,
+}
+
+const initialState: ApplicationState = {
+  loginType: null,
   accountDetails: {
     email: '',
     password: '',
   }
 };
 
-export async function loginWith(information?: { email: string, password: string; }) {
+export async function registerAccount(information: AccountDetails) {
+  await databaseApi.application?.emailPasswordAuth.registerUser(information.email, information.password);
+}
+
+export async function loginWith(information?: AccountDetails) {
   const credentials = (!information)
     ? Credentials.anonymous()
     : Credentials.emailPassword(information.email, information.password);
@@ -68,7 +78,7 @@ const adminSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
-      state.isAdmin = false;
+      state.loginType = LoginType.NotLoggedIn;
     },
   },
   extraReducers: (builder) => {
@@ -86,7 +96,7 @@ const adminSlice = createSlice({
             */
             if (payload.accountDetails)
               state.accountDetails = payload.accountDetails;
-            state.isAdmin = (payload.type === LoginType.Admin);
+            state.loginType = payload.type;
           break;
           default: break;
         }
@@ -100,9 +110,9 @@ export default adminSlice.reducer;
 
 const selectSelf = (state: RootState) => state.admin;
 
-export const selectIsAdmin = createDraftSafeSelector(
+export const selectLoginType = createDraftSafeSelector(
   selectSelf,
-  (admin) => admin.isAdmin
+  (admin) => admin.loginType
 );
 
 export const selectAccountDetails = createDraftSafeSelector(

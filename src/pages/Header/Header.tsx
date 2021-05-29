@@ -2,7 +2,7 @@ import styles from 'pages/Header/Header.module.scss';
 import { Link } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { selectIsAdmin, logout } from 'app/adminSlice';
+import { LoginType, logout, selectLoginType } from 'app/adminSlice';
 
 import approximateSearch from 'utils/search';
 import Search, { renderHoverboxSearch } from 'pages/Header/Search';
@@ -10,7 +10,7 @@ import Search, { renderHoverboxSearch } from 'pages/Header/Search';
 
 const Header = () => {
   const dispatch = useAppDispatch();
-  const isAdmin = useAppSelector(selectIsAdmin);
+  const currentLoginType = useAppSelector(selectLoginType);
 
   return (
     <header id={styles.header}>
@@ -28,19 +28,24 @@ const Header = () => {
         <button className={styles.links}>
           <Link to='/index'>Index</Link>
           {(
-            isAdmin
+            currentLoginType != LoginType.Anonymous &&
+            currentLoginType != LoginType.NotLoggedIn
           ) ? (
             <>
-              <Link to="/admin">
-                Create New Article
-            </Link>
+                {
+                  (currentLoginType === LoginType.Admin) ?
+                    (<Link to="/admin">
+                      Create New Article
+                    </Link>) :
+                    <></>
+}
               <button
                 onClick={() => {
                   dispatch(logout());
                 }}
               >
                 Logout
-            </button>
+              </button>
             </>
           ) : (
             <>

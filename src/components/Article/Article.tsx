@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { deleteArticle, Article } from 'app/articlesSlice';
-import { selectIsAdmin } from 'app/adminSlice';
+import { LoginType, selectLoginType } from 'app/adminSlice';
 
 import { preprocessMarkdown } from 'utils/preprocessMarkdown';
 
@@ -18,7 +18,8 @@ function ArticleComponent({
 }) {
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const isAdmin = useAppSelector(selectIsAdmin);
+  const currentLoginType = useAppSelector(selectLoginType);
+  const isAdmin = currentLoginType === LoginType.Admin;
 
   const { name, content } = article;
   const [adminEditView, updateAdminEditView] = useState(false);

@@ -3,14 +3,15 @@ import { Link } from 'react-router-dom';
 
 import { useAppSelector } from 'app/hooks';
 import { selectArticlesData } from 'app/articlesSlice';
-import { selectIsAdmin } from 'app/adminSlice';
+import { LoginType, selectLoginType } from 'app/adminSlice';
 
 import { validPageLink } from 'utils/functions';
 
 
 function IndexPage() {
   const articlesData = useAppSelector(selectArticlesData);
-  const isAdmin = useAppSelector(selectIsAdmin);
+  const currentLoginType = useAppSelector(selectLoginType);
+  const isAdmin = currentLoginType === LoginType.Admin;
 
   return (
     <div className={styles.index}>
