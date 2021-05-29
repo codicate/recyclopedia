@@ -4,13 +4,19 @@ import { RootState } from 'app/store';
 import { Credentials } from "realm-web";
 import { databaseApi } from 'app/articlesSlice';
 
+export enum LoginType {
+  Anonymous,
+  User,
+  Admin,
+}
+
 interface AccountDetails {
   email: string;
   password: string;
 }
 
 export interface LoginAttemptResult {
-  type: "anonymous" | "user" | "admin",
+  type: LoginType,
   accountDetails?: AccountDetails,
 }
 
@@ -27,14 +33,13 @@ export async function loginWith(information?: { email: string, password: string;
     ? Credentials.anonymous()
     : Credentials.emailPassword(information.email, information.password);
 
-  console.log("details ", information);
   let user = undefined;
   try {
     user = await databaseApi.application?.logIn(credentials);
-    return { type: "user", user };
+    return { type: LoginType.User, user };
   } catch (error) {
     user = await databaseApi.application?.logIn(Credentials.anonymous());
-    return { type: "anonymous", user };
+    return { type: LoginType.Anonymous, user };
   } finally {
     databaseApi.applicationUser = user;
   }
@@ -42,34 +47,24 @@ export async function loginWith(information?: { email: string, password: string;
 
 export const loginWithEmailAndPassword = createAsyncThunk(
   'admin/loginWithEmailAndPassword',
-  async (accountDetails: AccountDetails, { getState }) => {
-    console.log("Does this work?");
+  async (accountDetails: AccountDetails) => {
     const {type, user} = await loginWith(accountDetails);
 
-    console.log(type, user);
-
-    if (type !== "anonymous") {
-      console.log("??", user);
-      console.log(user?.customData);
+    if (type !== LoginType.Anonymous) {
       return {
         accountDetails,
         type: user?.customData.status || type,
-      } as LoginAttemptResult;
+      };
     }
 
-    console.log('this is a anonymous user')
-    return { type } as LoginAttemptResult;
+    return { type };
   }
 )
-
 
 const adminSlice = createSlice({
   name: 'admin',
   initialState,
   reducers: {
-    _forceLogin: (state) => {
-      state.isAdmin = true;
-    },
     logout: (state) => {
       state.isAdmin = false;
     },
@@ -81,15 +76,15 @@ const adminSlice = createSlice({
         const payload = action.payload;
 
         switch (payload.type) {
-          case 'user':
-          case 'admin':
+          case LoginType.User:
+          case LoginType.Admin:
             /*
               are there constraints in typescript? I know by this
               point my login object has stuff, so I shouldn't have to check...
             */
             if (payload.accountDetails)
               state.accountDetails = payload.accountDetails;
-            state.isAdmin = (payload.type === 'admin');
+            state.isAdmin = (payload.type === LoginType.Admin);
           break;
           default: break;
         }
@@ -98,14 +93,10 @@ const adminSlice = createSlice({
   }
 });
 
-export const {
-  _forceLogin,
-  logout,
-} = adminSlice.actions;
+export const { logout, } = adminSlice.actions;
 export default adminSlice.reducer;
 
 const selectSelf = (state: RootState) => state.admin;
-
 
 export const selectIsAdmin = createDraftSafeSelector(
   selectSelf,

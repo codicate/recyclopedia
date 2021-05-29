@@ -4,7 +4,7 @@ import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { initApi, selectStatus, selectArticlesData } from 'app/articlesSlice';
-import { selectIsAdmin, logout, loginWithEmailAndPassword, _forceLogin } from 'app/adminSlice';
+import { selectIsAdmin, logout, loginWithEmailAndPassword, LoginAttemptResult, LoginType } from 'app/adminSlice';
 
 import { Secrets } from 'secrets';
 import Article from "components/Article/Article";
@@ -74,10 +74,10 @@ function LoginPage(_: {}) {
           }
         }}
         submitFn={async (input) => {
-          const loginResult = (await dispatch(loginWithEmailAndPassword(input))).payload;
+          const loginResult = (await dispatch(loginWithEmailAndPassword(input))).payload as LoginAttemptResult;
           console.log(loginResult);
 
-          if (loginResult !== "anonymous") {
+          if (loginResult.type !== LoginType.Anonymous) {
             history.push('/');
           } else {
             alert('bad login');
