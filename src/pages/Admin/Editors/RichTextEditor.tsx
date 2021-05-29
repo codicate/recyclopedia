@@ -157,7 +157,7 @@ export function RichTextEditor({
       });
 
       if (initialArticleState === undefined) {
-        editableAreaDOMRef.current.innerHTML = renderMarkdown(preprocessMarkdown(markdownText));
+        editableAreaDOMRef.current.innerHTML = renderMarkdown(preprocessMarkdown(markdownText).processed);
       }
     }
   }
@@ -223,7 +223,7 @@ export function RichTextEditor({
             updateDirtyFlag: updateDirtyFlag,
           })}
           dangerouslySetInnerHTML={
-            { __html: renderMarkdown(preprocessMarkdown((initialArticleState) ? initialArticleState.content : "Begin typing your article.")) }
+            { __html: renderMarkdown(preprocessMarkdown((initialArticleState) ? initialArticleState.content : "Begin typing your article.").processed) }
           }
           ref={editableAreaDOMRef}>
         </div>

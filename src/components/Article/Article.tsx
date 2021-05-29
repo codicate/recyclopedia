@@ -11,6 +11,23 @@ import { preprocessMarkdown } from 'utils/preprocessMarkdown';
 import MarkdownRender from "components/Article/MarkdownRender";
 import Admin from 'pages/Admin/Admin';
 
+// @ts-ignore
+function TableOfContents({sectionHeaders} : {sectionHeaders: any[]}) {
+  console.log(sectionHeaders);
+  return (
+    <div>
+      <h3>Table Of Contents</h3>
+      {
+        sectionHeaders.map(
+          ({ level, text }) => {
+            return <p>{level}: {text}</p>
+          }
+        )
+      }
+    </div>
+  );
+}
+
 function ArticleComponent({
   article
 }: {
@@ -24,6 +41,7 @@ function ArticleComponent({
   const { name, content } = article;
   const [adminEditView, updateAdminEditView] = useState(false);
 
+  const processedMarkdown = preprocessMarkdown(content);
   return (
     <>
       {
@@ -54,8 +72,9 @@ function ArticleComponent({
       ) : (
         <>
           <h1 className={styles.title}> {name} </h1>
+          <TableOfContents sectionHeaders={processedMarkdown.headers}/>
           <MarkdownRender className={styles.article}>
-            {preprocessMarkdown(content)}
+           {processedMarkdown.processed} 
           </MarkdownRender>
         </>
       )}
