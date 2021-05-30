@@ -3,6 +3,7 @@
   
   Does not really do tokenizing, so be ware of dragons.
  */
+import styles from 'components/Article/Article.module.scss';
 import { intoParsable, tryParseString, eatIdentifier, eatWhitespace } from 'utils/intoParsable';
 
 interface HeaderInformation {
@@ -144,7 +145,7 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
         // @ts-ignore
           text: textContents
         });
-        const generatedHeader = `\n<h${headerCount} id="${textContents}">${textContents}</h${headerCount}>\n`;
+        const generatedHeader = `\n<h${headerCount} id="${textContents}">${textContents}</h${headerCount}>\n` + `<hr/>`;
         result += generatedHeader;
       }
 

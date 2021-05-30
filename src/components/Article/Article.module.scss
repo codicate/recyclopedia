@@ -1,12 +1,42 @@
-html { scroll-behavior: smooth; }
+@import '/src/styles/variables';
+
+html { 
+  scroll-behavior: smooth; 
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-weight: $general-header-weight;
+}
+
 .title {
-  font-size: 4em;
+  font-weight: $article-header-weight;
+  font-size: 3em;
   overflow-wrap: break-word;
+  text-align: center;
+}
+
+#table_of_contents {
+  border: 1px solid slategrey;
+  margin: 2em;
+  padding: 1.5em;
+
+  #header {
+    margin: 0;
+    font-size: 1.8em;
+  }
 }
 
 .article {
   width: 100%;
   overflow-wrap: break-word;
+
+  h1,h2,h3,h4,h5,h6 {
+    font-weight: $article-header-weight;
+  }
+}
+
+hr {
+  color: #fefefe;
 }
 
 img {
