@@ -37,7 +37,7 @@ function TableOfContents({sectionHeaders} : {sectionHeaders: any[]}) {
               This may look wrong on screen-readers or something. Sorry.
             */
             return (
-              <a href={"#todo"}>
+              <a href={"#"+text}>
                 <p style=
                   {
                     {

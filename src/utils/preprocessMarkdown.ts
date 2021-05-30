@@ -135,15 +135,8 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
       }
     } else {
       if (input.peekCharacter() === '#') {
-        let headerCount = input.consumeUntil(() => {
-            result += input.peekCharacter();
-            return (input.peekCharacter() !== '#');
-        }).length;
-
-        let textContents = input.consumeUntil(() => {
-          result += input.peekCharacter();
-          return input.peekCharacter() === '\n';
-        });
+        let headerCount  = input.consumeUntil(() => input.peekCharacter() !== '#').length;
+        let textContents = input.consumeUntil(() => input.peekCharacter() === '\n');
 
         actualResult.headers.push({
         // @ts-ignore
@@ -151,7 +144,10 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
         // @ts-ignore
           text: textContents
         });
+        const generatedHeader = `\n<h${headerCount} id="${textContents}">${textContents}</h${headerCount}>\n`;
+        result += generatedHeader;
       }
+
       result += input.eatCharacter();
     }
   }
