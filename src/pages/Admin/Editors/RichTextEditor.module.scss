@@ -13,10 +13,11 @@
     color: yellow;
 }
 
-.main {
+.widgetbar {
     background-color: black;
     border-radius: 16px;
     padding: 0.8em;
     position: sticky;
     top: 8%;
 }
+[contentEditable] { outline: 0px solid transparent; }

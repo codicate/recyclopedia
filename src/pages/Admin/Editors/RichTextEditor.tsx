@@ -10,7 +10,7 @@ import { widgets, toggleWidgetActiveState, flattenWidgetStateTypes, WidgetCatego
 import { Article } from 'app/articlesSlice';
 
 import bottomToolbarStyle from './bottomToolbar.module.scss';
-import richWidgetBarStyle from './richWidgetBar.module.scss';
+import editorStyle from './RichTextEditor.module.scss';
 import styles from 'pages/Admin/Admin.module.scss';
 import articleStyles from 'components/Article/Article.module.scss';
 import Button from 'components/Form/Button';
@@ -123,10 +123,11 @@ function editorHandleKeybindings({
 }
 
 const editModeInlineStyle = {
+  outline: "0px solid transparent",
   borderColor: "black",
   borderWidth: "1px",
-  margin: "0.3em",
   borderStyle: "solid",
+  margin: "0",
 };
 
 export function RichTextEditor({
@@ -182,7 +183,7 @@ export function RichTextEditor({
 
   return (
     <>
-      <div className={richWidgetBarStyle.main}> {/*requires styling*/}
+      <div className={editorStyle.widgetbar}> {/*requires styling*/}
         {
           Object.entries(flattenWidgetStateTypes(widgetStates)).map(
             ([widgetId, widget]) =>
@@ -192,7 +193,7 @@ export function RichTextEditor({
                 className={
                   ((widgetStates[(widget.category !== undefined) ?
                     widget.category : widgetId].active) === widgetId) ?
-                    richWidgetBarStyle.active : richWidgetBarStyle.button
+                    editorStyle.active : editorStyle.button
                 }
                 onClick={
                   (_) => {
@@ -211,7 +212,7 @@ export function RichTextEditor({
       >
         {(currentArticle) ? currentArticle.name : "Edit New Title"}
       </h1>
-      <div style={editModeInlineStyle}>
+      <div>
         <div
           contentEditable={true}
           className={articleStyles.article}

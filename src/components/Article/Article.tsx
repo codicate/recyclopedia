@@ -13,39 +13,46 @@ import Admin from 'pages/Admin/Admin';
 
 // @ts-ignore
 function TableOfContents({sectionHeaders} : {sectionHeaders: any[]}) {
+  const [foldedStatus, updateFoldedStatus] = useState(false);
+
   return (sectionHeaders.length > 0) ?
     (<div id={styles.table_of_contents}>
-      <h3 id={styles.header}>Table Of Contents</h3>
-      <div style={
-        {
-          marginLeft: "3em",
-        }
-      }>
-        {
-          sectionHeaders.map(
-            ({ level, text }) => {
-              /*
-                Technically I should be making this a list, but it's kind of
-                PITA to do it as it requires me to nest them in a specific way, that would
-                make me special case the header parsing generation.
-  
-                This may look wrong on screen-readers or something. Sorry.
-              */
-              return (
-                <a href={"#" + text}>
-                  <p style=
-                    {
+      <h3 id={styles.header}>
+        Table Of Contents 
+        <a id={styles.folder}
+          onClick={() => 
+          updateFoldedStatus(!foldedStatus)}>
+            {(foldedStatus) ? '+' : '-'}
+            </a>
+      </h3>
+      {(!foldedStatus) ? 
+        (<div style={{ marginLeft: "3em", }}>
+          {
+            sectionHeaders.map(
+              ({ level, text }) => {
+                /*
+                  Technically I should be making this a list, but it's kind of
+                  PITA to do it as it requires me to nest them in a specific way, that would
+                  make me special case the header parsing generation.
+    
+                  This may look wrong on screen-readers or something. Sorry.
+                */
+                return (
+                  <a href={"#" + text}>
+                    <p style=
                       {
-                        marginLeft: `${(level - 1) * 2}em`
-                      }
-                    }>&bull; {text}
-                  </p>
-                </a>
-              )
-            }
-          )
-        }
-      </div>
+                        {
+                          marginLeft: `${(level - 1) * 2}em`
+                        }
+                      }>&bull; {text}
+                    </p>
+                  </a>
+                )
+              }
+            )
+          }
+        </div>) :
+        <></>}
     </div>
     ) : null;
 }
