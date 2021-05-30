@@ -6,7 +6,7 @@
 }
 
 .active {
-    font-size: 1.55em;
+    font-size: 1.35em;
     padding-left: 1.1em;
     padding-right: 1.1em;
     text-align: center;
@@ -14,10 +14,16 @@
 }
 
 .widgetbar {
+    text-align: center;
     background-color: black;
-    border-radius: 16px;
-    padding: 0.8em;
-    position: sticky;
-    top: 8%;
+    padding: 0.4em;
+
+    position: fixed;
+    bottom: 6%;
+    left: 0vw;
+    width: 100vw;
 }
-[contentEditable] { outline: 0px solid transparent; }
+[contentEditable] { 
+    outline: 0px solid transparent;
+    margin-bottom: 25%;
+}
