@@ -1,5 +1,5 @@
 import styles from 'App.module.scss';
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from 'app/hooks';
@@ -12,11 +12,11 @@ import { validPageLink } from 'utils/functions';
 import Header from 'pages/Header/Header';
 import Homepage from "pages/Homepage/Homepage";
 
-import Article from "components/Article/Article";
-import IndexPage from "pages/Index/IndexPage";
-import Admin from "pages/Admin/Admin";
-import Register from 'pages/Admin/Register';
-import Login from 'pages/Admin/Login';
+const Article = lazy(() => import("components/Article/Article"));
+const IndexPage = lazy(() => import("pages/Index/IndexPage"));
+const Admin = lazy(() => import("pages/Admin/Admin"));
+const Register = lazy(() => import('pages/Admin/Register'));
+const Login = lazy(() => import('pages/Admin/Login'));
 
 
 function App() {
@@ -33,32 +33,36 @@ function App() {
             <Homepage articlesData={articlesData} />
           </Route>
 
-          <Route exact path='/index'>
-            <IndexPage />
-          </Route>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/register">
-            <Register />
-          </Route>
-
-          <Route exact path='/admin'>
-            {
-              (currentLoginType === LoginType.Admin)
-                ? <Admin currentArticle={undefined} />
-                : <Redirect to='/' />
-            }
-          </Route>
-
-          {((currentLoginType === LoginType.Admin)
-            ? articlesData.articles
-            : articlesData.articles.filter((article) => !article.draftStatus)
-          ).map((article) =>
-            <Route key={article.name} exact path={validPageLink(article.name)}>
-              <Article article={article} />
+          <Suspense fallback={
+            <p>Please wait! Loading Recyclopedia...</p>
+          }>
+            <Route exact path='/index'>
+              <IndexPage />
             </Route>
-          )}
+            <Route path="/login">
+              <Login />
+            </Route>
+            <Route path="/register">
+              <Register />
+            </Route>
+
+            <Route exact path='/admin'>
+              {
+                (currentLoginType === LoginType.Admin)
+                  ? <Admin currentArticle={undefined} />
+                  : <Redirect to='/' />
+              }
+            </Route>
+
+            {((currentLoginType === LoginType.Admin)
+              ? articlesData.articles
+              : articlesData.articles.filter((article) => !article.draftStatus)
+            ).map((article) =>
+              <Route key={article.name} exact path={validPageLink(article.name)}>
+                <Article article={article} />
+              </Route>
+            )}
+          </Suspense>
 
           <Route path='*'>404</Route>
         </Switch>
