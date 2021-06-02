@@ -1,4 +1,4 @@
-import { createSlice, createDraftSafeSelector, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createDraftSafeSelector, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'app/store';
 
 import { Credentials } from "realm-web";
@@ -58,10 +58,10 @@ export async function loginWith(information?: AccountDetails) {
 export const loginWithEmailAndPassword = createAsyncThunk(
   'admin/loginWithEmailAndPassword',
   async (accountDetails: AccountDetails) => {
-    const {type, user} = await loginWith(accountDetails);
+    const { type, user } = await loginWith(accountDetails);
 
     if (type !== LoginType.Anonymous) {
-      const possiblyAdminLoginType = 
+      const possiblyAdminLoginType =
         (user?.customData.status) === "admin" ? LoginType.Admin : false;
       return {
         accountDetails,
@@ -71,7 +71,7 @@ export const loginWithEmailAndPassword = createAsyncThunk(
 
     return { type };
   }
-)
+);
 
 const adminSlice = createSlice({
   name: 'admin',
@@ -90,22 +90,20 @@ const adminSlice = createSlice({
         switch (payload.type) {
           case LoginType.User:
           case LoginType.Admin:
-            /*
-              are there constraints in typescript? I know by this
-              point my login object has stuff, so I shouldn't have to check...
-            */
-            if (payload.accountDetails)
-              state.accountDetails = payload.accountDetails;
+            state.accountDetails = payload.accountDetails;
             state.loginType = payload.type;
-          break;
+            break;
+
           default: break;
         }
       }
-    )
+    );
   }
 });
 
-export const { logout, } = adminSlice.actions;
+export const {
+  logout
+} = adminSlice.actions;
 export default adminSlice.reducer;
 
 const selectSelf = (state: RootState) => state.admin;
