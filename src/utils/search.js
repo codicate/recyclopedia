@@ -1,4 +1,13 @@
+function onlySpaces(str) {
+    let result = true;
+    let index = 0;
+    while (index < str.length && result) 
+        result &= str[index++] === ' ';
+    return result;
+}
 function calculateStringMatchScore(haystack, needle) {
+  if (needle.length === 0 || onlySpaces(needle)) return [-9999, 0];
+
   let haystack_index = 0;
   let needle_index = 0;
 
