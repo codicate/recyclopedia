@@ -1,66 +1,52 @@
-export default function approximateSearch(entries, key) {
-  let copy = [...entries].sort();
+function calculateStringMatchScore(haystack, needle) {
+  let haystack_index = 0;
+  let needle_index = 0;
 
-  // case insensitive
-  function matched_characters(a, b) {
-    if (a !== undefined && b !== undefined) {
-      let count = 0;
-      let shorter_length = Math.min(a.length, b.length);
+  let match_score = 0;
+  let exact_match = (haystack.length === needle.length);
+  let matched = 0;
 
-      for (let i = 0; i < shorter_length; ++i) {
-        if (a[i].toUpperCase() === b[i].toUpperCase()) {
-          count++;
-        } else {
-          return count;
-        }
+  while (haystack_index < haystack.length && needle_index < needle.length) {
+    while (haystack[haystack_index]?.toLowerCase() === needle[needle_index]?.toLowerCase()) {
+      if (haystack[haystack_index] === needle[needle_index]) {
+        match_score += 10;
       }
 
-      return count;
+      if (haystack_index === needle_index) {
+        match_score += 15;
+      } else {
+        match_score += 2;
+        exact_match = false;
+      }
+
+      matched++;
+      needle_index++;
     }
-    return 0;
+
+    match_score -= 1;
+    haystack_index++;
   }
 
-  // This will result in the `key` item percolating itself upwards, which is what we want
-  // related entries will show up nearby. Anything that is not directly alphabetically related is going to
-  // be trouble.
-  copy = copy.sort(
-    (x, y) => {
-      // TODO(jerry or anyone else):  remove this dependency.
-      let matched = [matched_characters(x.name, key), matched_characters(y.name, key)];
-      if (matched[0] !== 0 || matched[1] !== 0) {
-        // Closer matches get pushed forwards.
-        if (matched[0] > matched[1]) {
-          return -1;
-        } else if (matched[0] < matched[1]) {
-          return 1;
-        } else {
-          return -1;
-        }
-      } else {
-        // none of them match the characters...
-        // Push them to the back, they are irrelevant.
-        if (y !== undefined) {
-          if (y < key) {
-            return 1;
-          } else if (y > key) {
-            return 1;
-          } else {
-            // This is the key itself.
-            return -1;
-          }
-        }
-
-        if (x < key) {
-          return 1;
-        } else if (x > key) {
-          return 1;
-        } else {
-          // This is the key itself.
-          return -1;
-        }
-      }
+  if (needle_index >= needle.length) {
+    match_score += 10;
+    if (exact_match) {
+      match_score += 20;
     }
-  );
+  }
 
-  return copy;
+  if (matched === 0) {
+    match_score -= 50;
+  }
+
+  return [match_score, matched];
+}
+
+export default function approximateSearch(entries, key) { 
+  // I wish there were transducers like in Clojure. This might be hella expensive.
+  const result = entries
+              .map((entry) => [entry, calculateStringMatchScore(entry.name, key)])
+              .filter((entry) => entry[1][1])
+              .sort((entryA, entryB) => entryB[1][0] - entryA[1][0])
+              .map((entry) => entry[0]);
+  return result;
 }
