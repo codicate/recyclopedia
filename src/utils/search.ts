@@ -1,12 +1,20 @@
-function onlySpaces(str) {
+import { Article } from "app/articlesSlice";
+
+function onlySpaces(str: string) {
   let result = true;
   let index = 0;
   while (index < str.length && result) 
-    result &= str[index++] === " ";
+    result &&= str[index++] === " ";
   return result;
 }
-function calculateStringMatchScore(haystack, needle) {
-  if (needle.length === 0 || onlySpaces(needle)) return [-9999, 0];
+
+interface StringMatchResult {
+  matchScore: number,
+  validMatch: boolean,
+}
+
+function calculateStringMatchScore(haystack: string, needle: string): StringMatchResult {
+  if (needle.length === 0 || onlySpaces(needle)) return {matchScore: -9999, validMatch: false};
 
   let haystack_index = 0;
   let needle_index = 0;
@@ -47,15 +55,20 @@ function calculateStringMatchScore(haystack, needle) {
     match_score -= 50;
   }
 
-  return [match_score, matched];
+  return {matchScore: match_score, validMatch: matched > 0};
 }
 
-export default function approximateSearch(entries, key) { 
+export default function approximateSearch(entries: Article[], key: string) { 
   // I wish there were transducers like in Clojure. This might be hella expensive.
   const result = entries
-    .map((entry) => [entry, calculateStringMatchScore(entry.name, key)])
-    .filter((entry) => entry[1][1])
-    .sort((entryA, entryB) => entryB[1][0] - entryA[1][0])
-    .map((entry) => entry[0]);
+    .map((entry) => {
+      return {
+        entry: entry,
+        matchScore: calculateStringMatchScore(entry.name, key)
+      };
+    })
+    .filter((entry) => entry.matchScore.validMatch)
+    .sort((entryA, entryB) => entryB.matchScore.matchScore - entryA.matchScore.matchScore)
+    .map((entry) => entry.entry);
   return result;
 }
