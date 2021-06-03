@@ -3,6 +3,7 @@
 */
 function log_message(msg) {
   // This is intentional... This should be in a module called "debug" or something? idk
+  (msg);
 }
 
 function surrounder(sym) {
@@ -31,7 +32,7 @@ const surrounders = {
   "EM": surrounder("_"),
   "U": surrounder("__"),
 };
-const safe_call = (fn, ...rest) => (...rest) => (fn) ? fn(...rest) : rest[0];
+const safe_call = (fn) => (...rest) => (fn) ? fn(...rest) : rest[0];
 /*
 NOTE(jerry):
 
