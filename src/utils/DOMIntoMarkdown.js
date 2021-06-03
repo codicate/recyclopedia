@@ -1,19 +1,22 @@
 /*
     Inhouse DOM to Markdown interpreter.
 */
-function log_message(msg) {}
+function log_message(msg) {
+  // This is intentional... This should be in a module called "debug" or something? idk
+}
+
 function surrounder(sym) {
   return function (content) {
     let spacesLeft = 0;
     let spacesRight = 0;
     for (let i = 0; i < content.length; ++i) {
-      if (content[i] !== ' ') {
+      if (content[i] !== " ") {
         spacesLeft = i - 1;
         break;
       }
     }
     for (let i = content.length - 1; i > 0; --i) {
-      if (content[i] !== ' ') {
+      if (content[i] !== " ") {
         break;
       }
       spacesRight++;
@@ -53,7 +56,7 @@ function renderElement(root, text_contents) {
       } else {
         return text_contents + "\n\n";
       }
-    } else if (root.tagName[0] === 'H') {
+    } else if (root.tagName[0] === "H") {
       return "#".repeat(Number(root.tagName[1])) + " " + text_contents + "\n";
     } else if (root.tagName === "OL") {
       let i = 0;
@@ -98,9 +101,7 @@ export function renderDomAsMarkdown(root) {
     const childrenStrings = Array.from(root.childNodes).reduce((output, node) => { return output + renderDomAsMarkdown(node); }, "");
     const res = renderElement(root, childrenStrings);
     return res;
-  } else {
-    return renderElement(root, "");
   }
 
-  return "";
+  return renderElement(root, "");
 }

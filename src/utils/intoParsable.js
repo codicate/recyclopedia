@@ -85,7 +85,7 @@ export function tryParseString(parsable, { delimiter, acceptMultiline }) {
     let successful_parse = true;
     let string_contents = parsable.consumeUntil(
       function () {
-        if (!acceptMultiline && parsable.requireCharacter('\n')) {
+        if (!acceptMultiline && parsable.requireCharacter("\n")) {
           successful_parse = false;
           return true;
         } else if (parsable.requireCharacter(delimiter)) {
@@ -132,7 +132,7 @@ export function matchedQuotePairs(parsable) {
 // console.log(tryParseString(intoParsable('\'Hello\nWorld!\'|'), {delimiter: '\'', acceptMultiline: true}));
 // console.log(tryParseString(intoParsable('\'Hello\nWorld!\'|'), {delimiter: '\''}));
 
-const is_literal_acceptable = (c) => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
+const is_literal_acceptable = (c) => (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || (c >= "0" && c <= "9");
 export function eatIdentifier(parsable) {
   if (parsable.stillParsing()) {
     return parsable.consumeUntil(() => !is_literal_acceptable(parsable.peekCharacter()));
@@ -143,7 +143,7 @@ export function eatIdentifier(parsable) {
 
 export function eatWhitespace(parsable) {
   while (parsable.stillParsing()) {
-    if (parsable.peekCharacter() === ' ') {
+    if (parsable.peekCharacter() === " ") {
       parsable.eatCharacter();
     } else {
       console.log(parsable.peekCharacter());

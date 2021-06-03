@@ -1,9 +1,9 @@
 function onlySpaces(str) {
-    let result = true;
-    let index = 0;
-    while (index < str.length && result) 
-        result &= str[index++] === ' ';
-    return result;
+  let result = true;
+  let index = 0;
+  while (index < str.length && result) 
+    result &= str[index++] === " ";
+  return result;
 }
 function calculateStringMatchScore(haystack, needle) {
   if (needle.length === 0 || onlySpaces(needle)) return [-9999, 0];
@@ -53,9 +53,9 @@ function calculateStringMatchScore(haystack, needle) {
 export default function approximateSearch(entries, key) { 
   // I wish there were transducers like in Clojure. This might be hella expensive.
   const result = entries
-              .map((entry) => [entry, calculateStringMatchScore(entry.name, key)])
-              .filter((entry) => entry[1][1])
-              .sort((entryA, entryB) => entryB[1][0] - entryA[1][0])
-              .map((entry) => entry[0]);
+    .map((entry) => [entry, calculateStringMatchScore(entry.name, key)])
+    .filter((entry) => entry[1][1])
+    .sort((entryA, entryB) => entryB[1][0] - entryA[1][0])
+    .map((entry) => entry[0]);
   return result;
 }
