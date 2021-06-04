@@ -39,13 +39,12 @@ h1,h2,h3,h4,h5,h6 {
 
   h1,h2,h3,h4,h5,h6 {
     font-weight: $article-header-weight;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid #BBBBBB;
+    color: #666666;
   }
 
   margin-bottom: 15%;
-}
-
-hr {
-  color: #fefefe;
 }
 
 img {

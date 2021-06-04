@@ -145,7 +145,7 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
         // @ts-ignore
           text: textContents
         });
-        const generatedHeader = `\n<h${headerCount} id="${textContents}">${textContents}</h${headerCount}>\n` + `<hr/>`;
+        const generatedHeader = `\n<h${headerCount} id="${textContents}">${textContents}</h${headerCount}>`;
         result += generatedHeader;
       }
 
