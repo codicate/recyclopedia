@@ -5,7 +5,7 @@ import { insertArticle, Article } from 'app/articlesSlice';
 
 import { NoticeBanner } from './Editors/NoticeBanner';
 import { RichTextEditor } from "./Editors/RichTextEditor";
-import { TagEditor } from 'pages/Admin/TagEditor';
+// import { TagEditor } from 'pages/Admin/TagEditor';
 
 export default function Admin({
   currentArticle

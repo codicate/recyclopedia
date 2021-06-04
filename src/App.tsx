@@ -18,7 +18,6 @@ const Admin = lazy(() => import("pages/Admin/Admin"));
 const Register = lazy(() => import('pages/Admin/Register'));
 const Login = lazy(() => import('pages/Admin/Login'));
 
-
 function App() {
   const articlesData = useAppSelector(selectArticlesData);
   const currentLoginType = useAppSelector(selectLoginType);

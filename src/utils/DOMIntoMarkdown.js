@@ -3,7 +3,6 @@
 */
 function log_message(msg) {
   // This is intentional... This should be in a module called "debug" or something? idk
-  (msg);
 }
 
 function surrounder(sym) {
