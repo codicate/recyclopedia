@@ -17,13 +17,14 @@
     text-align: center;
     background-color: black;
     padding: 0.4em;
+    display: inline;
 
     position: fixed;
     bottom: 6%;
     left: 0vw;
     width: 100vw;
 }
+
 [contentEditable] { 
     outline: 0px solid transparent;
-    margin-bottom: 25%;
 }

@@ -206,7 +206,7 @@ export function RichTextEditor({
         }
       </div>
       <h1
-        className={styles.title}
+        className={articleStyles.title}
         contentEditable={(initialArticleState) ? "false" : "true"}
         ref={editableTitleDOMRef}
       >
