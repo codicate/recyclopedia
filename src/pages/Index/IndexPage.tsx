@@ -20,28 +20,46 @@ interface FilterSettings {
 
 interface IndexFilterProperties {
     filterSettings: FilterSettings;
+    updateFilters: {
+        updateTagFilter: (id: string, newValue: boolean) => void,
+    }
 }
 
 // I would've made a foldable component atm, but maybe I don't want it exactly
 // identical, so I'll just replicate it for now since it's not very difficult
 // to do it, and it'll be self-contained.
-function IndexFilter({filterSettings} : IndexFilterProperties) {
+function IndexFilter({filterSettings, updateFilters} : IndexFilterProperties) {
     const [foldedStatus, updateFoldedStatus] = useState(false);
     
     return (<>
               <div id={styles.index_filter}>
                 <h2>Index Filtering</h2>
+                <button onClick={() => updateFoldedStatus(!foldedStatus)}>{(foldedStatus) ? '+' : '-'}</button>
+                <hr/>
                 {(!foldedStatus) ? (
                     <>
                       <h3>Tag Filters:</h3>
                       {
                           filterSettings.tagFilters.map(
-                              ({filterName, active}) => 
-                                  <p>{filterName}</p>
+                              ({filterName, active}) => (
+                                  <div key={filterName}>
+                                    <input type="checkbox"
+                                           value={filterName}
+                                           checked={active}
+                                           onChange={
+                                               function (event) {
+                                                   updateFilters.updateTagFilter(filterName, event.target.checked);
+                                               }
+                                           }/>
+                                    <label htmlFor={filterName}>{filterName}</label>
+                                  </div>
+                              )
+
                           )
                       }
                     </>
                 ): <></>}
+                <hr/>
               </div>
             </>);
 }
@@ -67,7 +85,29 @@ function IndexPage() {
 
     return (
         <div className={styles.index}>
-          <IndexFilter filterSettings={filterSettings}/>
+          <IndexFilter
+            filterSettings={filterSettings}
+            updateFilters={
+                {
+                    updateTagFilter: function(id: string, v: boolean) {
+                        updateFilterSettings(
+                            dictionaryUpdateKey(
+                                filterSettings,
+                                ["tagFilters"],
+                                function (filterArray) {
+                                    for (const filter of filterArray as TagFilter[]) {
+                                        if (filter.filterName === id) {
+                                            filter.active = v;
+                                            break;
+                                        }
+                                    }
+                                    return filterArray;
+                                }
+                            ) as FilterSettings
+                        );
+                    }
+                }
+            }/>
           {
               (isAdmin) ?
                   articlesData.articles.map(({ name, draftStatus }) => (
