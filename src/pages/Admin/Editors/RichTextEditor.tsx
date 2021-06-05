@@ -191,15 +191,8 @@ function ArticleTagEditor({tags, setTagState}: ArticleTagEditorProperties) {
                     setTagState(tags?.slice(0, tags.length-1));
                 } else if (key === "Enter" && input.length > 0) {
                     // too lazy to google for proper function.
-                    let anyDuplicates = false;
-                    for (const item of tags) {
-                        if (item === input) {
-                            anyDuplicates = true;
-                            break;
-                        }
-                    }
-
-                    if (!anyDuplicates) {
+                    const doesIndexAlreadyExist = tags?.indexOf(input) !== -1;
+                    if (!doesIndexAlreadyExist) {
                         setTagState(tags?.concat([input]));
                         setInput('');
                     }
