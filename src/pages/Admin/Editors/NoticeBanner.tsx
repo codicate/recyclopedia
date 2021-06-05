@@ -14,6 +14,7 @@ export function NoticeBanner({
 
   if (dirtyFlag !== selfDirtyFlag) {
     updateStyle((style + 1));
+    console.log(style);
     updateSelfDirtyFlag(!selfDirtyFlag);
   }
 
