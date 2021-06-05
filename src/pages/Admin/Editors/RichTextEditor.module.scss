@@ -19,10 +19,52 @@
     padding: 0.4em;
     display: inline;
 
+    color: white;
     position: fixed;
     bottom: 6%;
     left: 0vw;
     width: 100vw;
+}
+
+.tageditor {
+    text-align: left;
+    background-color: white;
+    color: black;
+    padding: 0.5em;
+
+    input {
+        border: 0;
+        outline: 0;
+    }
+}
+
+.tageditor_tag {
+    display: inline;
+    margin: 0.4em;
+    padding-left: 1em;
+    padding-right: 1em;
+
+    padding-top: 0.3em;
+    padding-bottom: 0.3em;
+
+    background-color: gray;
+    color: white;
+    border-radius: 4px;
+
+    width: 1000px;
+
+    button {
+        font-size: 1.2em;
+        background-color: gray;
+        position: relative;
+        left: -0.7em;
+        margin-right: 0.5em;
+        padding-right: 0.5em;
+        border-right: 1px solid white;
+        display: inline;
+
+        cursor: pointer;
+    }
 }
 
 [contentEditable] { 
