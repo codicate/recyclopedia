@@ -44,7 +44,22 @@ h1,h2,h3,h4,h5,h6 {
     color: #666666;
   }
 
-  margin-bottom: 15%;
+  margin-bottom: 10%;
+}
+
+#tag_view {
+    margin-bottom: 5%;
+    opacity: 0.2;
+    transition: opacity 1s;
+    p {
+        color: #666666FF;
+        margin-left: 1em;
+        display: inline;
+    }
+}
+
+#tag_view:hover {
+    opacity: 1.0;
 }
 
 img {

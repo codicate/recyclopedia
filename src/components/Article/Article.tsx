@@ -57,6 +57,23 @@ function TableOfContents({sectionHeaders} : {sectionHeaders: any[]}) {
     ) : null;
 }
 
+function TagViews({ tags } : { tags?: string[] }) {
+    return (
+        <div id={styles.tag_view}>
+            {
+                (tags) ? (
+                    <>
+                        <h5>This article was tagged with: </h5>
+                        {tags.map((tag) => <p>{tag}</p>)}
+                    </>
+                ) : (
+                    <h5>This article has not been tagged.</h5>
+                )
+            }
+        </div>
+    );
+}
+
 function ArticleComponent({
   article
 }: {
@@ -105,6 +122,7 @@ function ArticleComponent({
           <MarkdownRender className={styles.article}>
            {processedMarkdown.processed} 
           </MarkdownRender>
+          <TagViews tags={article.tags}/>
         </>
       )}
     </>
