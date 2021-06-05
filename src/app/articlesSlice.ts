@@ -157,6 +157,8 @@ const articlesSlice = createSlice({
 export default articlesSlice.reducer;
 const selectSelf = (state: RootState) => state.articles;
 
+// shouldn't it be possible to programmatically generate these instead
+// of copy and paste? Like building the export dictionary manually?
 export const selectStatus = createDraftSafeSelector(
   selectSelf,
   (articles) => articles.status
@@ -165,4 +167,9 @@ export const selectStatus = createDraftSafeSelector(
 export const selectArticlesData = createDraftSafeSelector(
   selectSelf,
   (articles) => articles.articlesData
+);
+
+export const selectAllTags = createDraftSafeSelector(
+    selectSelf,
+    (articles) => articles.allTags
 );
