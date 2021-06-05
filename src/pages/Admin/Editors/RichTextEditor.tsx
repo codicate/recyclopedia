@@ -181,7 +181,7 @@ function ArticleTagEditor({initialTags}: ArticleTagEditorProperties) {
             function ({key}) {
                 if (key === "Backspace" && input.length === 0) {
                     setTags(tags?.slice(0, tags.length-1));
-                } else if (key === "Enter") {
+                } else if (key === "Enter" && input.length > 0) {
                     setTags(tags?.concat([input]));
                     setInput('');
                 }

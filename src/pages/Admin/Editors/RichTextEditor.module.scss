@@ -27,19 +27,27 @@
 }
 
 .tageditor {
+    display: flex;
+    flex-wrap: wrap;
+
     text-align: left;
-    background-color: white;
-    color: black;
+    background-color: #111133FF;
+    color: white;
     padding: 0.5em;
 
     input {
+        margin-left: 1em;
+        background-color: inherit;
+        color: inherit;
         border: 0;
         outline: 0;
     }
 }
 
 .tageditor_tag {
-    display: inline;
+    display: flex;
+    flex-direction: row;
+
     margin: 0.4em;
     padding-left: 1em;
     padding-right: 1em;
@@ -50,8 +58,6 @@
     background-color: gray;
     color: white;
     border-radius: 4px;
-
-    width: 1000px;
 
     button {
         font-size: 1.2em;
