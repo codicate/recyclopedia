@@ -29,13 +29,15 @@ export const databaseApi: {
 };
 
 const initialState: {
-  status: 'idle' | 'loading' | 'succeed' | 'failed';
-  articlesData: ArticlesData;
+    status: 'idle' | 'loading' | 'succeed' | 'failed';
+    articlesData: ArticlesData;
+    allTags: string[];
 } = {
-  status: 'idle',
-  articlesData: {
-    articles: []
-  },
+    status: 'idle',
+    articlesData: {
+        articles: []
+    },
+    allTags: []
 };
 
 // @ts-ignore
@@ -56,20 +58,21 @@ function tryToCallWithUser(fn) {
 }
 
 export const initApi = createAsyncThunk(
-  'articles/initApi',
-  async (appId: string, { getState, dispatch, rejectWithValue }) => {
-    const state = getState() as RootState;
-    try {
-      databaseApi.application = new App({ id: appId });
-      const accountDetails = state.admin.accountDetails;
-      
-      await dispatch(loginWithEmailAndPassword(accountDetails));
-      await dispatch(queryForArticles(undefined));
-    } catch (error) {
-      console.error("Failed to login because: ", error);
-      return rejectWithValue(error.response.data);
+    'articles/initApi',
+    async (appId: string, { getState, dispatch, rejectWithValue }) => {
+        const state = getState() as RootState;
+        try {
+            databaseApi.application = new App({ id: appId });
+            const accountDetails = state.admin.accountDetails;
+            
+            await dispatch(loginWithEmailAndPassword(accountDetails));
+            dispatch(queryForArticles(undefined));
+            dispatch(queryForAllTags(undefined));
+        } catch (error) {
+            console.error("Failed to login because: ", error);
+            return rejectWithValue(error.response.data);
+        }
     }
-  }
 );
 
 export const queryForArticles = createAsyncThunk(
@@ -80,6 +83,17 @@ export const queryForArticles = createAsyncThunk(
       return await user.functions.getAllArticles();
     }
   )
+);
+
+export const queryForAllTags = createAsyncThunk(
+  'articles/queryForAllTags',
+    tryToCallWithUser(
+        // @ts-ignore
+        async function(user: Realm.User, _: any, thunkApi: any) {
+            console.log("all tags");
+            return await user.functions.getAllTags();
+        }
+    )
 );
 
 export const deleteArticle = createAsyncThunk(
@@ -129,6 +143,13 @@ const articlesSlice = createSlice({
       (state, action) => {
         state.articlesData = action.payload;
       }
+    ).addCase(
+        queryForAllTags.fulfilled,
+        (state, action) => {
+            console.log("finished?");
+            console.log(action.payload);
+            state.allTags = action.payload;
+        }
     );
   }
 });
