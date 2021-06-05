@@ -1,6 +1,6 @@
 import styles from 'pages/Index/IndexPage.module.scss';
 import { Link } from 'react-router-dom';
-import { useState, } from 'react';
+import { useState, useEffect } from 'react';
 
 import { useAppSelector } from 'app/hooks';
 import { selectArticlesData, selectAllTags } from 'app/articlesSlice';
@@ -49,13 +49,18 @@ function IndexFilter({filterSettings} : IndexFilterProperties) {
 function IndexPage() {
     const articlesData = useAppSelector(selectArticlesData);
     const allTags = useAppSelector(selectAllTags);
+    const [filterSettings, updateFilterSettings] = useState({draftStatus: false, tagFilters: [] as TagFilter[]});
 
-    const [filterSettings, updateFilterSettings] = useState(
-        {
-            draftStatus: false,
-            tagFilters: allTags.map((tag) => { return {filterName: tag, active: false}; })
-        }
-    );
+    useEffect(
+        function() {
+            updateFilterSettings(
+                {
+                    draftStatus: false,
+                    tagFilters: allTags.map((tag) => { return {filterName: tag, active: false}; })
+                }
+            );
+        },
+        [allTags]);
 
     const currentLoginType = useAppSelector(selectLoginType);
     const isAdmin = currentLoginType === LoginType.Admin;
