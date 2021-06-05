@@ -73,6 +73,81 @@
     }
 }
 
+#imageContextSettingsWindow {
+    background-color: white;
+    border-radius: 5px;
+    width: 50%;
+    height: 80%;
+    margin-top: 2em;
+
+    position: relative;
+
+    h1 {
+        font-size: 2em;
+        text-align: center;
+    }
+
+    button {
+        font-size: 1.3em;
+        border: 1px solid black;
+        border-radius: 2px;
+        margin: 0.4em;
+        transition: transform 0.05s;
+    }
+
+    button:hover {
+        color: white;
+        background-color: black;
+        transform: scale(1.05);
+    }
+
+    button:active {
+        color: yellow;
+        transform: scale(0.98);
+    }
+}
+
+.xOut {
+    user-select: none;
+    position: absolute;
+    right: 1em;
+    transition: color 0.3s;
+    transition: transform 0.3s;
+}
+
+.xOut:hover {
+    cursor: pointer;
+    color: red;
+    transform: scale(1.15);
+}
+.xOut:active {
+    color: blue;
+    transform: scale(0.95);
+}
+
+// lots of stupid stuff. TODO get rid of this.
+.alignToBottom {
+    position: absolute;
+    bottom: 1em;
+    right: 3em;
+}
+
+
+#blotOut {
+    display: flex;
+    justify-content: center;
+
+    z-index: 50;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    
+    background-color: #000000BB;
+    width: 100vw;
+    height: 100vh;
+}
+
 [contentEditable] { 
     outline: 0px solid transparent;
 }

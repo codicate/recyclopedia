@@ -204,6 +204,31 @@ function ArticleTagEditor({tags, setTagState}: ArticleTagEditorProperties) {
     );
 }
 
+interface ImageContextSettingsProperties {
+
+};
+
+function ImageContextSettings(properties: ImageContextSettingsProperties) {
+    return (
+        <div id={editorStyle.blotOut}>
+            <div id={editorStyle.imageContextSettingsWindow}>
+            <h1>Image Settings <a className={editorStyle.xOut}>X</a></h1>
+            <div style={{margin: "2.5em"}}>
+            <p>
+        This is some stuff that will be used for images, mostly editting the width and height.
+            We'll probably have a nice little context menu to open this up.
+
+We'll center stuff in different ways, and set size.
+            </p>
+            </div>
+            <div className={editorStyle.alignToBottom}>
+            <button>Apply Changes</button>
+            </div>
+            </div>
+        </div>
+    );
+}
+
 export function RichTextEditor({
     submissionHandler,
     currentArticle,
@@ -318,6 +343,7 @@ export function RichTextEditor({
         {(tagEditorShown) ? <ArticleTagEditor setTagState={setTagState} tags={tags}/> : <></>}
         </div>
             <EditorToolbar isInitial={(!!initialArticleState)} saveDocument={saveDocument} toggleDraftStatus={toggleDraftStatus}/>
+            <ImageContextSettings></ImageContextSettings>
             </>
     );
 }
