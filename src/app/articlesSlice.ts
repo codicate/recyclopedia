@@ -90,7 +90,6 @@ export const queryForAllTags = createAsyncThunk(
     tryToCallWithUser(
         // @ts-ignore
         async function(user: Realm.User, _: any, thunkApi: any) {
-            console.log("all tags");
             return await user.functions.getAllTags();
         }
     )
@@ -146,9 +145,8 @@ const articlesSlice = createSlice({
     ).addCase(
         queryForAllTags.fulfilled,
         (state, action) => {
-            console.log("finished?");
-            console.log(action.payload);
-            state.allTags = action.payload;
+            state.allTags = action.payload.slice(0);
+            console.log(state.allTags);
         }
     );
   }
@@ -165,11 +163,13 @@ export const selectStatus = createDraftSafeSelector(
 );
 
 export const selectArticlesData = createDraftSafeSelector(
-  selectSelf,
-  (articles) => articles.articlesData
+    selectSelf,
+    (articles) => articles.articlesData
 );
 
 export const selectAllTags = createDraftSafeSelector(
     selectSelf,
-    (articles) => articles.allTags
+    (articles) => {
+        return articles.allTags.slice(0);
+    }
 );

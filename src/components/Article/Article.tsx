@@ -11,6 +11,10 @@ import { preprocessMarkdown } from 'utils/preprocessMarkdown';
 import MarkdownRender from "components/Article/MarkdownRender";
 import Admin from 'pages/Admin/Admin';
 
+// It would be very useful to pull the Foldable part into a reusable component
+// however, the styling cannot be preserved as I may want it to look different...
+// someone may look into this later.
+
 // @ts-ignore
 function TableOfContents({sectionHeaders} : {sectionHeaders: any[]}) {
   const [foldedStatus, updateFoldedStatus] = useState(false);

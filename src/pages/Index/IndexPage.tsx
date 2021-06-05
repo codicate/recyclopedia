@@ -22,9 +22,27 @@ interface IndexFilterProperties {
     filterSettings: FilterSettings;
 }
 
+// I would've made a foldable component atm, but maybe I don't want it exactly
+// identical, so I'll just replicate it for now since it's not very difficult
+// to do it, and it'll be self-contained.
 function IndexFilter({filterSettings} : IndexFilterProperties) {
+    const [foldedStatus, updateFoldedStatus] = useState(false);
+    
     return (<>
-              <h2>Index Filtering</h2>
+              <div id={styles.index_filter}>
+                <h2>Index Filtering</h2>
+                {(!foldedStatus) ? (
+                    <>
+                      <h3>Tag Filters:</h3>
+                      {
+                          filterSettings.tagFilters.map(
+                              ({filterName, active}) => 
+                                  <p>{filterName}</p>
+                          )
+                      }
+                    </>
+                ): <></>}
+              </div>
             </>);
 }
 
@@ -35,7 +53,7 @@ function IndexPage() {
     const [filterSettings, updateFilterSettings] = useState(
         {
             draftStatus: false,
-            tagFilters: allTags.map((tag) => { return {filterName: tag, active: false,}; })
+            tagFilters: allTags.map((tag) => { return {filterName: tag, active: false}; })
         }
     );
 
@@ -45,7 +63,6 @@ function IndexPage() {
     return (
         <div className={styles.index}>
           <IndexFilter filterSettings={filterSettings}/>
-          {allTags.map((tag) => <p>{tag}</p>)}
           {
               (isAdmin) ?
                   articlesData.articles.map(({ name, draftStatus }) => (
