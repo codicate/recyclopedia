@@ -26,6 +26,7 @@ export default function Admin({
     submissionData: {
       name: string;
       content: string;
+      tags?: string[];
     }
   ) => {
     submitHandler(

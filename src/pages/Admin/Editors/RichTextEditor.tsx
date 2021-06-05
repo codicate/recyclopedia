@@ -148,10 +148,6 @@ function EditorToolbar({toggleDraftStatus, saveDocument, isInitial}: EditorToolb
                      </div>);
 }
 
-interface ArticleTagEditorProperties {
-    initialTags?: string[];
-};
-
 function TagDisplay({id, name}:{id: string, name: string}) {
     return (
         <div className={editorStyle.tageditor_tag}>
@@ -162,8 +158,12 @@ function TagDisplay({id, name}:{id: string, name: string}) {
     );
 }
 
-function ArticleTagEditor({initialTags}: ArticleTagEditorProperties) {
-    const [tags, setTags] = useState(initialTags);
+interface ArticleTagEditorProperties {
+    tags: string[];
+    setTagState: React.Dispatch<string[]>;
+};
+
+function ArticleTagEditor({tags, setTagState}: ArticleTagEditorProperties) {
     const [input, setInput] = useState('');
 
     return (
@@ -180,9 +180,9 @@ function ArticleTagEditor({initialTags}: ArticleTagEditorProperties) {
         onKeyDown = {
             function ({key}) {
                 if (key === "Backspace" && input.length === 0) {
-                    setTags(tags?.slice(0, tags.length-1));
+                    setTagState(tags?.slice(0, tags.length-1));
                 } else if (key === "Enter" && input.length > 0) {
-                    setTags(tags?.concat([input]));
+                    setTagState(tags?.concat([input]));
                     setInput('');
                 }
             }
@@ -199,13 +199,14 @@ export function RichTextEditor({
     toggleDraftStatus
 }:
                                {
-                                   submissionHandler: (f: { name: string, content: string; }) => void,
+                                   submissionHandler: (f: { name: string, tags: string[], content: string; }) => void,
                                    currentArticle?: Article,
                                    updateDirtyFlag: React.Dispatch<React.SetStateAction<boolean>>,
                                    toggleDraftStatus: () => void,
                                }) {
     const [initialArticleState, _] = useState(currentArticle);
     const [tagEditorShown, setTagEditorVisibility] = useState(true);
+    const [tags, setTagState] = useState((currentArticle?.tags) || []);
 
     const editableTitleDOMRef = useRef<HTMLHeadingElement>(null);
     const editableAreaDOMRef = useRef<HTMLDivElement>(null);
@@ -218,7 +219,8 @@ export function RichTextEditor({
             const markdownText = renderDomAsMarkdown(editableAreaDOMRef.current);
             submissionHandler({
                 name: (initialArticleState?.name) || (editableTitleDOMRef.current.textContent || ""),
-                content: markdownText
+                content: markdownText,
+                tags: tags
             });
 
             if (initialArticleState === undefined) {
@@ -301,7 +303,7 @@ export function RichTextEditor({
             <button style={{float: "right", marginRight: "3em"}}
         className={editorStyle.button}
             >Set as Featured Article</button>
-        {(tagEditorShown) ? <ArticleTagEditor initialTags={currentArticle?.tags}/> : <></>}
+        {(tagEditorShown) ? <ArticleTagEditor setTagState={setTagState} tags={tags}/> : <></>}
         </div>
             <EditorToolbar isInitial={(!!initialArticleState)} saveDocument={saveDocument} toggleDraftStatus={toggleDraftStatus}/>
             </>
