@@ -169,6 +169,10 @@ function ArticleTagEditor({tags, setTagState}: ArticleTagEditorProperties) {
     return (
         <div
         className={editorStyle.tageditor}>
+            <button
+            className={editorStyle.button}
+        onClick={() => setTagState([]) }
+            >Clear</button>
             {tags?.map((tag) => <TagDisplay key={tag} id={tag} name={tag}/>)}
             <input
         value={input}
@@ -182,8 +186,19 @@ function ArticleTagEditor({tags, setTagState}: ArticleTagEditorProperties) {
                 if (key === "Backspace" && input.length === 0) {
                     setTagState(tags?.slice(0, tags.length-1));
                 } else if (key === "Enter" && input.length > 0) {
-                    setTagState(tags?.concat([input]));
-                    setInput('');
+                    // too lazy to google for proper function.
+                    let anyDuplicates = false;
+                    for (const item of tags) {
+                        if (item === input) {
+                            anyDuplicates = true;
+                            break;
+                        }
+                    }
+
+                    if (!anyDuplicates) {
+                        setTagState(tags?.concat([input]));
+                        setInput('');
+                    }
                 }
             }
         }
