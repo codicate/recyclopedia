@@ -109,24 +109,38 @@ function IndexPage() {
                 }
             }/>
           {
-              (isAdmin) ?
-                  articlesData.articles.map(({ name, draftStatus }) => (
+              ((isAdmin) ?
+                  articlesData.articles :
+                  articlesData.articles.filter(({ draftStatus }) => !draftStatus)).
+                  filter(function ({tags})  {
+                      let result = function(){
+                          for (const tagFilter of filterSettings.tagFilters) {
+                              if (tagFilter.active) return false;
+                          }
+                          return true;
+                      }();
+
+                      if (!result) {
+                          for (const tagFilter of filterSettings.tagFilters) {
+                              if (tags) {
+                                  for (const tag of tags) {
+                                      if (tagFilter.filterName === tag) {
+                                          // babel can't do ||=????
+                                          result = result || tagFilter.active;
+                                      }
+                                  }
+                              }
+                          }
+                      }
+
+                      return result;
+                  }).
+                  map(({ name, draftStatus }) => (
                       <p key={name} >
-                        <Link to={validPageLink(name)}>
+                          <Link to={validPageLink(name)}>
                           {(draftStatus) ? "[DRAFT*] " + name : name}
-                        </Link>
-                      </p>
-                  ))
-                  :
-                  // I should technically not check for undefined, but okay.
-              articlesData.articles
-                  .filter(({ draftStatus }) => draftStatus === false || draftStatus === undefined)
-                  .map(({ name }) => (
-                      <p key={name} >
-                        <Link to={validPageLink(name)}>
-                          {name}
-                        </Link>
-                      </p>
+                      </Link>
+                          </p>
                   ))
           }
         </div>
