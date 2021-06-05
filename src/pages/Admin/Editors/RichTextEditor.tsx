@@ -148,11 +148,11 @@ function EditorToolbar({toggleDraftStatus, saveDocument, isInitial}: EditorToolb
                      </div>);
 }
 
-function TagDisplay({id, name}:{id: string, name: string}) {
+function TagDisplay({id, name, removeTag}:{id: string, name: string, removeTag: (id: string) => void}) {
     return (
         <div className={editorStyle.tageditor_tag}>
             <span>
-            <button>&times;</button>
+            <button onClick={(_) => removeTag(id)}>&times;</button>
             </span>
             {name}</div>
     );
@@ -166,6 +166,10 @@ interface ArticleTagEditorProperties {
 function ArticleTagEditor({tags, setTagState}: ArticleTagEditorProperties) {
     const [input, setInput] = useState('');
 
+    function removeTagById(id: string) {
+        setTagState(tags.filter((tagName) => id !== tagName));
+    }
+
     return (
         <div
         className={editorStyle.tageditor}>
@@ -173,7 +177,7 @@ function ArticleTagEditor({tags, setTagState}: ArticleTagEditorProperties) {
             className={editorStyle.button}
         onClick={() => setTagState([]) }
             >Clear</button>
-            {tags?.map((tag) => <TagDisplay key={tag} id={tag} name={tag}/>)}
+            {tags?.map((tag) => <TagDisplay removeTag={removeTagById} key={tag} id={tag} name={tag}/>)}
             <input
         value={input}
         onChange = {
