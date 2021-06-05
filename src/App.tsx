@@ -1,22 +1,22 @@
-import styles from 'App.module.scss';
-import { lazy, Suspense, useEffect } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import styles from "App.module.scss";
+import { lazy, Suspense, useEffect } from "react";
+import { Route, Switch, Redirect } from "react-router-dom";
 
-import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { initApi, selectStatus, selectArticlesData } from 'app/articlesSlice';
-import { selectLoginType, LoginType } from 'app/adminSlice';
+import { useAppDispatch, useAppSelector } from "app/hooks";
+import { initApi, selectStatus, selectArticlesData } from "app/articlesSlice";
+import { selectLoginType, LoginType } from "app/adminSlice";
 
-import { Secrets } from 'secrets';
-import { validPageLink } from 'utils/functions';
+import { Secrets } from "secrets";
+import { validPageLink } from "utils/functions";
 
-import Header from 'pages/Header/Header';
+import Header from "pages/Header/Header";
 import Homepage from "pages/Homepage/Homepage";
 
 const Article = lazy(() => import("components/Article/Article"));
 const IndexPage = lazy(() => import("pages/Index/IndexPage"));
 const Admin = lazy(() => import("pages/Admin/Admin"));
-const Register = lazy(() => import('pages/Admin/Register'));
-const Login = lazy(() => import('pages/Admin/Login'));
+const Register = lazy(() => import("pages/Admin/Register"));
+const Login = lazy(() => import("pages/Admin/Login"));
 
 function App() {
   const articlesData = useAppSelector(selectArticlesData);
@@ -79,10 +79,10 @@ function InitializingApp() {
 
   const status = useAppSelector(selectStatus);
 
-  if (status === 'failed')
+  if (status === "failed")
     return <p>MongoDB is probably offline. Crap.</p>;
 
-  if (status === 'succeed')
+  if (status === "succeed")
     return <App />;
 
   return <p>Please wait! Loading Recyclopedia...</p>;

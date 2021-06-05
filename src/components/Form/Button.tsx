@@ -1,19 +1,19 @@
-import styles from 'components/Form/Button.module.scss';
+import styles from "components/Form/Button.module.scss";
 
 const Button = ({
-  children = '',
-  type = 'button',
+  children = "",
+  type = "button",
   styleOption,
   ...props
 }: {
   children?: React.ReactNode;
-  type?: 'submit' | 'reset' | 'button';
+  type?: "submit" | "reset" | "button";
   styleOption?: string;
   onClick?(): void;
 }) => {
   return (
     <button
-      className={`${styles.button} ${styleOption ? styles[styleOption] : ''}`}
+      className={`${styles.button} ${styleOption ? styles[styleOption] : ""}`}
       type={type}
       {...props}
     >

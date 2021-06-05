@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk, createDraftSafeSelector } from '@reduxjs/toolkit';
-import { RootState } from 'app/store';
-import { loginWithEmailAndPassword, selectAccountDetails } from 'app/adminSlice'
-import ArticleComponent from 'components/Article/Article';
+import { createSlice, createAsyncThunk, createDraftSafeSelector } from "@reduxjs/toolkit";
+import { RootState } from "app/store";
+import { loginWithEmailAndPassword, selectAccountDetails } from "app/adminSlice";
+import ArticleComponent from "components/Article/Article";
 
 import { App, User, Credentials } from "realm-web";
 
@@ -14,7 +14,7 @@ export interface Article {
 
 export interface ArticlesData {
   articles: Article[];
-};
+}
 
 export type ArticlesDataProperties = {
   articlesData: ArticlesData;
@@ -29,15 +29,15 @@ export const databaseApi: {
 };
 
 const initialState: {
-    status: 'idle' | 'loading' | 'succeed' | 'failed';
+    status: "idle" | "loading" | "succeed" | "failed";
     articlesData: ArticlesData;
     allTags: string[];
 } = {
-    status: 'idle',
-    articlesData: {
-        articles: []
-    },
-    allTags: []
+  status: "idle",
+  articlesData: {
+    articles: []
+  },
+  allTags: []
 };
 
 // @ts-ignore
@@ -54,31 +54,31 @@ function tryToCallWithUser(fn) {
       console.error("Call with user error: ", error);
       return thunkApi.rejectWithValue(error.response.data);
     }
-  }
+  };
 }
 
 export const initApi = createAsyncThunk(
-    'articles/initApi',
-    async (appId: string, { getState, dispatch, rejectWithValue }) => {
-        const state = getState() as RootState;
-        try {
-            databaseApi.application = new App({ id: appId });
-            const accountDetails = state.admin.accountDetails;
+  "articles/initApi",
+  async (appId: string, { getState, dispatch, rejectWithValue }) => {
+    const state = getState() as RootState;
+    try {
+      databaseApi.application = new App({ id: appId });
+      const accountDetails = state.admin.accountDetails;
             
-            await dispatch(loginWithEmailAndPassword(accountDetails));
-            dispatch(queryForArticles(undefined));
-            dispatch(queryForAllTags(undefined));
-        } catch (error) {
-            console.error("Failed to login because: ", error);
-            return rejectWithValue(error.response.data);
-        }
+      await dispatch(loginWithEmailAndPassword(accountDetails));
+      dispatch(queryForArticles(undefined));
+      dispatch(queryForAllTags(undefined));
+    } catch (error) {
+      console.error("Failed to login because: ", error);
+      return rejectWithValue(error.response.data);
     }
+  }
 );
 
 export const queryForArticles = createAsyncThunk(
-  'articles/queryForArticles',
+  "articles/queryForArticles",
   tryToCallWithUser(
-// @ts-ignore
+    // @ts-ignore
     async function(user: Realm.User, query?: any, thunkApi: any) {
       return await user.functions.getAllArticles();
     }
@@ -86,19 +86,19 @@ export const queryForArticles = createAsyncThunk(
 );
 
 export const queryForAllTags = createAsyncThunk(
-  'articles/queryForAllTags',
-    tryToCallWithUser(
-        // @ts-ignore
-        async function(user: Realm.User, _: any, thunkApi: any) {
-            return await user.functions.getAllTags();
-        }
-    )
+  "articles/queryForAllTags",
+  tryToCallWithUser(
+    // @ts-ignore
+    async function(user: Realm.User, _: any, thunkApi: any) {
+      return await user.functions.getAllTags();
+    }
+  )
 );
 
 export const deleteArticle = createAsyncThunk(
-  'articles/deleteArticle',
+  "articles/deleteArticle",
   tryToCallWithUser(
-// @ts-ignore
+    // @ts-ignore
     async function(user: Realm.User, name: string, {dispatch}) {
       await user.functions.removeArticle(name);
       dispatch(queryForArticles(undefined));
@@ -107,9 +107,9 @@ export const deleteArticle = createAsyncThunk(
 );
 
 export const insertArticle = createAsyncThunk(
-  'articles/insertArticle',
+  "articles/insertArticle",
   tryToCallWithUser(
-// @ts-ignore
+    // @ts-ignore
     async function(user: Realm.User, articleContent: Article, {dispatch}) {
       await user.functions.createOrUpdateArticle(articleContent);
       dispatch(queryForArticles(undefined));
@@ -118,24 +118,24 @@ export const insertArticle = createAsyncThunk(
 );
 
 const articlesSlice = createSlice({
-  name: 'api',
+  name: "api",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(
       initApi.pending,
       (state) => {
-        state.status = 'loading';
+        state.status = "loading";
       }
     ).addCase(
       initApi.rejected,
       (state) => {
-        state.status = 'failed';
+        state.status = "failed";
       }
     ).addCase(
       initApi.fulfilled,
       (state) => {
-        state.status = 'succeed';
+        state.status = "succeed";
       }
     ).addCase(
       queryForArticles.fulfilled,
@@ -143,11 +143,11 @@ const articlesSlice = createSlice({
         state.articlesData = action.payload;
       }
     ).addCase(
-        queryForAllTags.fulfilled,
-        (state, action) => {
-            state.allTags = action.payload.slice(0);
-            console.log(state.allTags);
-        }
+      queryForAllTags.fulfilled,
+      (state, action) => {
+        state.allTags = action.payload.slice(0);
+        console.log(state.allTags);
+      }
     );
   }
 });
@@ -163,13 +163,13 @@ export const selectStatus = createDraftSafeSelector(
 );
 
 export const selectArticlesData = createDraftSafeSelector(
-    selectSelf,
-    (articles) => articles.articlesData
+  selectSelf,
+  (articles) => articles.articlesData
 );
 
 export const selectAllTags = createDraftSafeSelector(
-    selectSelf,
-    (articles) => {
-        return articles.allTags.slice(0);
-    }
+  selectSelf,
+  (articles) => {
+    return articles.allTags.slice(0);
+  }
 );

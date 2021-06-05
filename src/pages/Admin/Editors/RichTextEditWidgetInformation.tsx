@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { dictionaryUpdateKey, dictionaryUpdateKeyNested } from 'utils/functions';
+import { dictionaryUpdateKey, dictionaryUpdateKeyNested } from "utils/functions";
 
 export type WidgetCategoryDic = Record<string,WidgetCategory>;
 export type WidgetInformationDic = Record<string, WidgetInformation>;
@@ -11,12 +11,12 @@ export interface WidgetInformation {
   command: string,
   argument?: string,
   category?: string,
-};
+}
 
 export interface WidgetCategory {
   active: string | null,
   types: WidgetInformationDic
-};
+}
 
 export const widgets: WidgetCategoryDic = {
   heading: {

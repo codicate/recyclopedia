@@ -1,5 +1,5 @@
-import noticeBannerStyles from './NoticeBanner.module.scss';
-import { useState } from 'react';
+import noticeBannerStyles from "./NoticeBanner.module.scss";
+import { useState } from "react";
 
 export function NoticeBanner({
   children, dirtyFlag

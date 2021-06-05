@@ -1,4 +1,4 @@
-import MD from 'markdown-it';
+import MD from "markdown-it";
 const md = MD({
   html: true,
   breaks: true,

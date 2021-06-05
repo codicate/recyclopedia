@@ -1,14 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 import { Secrets } from "secrets";
 
 //Return the current property of a ref if it is a ref
 export const getRefCurrent = (ref: React.MutableRefObject<any>) => {
-  return ref.hasOwnProperty("current")
+  return Object.prototype.hasOwnProperty.call(ref, "current")
     ? ref.current
     : ref;
 };
 
-export const validPageLink = (originalName: string) => `/${originalName.toLowerCase().trim().replace(/ +/g, '_')}`;
+export const validPageLink = (originalName: string) => `/${originalName.toLowerCase().trim().replace(/ +/g, "_")}`;
 
 export async function uploadImage(image_name: string) {
   const form_data = new FormData();
@@ -27,11 +27,11 @@ export async function uploadImage(image_name: string) {
 type Base64String = string;
 type RetrievedImageCallback = (f: Base64String) => void;
 export async function retrieveImageData(
-    imageFile: File,
-    whenRetrieved: RetrievedImageCallback
-  ) {
+  imageFile: File,
+  whenRetrieved: RetrievedImageCallback
+) {
   const image_file = imageFile;
-  const img = document.createElement('img');
+  const img = document.createElement("img");
   img.src = URL.createObjectURL(image_file);
   console.log("attempting to load: ", image_file);
   img.onload = async function () {
@@ -42,7 +42,7 @@ export async function retrieveImageData(
       canvas.height = img.height;
 
       canvas_context.drawImage(img, 0, 0);
-      const imgData = canvas.toDataURL().split(',')[1];
+      const imgData = canvas.toDataURL().split(",")[1];
       console.log("image data retrieved");
       whenRetrieved(imgData);
     } else {

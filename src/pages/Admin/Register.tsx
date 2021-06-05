@@ -1,14 +1,14 @@
-import styles from 'pages/Admin/Register.module.scss';
-import { useHistory } from 'react-router-dom';
+import styles from "pages/Admin/Register.module.scss";
+import { useHistory } from "react-router-dom";
 
-import { useAppDispatch } from 'app/hooks';
-import { registerAccount } from 'app/adminSlice';
+import { useAppDispatch } from "app/hooks";
+import { registerAccount } from "app/adminSlice";
 
-import Form from 'components/Form/Form';
-import Button from 'components/Form/Button';
+import Form from "components/Form/Form";
+import Button from "components/Form/Button";
 
 
-function Register(_: {}) {
+function Register(_: Record<string, never>) {
   const dispatch = useAppDispatch();
   const history = useHistory();
 
@@ -19,17 +19,17 @@ function Register(_: {}) {
         inputItems={{
           email: {
             selectAllOnFocus: true,
-            placeholder: 'Email',
+            placeholder: "Email",
             required: true,
           },
           password: {
             selectAllOnFocus: true,
-            placeholder: 'Password',
+            placeholder: "Password",
             required: true,
           },
           passwordConfirmation: {
             selectAllOnFocus: true,
-            placeholder: 'Confirm Password',
+            placeholder: "Confirm Password",
             required: true,
           }
         }}

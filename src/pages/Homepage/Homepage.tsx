@@ -1,8 +1,8 @@
-import styles from 'pages/Homepage/Homepage.module.scss';
-import { randomElt } from 'utils/functions';
-import MarkdownRender from 'components/Article/MarkdownRender';
+import styles from "pages/Homepage/Homepage.module.scss";
+import { randomElt } from "utils/functions";
+import MarkdownRender from "components/Article/MarkdownRender";
 
-import { ArticlesDataProperties } from 'app/articlesSlice';
+import { ArticlesDataProperties } from "app/articlesSlice";
 
 function ArticleShowcase({ articlesData: { articles } }: ArticlesDataProperties) {
   const { name, content } = (articles.length) ? randomElt(articles) : { name: "no article name", content: "no articles" };
@@ -17,7 +17,7 @@ function ArticleShowcase({ articlesData: { articles } }: ArticlesDataProperties)
       <div className={styles.articleDisplay}>
         <h2>{name}</h2>
         <MarkdownRender className={styles.searchResult}>
-          {`${content.substr(0, 800).replaceAll(/(@@.*)|(@@.*@@)/g, '')}`}
+          {`${content.substr(0, 800).replaceAll(/(@@.*)|(@@.*@@)/g, "")}`}
         </MarkdownRender>
       </div>
     </>

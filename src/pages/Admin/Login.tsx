@@ -1,14 +1,14 @@
-import styles from 'pages/Admin/Login.module.scss';
-import { useHistory } from 'react-router-dom';
+import styles from "pages/Admin/Login.module.scss";
+import { useHistory } from "react-router-dom";
 
-import { useAppDispatch } from 'app/hooks';
-import { LoginAttemptResult, loginWithEmailAndPassword, LoginType } from 'app/adminSlice';
+import { useAppDispatch } from "app/hooks";
+import { LoginAttemptResult, loginWithEmailAndPassword, LoginType } from "app/adminSlice";
 
-import Form from 'components/Form/Form';
-import Button from 'components/Form/Button';
+import Form from "components/Form/Form";
+import Button from "components/Form/Button";
 
 
-function Login(_: {}) {
+function Login(_: Record<string, never>) {
   const dispatch = useAppDispatch();
   const history = useHistory();
   return (
@@ -18,12 +18,12 @@ function Login(_: {}) {
         inputItems={{
           email: {
             selectAllOnFocus: true,
-            placeholder: 'Email',
+            placeholder: "Email",
             required: true,
           },
           password: {
             selectAllOnFocus: true,
-            placeholder: 'Password',
+            placeholder: "Password",
             required: true,
           }
         }}
@@ -32,9 +32,9 @@ function Login(_: {}) {
           console.log(loginResult);
 
           if (loginResult.type !== LoginType.Anonymous) {
-            history.push('/');
+            history.push("/");
           } else {
-            alert('bad login');
+            alert("bad login");
           }
         }}
       >

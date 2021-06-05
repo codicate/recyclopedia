@@ -21,6 +21,10 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "react/react-in-jsx-scope": "off",
+        // TODO handle the @ts-ignore later. I just need this to work...
+        "@typescript-eslint/ban-ts-comment": "off",
+
         "indent": [
             "error",
             2

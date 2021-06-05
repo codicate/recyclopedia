@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import { useAppDispatch } from 'app/hooks';
-import { insertArticle, Article } from 'app/articlesSlice';
+import { useAppDispatch } from "app/hooks";
+import { insertArticle, Article } from "app/articlesSlice";
 
-import { NoticeBanner } from './Editors/NoticeBanner';
+import { NoticeBanner } from "./Editors/NoticeBanner";
 import { RichTextEditor } from "./Editors/RichTextEditor";
 // import { TagEditor } from 'pages/Admin/TagEditor';
 
@@ -20,7 +20,7 @@ export default function Admin({
   function submitHandler(input: Article, onFinishedCallback?: (input: Article) => void) {
     dispatch(insertArticle(input));
     onFinishedCallback?.(input);
-  };
+  }
 
   const submissionHandler = (
     submissionData: {

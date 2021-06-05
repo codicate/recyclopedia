@@ -1,11 +1,11 @@
-import styles from 'pages/Header/Header.module.scss';
-import { Link } from 'react-router-dom';
+import styles from "pages/Header/Header.module.scss";
+import { Link } from "react-router-dom";
 
-import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { LoginType, logout, selectLoginType } from 'app/adminSlice';
+import { useAppDispatch, useAppSelector } from "app/hooks";
+import { LoginType, logout, selectLoginType } from "app/adminSlice";
 
-import approximateSearch from 'utils/search';
-import Search, { renderHoverboxSearch } from 'pages/Header/Search';
+import approximateSearch from "utils/search";
+import Search, { renderHoverboxSearch } from "pages/Header/Search";
 
 
 const Header = () => {
@@ -22,7 +22,7 @@ const Header = () => {
         renderFunction={renderHoverboxSearch}
       />
       <nav id={styles.navbar}>
-        <button className={'material-icons ' + styles.menu}>
+        <button className={"material-icons " + styles.menu}>
           menu
         </button>
         <button className={styles.links}>
@@ -31,28 +31,28 @@ const Header = () => {
             currentLoginType != LoginType.Anonymous &&
             currentLoginType != LoginType.NotLoggedIn
           ) ? (
-            <>
+              <>
                 {
                   (currentLoginType === LoginType.Admin) ?
                     (<Link to="/admin">
                       Create New Article
                     </Link>) :
                     <></>
-}
-              <button
-                onClick={() => {
-                  dispatch(logout());
-                }}
-              >
+                }
+                <button
+                  onClick={() => {
+                    dispatch(logout());
+                  }}
+                >
                 Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link to="/register">Register</Link>
-              <Link to="/login">Login</Link>
-            </>
-          )}
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/register">Register</Link>
+                <Link to="/login">Login</Link>
+              </>
+            )}
         </button>
       </nav>
     </header >

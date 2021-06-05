@@ -1,14 +1,14 @@
-import styles from 'pages/Header/Search.module.scss';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import styles from "pages/Header/Search.module.scss";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
-import { useAppSelector } from 'app/hooks';
-import { selectArticlesData, Article } from 'app/articlesSlice';
+import { useAppSelector } from "app/hooks";
+import { selectArticlesData, Article } from "app/articlesSlice";
 
-import { validPageLink } from 'utils/functions';
-import MarkdownRender from 'components/Article/MarkdownRender';
+import { validPageLink } from "utils/functions";
+import MarkdownRender from "components/Article/MarkdownRender";
 
-import Searchbar from 'components/Searchbar/Searchbar';
+import Searchbar from "components/Searchbar/Searchbar";
 
 export function renderAsParagraphs(searchResults: Article[]) {
   return searchResults.map(({ name }) =>
@@ -24,7 +24,7 @@ export function renderSearchLink(searchResults: Article[]) {
     >
       <p>{name}</p>
       <MarkdownRender className={styles.searchResult}>
-        {`${content.substr(0, 320).replaceAll(/(@@.*)|(@@.*@@)/g, '')}...`}
+        {`${content.substr(0, 320).replaceAll(/(@@.*)|(@@.*@@)/g, "")}...`}
       </MarkdownRender>
     </Link>
   ));

@@ -1,18 +1,18 @@
-import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit';
+import { configureStore, ThunkAction, Action, combineReducers } from "@reduxjs/toolkit";
 import {
   persistStore, persistReducer,
   FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER
-} from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+} from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
-import articlesReducer from 'app/articlesSlice';
-import adminReducer from 'app/adminSlice';
+import articlesReducer from "app/articlesSlice";
+import adminReducer from "app/adminSlice";
 
 
 const persistConfig = {
-  key: 'root',
+  key: "root",
   storage,
-  whitelist: ['admin']
+  whitelist: ["admin"]
 };
 
 const rootReducer = combineReducers({
@@ -41,9 +41,9 @@ export const store = configureStore({
     serializableCheck: {
       ignoredActions: [
         FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER,
-        'articles/queryForArticles/fulfilled'
+        "articles/queryForArticles/fulfilled"
       ],
-      ignoredPaths: ['articles.articlesData']
+      ignoredPaths: ["articles.articlesData"]
     }
   })
 });

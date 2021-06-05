@@ -1,6 +1,6 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent } from "react";
 
-import Input, { InputOptions, ChangeHandler } from 'components/Form/Input';
+import Input, { InputOptions, ChangeHandler } from "components/Form/Input";
 
 function Form<
   T extends { [name: string]: InputOptions; }
@@ -18,7 +18,7 @@ function Form<
 
   const defaultItems = Object.assign(
     Object.entries(inputItems).map(([name, value]) => ({
-      [name]: value.defaultValue || ''
+      [name]: value.defaultValue || ""
     }))
   );
 
@@ -62,6 +62,6 @@ function Form<
       {children}
     </form>
   );
-};
+}
 
 export default Form;

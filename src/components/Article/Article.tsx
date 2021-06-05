@@ -1,15 +1,15 @@
-import styles from 'components/Article/Article.module.scss';
-import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import styles from "components/Article/Article.module.scss";
+import { useState } from "react";
+import { useHistory } from "react-router-dom";
 
-import { useAppSelector, useAppDispatch } from 'app/hooks';
-import { deleteArticle, Article } from 'app/articlesSlice';
-import { LoginType, selectLoginType } from 'app/adminSlice';
+import { useAppSelector, useAppDispatch } from "app/hooks";
+import { deleteArticle, Article } from "app/articlesSlice";
+import { LoginType, selectLoginType } from "app/adminSlice";
 
-import { preprocessMarkdown } from 'utils/preprocessMarkdown';
+import { preprocessMarkdown } from "utils/preprocessMarkdown";
 
 import MarkdownRender from "components/Article/MarkdownRender";
-import Admin from 'pages/Admin/Admin';
+import Admin from "pages/Admin/Admin";
 
 // It would be very useful to pull the Foldable part into a reusable component
 // however, the styling cannot be preserved as I may want it to look different...
@@ -22,12 +22,12 @@ function TableOfContents({sectionHeaders} : {sectionHeaders: any[]}) {
   return (sectionHeaders.length > 0) ?
     (<div id={styles.table_of_contents}>
       <h3 id={styles.header}>
-        Table Of Contents 
+            Table Of Contents 
         <a id={styles.folder}
           onClick={() => 
-          updateFoldedStatus(!foldedStatus)}>
-            {(foldedStatus) ? '+' : '-'}
-            </a>
+            updateFoldedStatus(!foldedStatus)}>
+          {(foldedStatus) ? "+" : "-"}
+        </a>
       </h3>
       {(!foldedStatus) ? 
         (<div style={{ marginLeft: "3em", }}>
@@ -35,14 +35,14 @@ function TableOfContents({sectionHeaders} : {sectionHeaders: any[]}) {
             sectionHeaders.map(
               ({ level, text }) => {
                 /*
-                  Technically I should be making this a list, but it's kind of
-                  PITA to do it as it requires me to nest them in a specific way, that would
-                  make me special case the header parsing generation.
-    
-                  This may look wrong on screen-readers or something. Sorry.
-                */
+                                  Technically I should be making this a list, but it's kind of
+                                  PITA to do it as it requires me to nest them in a specific way, that would
+                                  make me special case the header parsing generation.
+                                  
+                                  This may look wrong on screen-readers or something. Sorry.
+                                */
                 return (
-                  <a href={"#" + text}>
+                  <a key={text} href={"#" + text}>
                     <p style=
                       {
                         {
@@ -51,7 +51,7 @@ function TableOfContents({sectionHeaders} : {sectionHeaders: any[]}) {
                       }>&bull; {text}
                     </p>
                   </a>
-                )
+                );
               }
             )
           }
@@ -62,26 +62,26 @@ function TableOfContents({sectionHeaders} : {sectionHeaders: any[]}) {
 }
 
 function TagViews({ tags } : { tags?: string[] }) {
-    return (
-        <div id={styles.tag_view}>
-            {
-                (tags) ? (
-                    <>
-                        <h5>This article was tagged with: </h5>
-                        {tags.map((tag) => <p>{tag}</p>)}
-                    </>
-                ) : (
-                    <h5>This article has not been tagged.</h5>
-                )
-            }
-        </div>
-    );
+  return (
+    <div id={styles.tag_view}>
+      {
+        (tags) ? (
+          <>
+            <h5>This article was tagged with: </h5>
+            {tags.map((tag) => <p key={tag}>{tag}</p>)}
+          </>
+        ) : (
+          <h5>This article has not been tagged.</h5>
+        )
+      }
+    </div>
+  );
 }
 
 function ArticleComponent({
   article
 }: {
-  article: Article;
+    article: Article;
 }) {
   const history = useHistory();
   const dispatch = useAppDispatch();
@@ -100,15 +100,15 @@ function ArticleComponent({
             <button
               onClick={() => {
                 dispatch(deleteArticle(name));
-                history.push('/');
+                history.push("/");
               }}
             >
-              Delete Page
+                        Delete Page
             </button>
             <button
               onClick={() => updateAdminEditView(!adminEditView)}
             >
-              Edit This Page
+                        Edit This Page
             </button>
           </>
         )
@@ -116,19 +116,19 @@ function ArticleComponent({
       {(
         isAdmin && adminEditView
       ) ? (
-        <Admin
-          currentArticle={article}
-        />
-      ) : (
-        <>
-          <h1 className={styles.title}> {name} </h1>
-          <TableOfContents sectionHeaders={processedMarkdown.headers}/>
-          <MarkdownRender className={styles.article}>
-           {processedMarkdown.processed} 
-          </MarkdownRender>
-          <TagViews tags={article.tags}/>
-        </>
-      )}
+          <Admin
+            currentArticle={article}
+          />
+        ) : (
+          <>
+            <h1 className={styles.title}> {name} </h1>
+            <TableOfContents sectionHeaders={processedMarkdown.headers}/>
+            <MarkdownRender className={styles.article}>
+              {processedMarkdown.processed} 
+            </MarkdownRender>
+            <TagViews tags={article.tags}/>
+          </>
+        )}
     </>
   );
 }

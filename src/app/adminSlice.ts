@@ -1,8 +1,8 @@
-import { createSlice, createDraftSafeSelector, createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from 'app/store';
+import { createSlice, createDraftSafeSelector, createAsyncThunk } from "@reduxjs/toolkit";
+import { RootState } from "app/store";
 
 import { Credentials } from "realm-web";
-import { databaseApi } from 'app/articlesSlice';
+import { databaseApi } from "app/articlesSlice";
 
 export enum LoginType {
   NotLoggedIn,
@@ -29,8 +29,8 @@ interface ApplicationState {
 const initialState: ApplicationState = {
   loginType: null,
   accountDetails: {
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   }
 };
 
@@ -56,7 +56,7 @@ export async function loginWith(information?: AccountDetails) {
 }
 
 export const loginWithEmailAndPassword = createAsyncThunk(
-  'admin/loginWithEmailAndPassword',
+  "admin/loginWithEmailAndPassword",
   async (accountDetails: AccountDetails) => {
     const { type, user } = await loginWith(accountDetails);
 
@@ -74,7 +74,7 @@ export const loginWithEmailAndPassword = createAsyncThunk(
 );
 
 const adminSlice = createSlice({
-  name: 'admin',
+  name: "admin",
   initialState,
   reducers: {
     logout: (state) => {
@@ -88,13 +88,13 @@ const adminSlice = createSlice({
         const payload = action.payload;
 
         switch (payload.type) {
-          case LoginType.User:
-          case LoginType.Admin:
-            state.accountDetails = payload.accountDetails;
-            state.loginType = payload.type;
-            break;
+        case LoginType.User:
+        case LoginType.Admin:
+          state.accountDetails = payload.accountDetails;
+          state.loginType = payload.type;
+          break;
 
-          default: break;
+        default: break;
         }
       }
     );

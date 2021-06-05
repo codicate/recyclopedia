@@ -3,8 +3,8 @@
   
   Does not really do tokenizing, so be ware of dragons.
  */
-import styles from 'components/Article/Article.module.scss';
-import { intoParsable, tryParseString, eatIdentifier, eatWhitespace } from 'utils/intoParsable';
+import styles from "components/Article/Article.module.scss";
+import { intoParsable, tryParseString, eatIdentifier, eatWhitespace } from "utils/intoParsable";
 
 interface HeaderInformation {
   level: number,
@@ -20,22 +20,22 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
   let result = "";
   const input = intoParsable(stringInput);
 
-  let actualResult = {
+  const actualResult = {
     processed: "",
     imageLinks: [],
     headers: []
   };
 
   while (input.stillParsing()) {
-    if (input.requireCharacter('\\')) {
+    if (input.requireCharacter("\\")) {
       const nextCharacter = input.eatCharacter();
-      if (nextCharacter === '\n') {
+      if (nextCharacter === "\n") {
         result += "<br/>\n";
       } else {
         result += nextCharacter;
       }
-    } else if (input.requireCharacter('@')) {
-      if (input.requireCharacter('@')) {
+    } else if (input.requireCharacter("@")) {
+      if (input.requireCharacter("@")) {
         let has_end = false;
         /*
           Whenever our region fails to parse it'll just refuse to output anything.
@@ -47,16 +47,16 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
           if you need multiple @ signs consecutively just do
           \@\@ or @\@.
          */
-        let inbetween = intoParsable(
+        const inbetween = intoParsable(
           input.consumeUntil(
             function () {
-              if (input.requireCharacter('\n')) {
+              if (input.requireCharacter("\n")) {
                 return true;
-              } else if (input.requireCharacter('@')) {
+              } else if (input.requireCharacter("@")) {
                 /*
                   When we encounter an @ sign, it's likely to be the end of parsing a "region".
                  */
-                if (input.requireCharacter('@')) {
+                if (input.requireCharacter("@")) {
                   has_end = true;
                 }
                 return true;
@@ -72,18 +72,18 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
 
           while (inbetween.stillParsing() && !error) {
             eatWhitespace(inbetween);
-            let property = eatIdentifier(inbetween);
+            const property = eatIdentifier(inbetween);
             if (property) {
               image_tag += property;
               eatWhitespace(inbetween);
-              if (inbetween.requireCharacter('=')) {
+              if (inbetween.requireCharacter("=")) {
                 image_tag += "=";
                 eatWhitespace(inbetween);
-                if (inbetween.peekCharacter() === '\'') {
+                if (inbetween.peekCharacter() === "'") {
                   // @ts-ignore
-                  let maybe_string = tryParseString(inbetween, { delimiter: '\'' });
+                  const maybe_string = tryParseString(inbetween, { delimiter: "'" });
                   if (maybe_string) {
-                    image_tag += '\'' + maybe_string + '\'';
+                    image_tag += "'" + maybe_string + "'";
                     if (property === "src") {
                       // @ts-ignore
                       actualResult.imageLinks.push(maybe_string);
@@ -93,7 +93,7 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
                     error = true;
                   }
                 } else {
-                  let value_identifier = eatIdentifier(inbetween);
+                  const value_identifier = eatIdentifier(inbetween);
                   if (value_identifier) {
                     image_tag += value_identifier;
                   } else {
@@ -102,9 +102,9 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
                   }
                 }
                 eatWhitespace(inbetween);
-                if (!inbetween.requireCharacter('|')) {
+                if (!inbetween.requireCharacter("|")) {
                   // @ts-ignore
-                  if (eatIdentifier(inbetween) || tryParseString(inbetween, { delimiter: '\'' })) {
+                  if (eatIdentifier(inbetween) || tryParseString(inbetween, { delimiter: "'" })) {
                     console.error("Missing pipe separator!");
                     error = true;
                   }
@@ -129,20 +129,20 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
           // not valid tag. Don't do anything.
           // maybe add a newline since there should really only be one image per
           // line as per markup style.
-          result += '\n';
+          result += "\n";
         }
       } else {
-        result += '@';
+        result += "@";
       }
     } else {
-      if (input.peekCharacter() === '#') {
-        let headerCount  = input.consumeUntil(() => input.peekCharacter() !== '#').length;
-        let textContents = input.consumeUntil(() => input.peekCharacter() === '\n');
+      if (input.peekCharacter() === "#") {
+        const headerCount  = input.consumeUntil(() => input.peekCharacter() !== "#").length;
+        const textContents = input.consumeUntil(() => input.peekCharacter() === "\n");
 
         actualResult.headers.push({
         // @ts-ignore
           level: headerCount,
-        // @ts-ignore
+          // @ts-ignore
           text: textContents
         });
         const generatedHeader = `\n<h${headerCount} id="${textContents}">${textContents}</h${headerCount}>`;

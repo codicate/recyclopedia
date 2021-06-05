@@ -1,5 +1,5 @@
-import styles from 'components/Searchbar/Searchbar.module.scss';
-import { useState, useRef } from 'react';
+import styles from "components/Searchbar/Searchbar.module.scss";
+import { useState, useRef } from "react";
 
 
 export default function Searchbar({
@@ -7,7 +7,7 @@ export default function Searchbar({
 }: {
   returnInput: (input: string) => void;
 }) {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const lastTimeTyping = useRef(new Date().getTime());
   const searchbar = useRef<null | HTMLInputElement>(null);
 
@@ -33,7 +33,7 @@ export default function Searchbar({
           id={styles.clear}
           className='material-icons btn'
           onClick={() => {
-            setInput('');
+            setInput("");
             searchbar.current && searchbar.current.focus();
           }}
         >
