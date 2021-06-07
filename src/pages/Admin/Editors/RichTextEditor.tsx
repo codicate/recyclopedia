@@ -11,7 +11,6 @@ import { Article } from "app/articlesSlice";
 
 import bottomToolbarStyle from "./bottomToolbar.module.scss";
 import editorStyle from "./RichTextEditor.module.scss";
-import styles from "pages/Admin/Admin.module.scss";
 import articleStyles from "components/Article/Article.module.scss";
 import Button from "components/Form/Button";
 
@@ -61,10 +60,10 @@ function editorHandleKeybindings({
   executeRichTextCommand,
   updateDirtyFlag
 }: {
-    saveDocument: () => void,
-    toggleWidget: (widgetId: string, categoryValue?: string) => void,
-    executeRichTextCommand: (command: string, argument?: string) => void,
-    updateDirtyFlag: React.Dispatch<boolean>,
+  saveDocument: () => void,
+  toggleWidget: (widgetId: string, categoryValue?: string) => void,
+  executeRichTextCommand: (command: string, argument?: string) => void,
+  updateDirtyFlag: React.Dispatch<boolean>,
 }): KeyboardEventHandler<HTMLDivElement> {
   return function (event) {
     const { key, shiftKey, ctrlKey } = event;
@@ -123,16 +122,16 @@ function editorHandleKeybindings({
 }
 
 interface EditorToolbarProperties {
-    toggleDraftStatus: () => void,
-    saveDocument: () => void,
-    isInitial: boolean,
+  toggleDraftStatus: () => void,
+  saveDocument: () => void,
+  isInitial: boolean,
 }
 
 // TODO better name.
-function EditorToolbar({toggleDraftStatus, saveDocument, isInitial}: EditorToolbarProperties) {
+function EditorToolbar({ toggleDraftStatus, saveDocument, isInitial }: EditorToolbarProperties) {
   return (<div className={bottomToolbarStyle.main}>
     <Button onClick={() => { toggleDraftStatus(); }}>
-        Toggle Draft Status
+      Toggle Draft Status
     </Button>
     <Button onClick={saveDocument}>
       {(isInitial) ? "Save Article" : "Publish Article"}
@@ -140,7 +139,7 @@ function EditorToolbar({toggleDraftStatus, saveDocument, isInitial}: EditorToolb
   </div>);
 }
 
-function TagDisplay({id, name, removeTag}:{id: string, name: string, removeTag: (id: string) => void}) {
+function TagDisplay({ id, name, removeTag }: { id: string, name: string, removeTag: (id: string) => void }) {
   return (
     <div className={editorStyle.tageditor_tag}>
       <span>
@@ -151,11 +150,11 @@ function TagDisplay({id, name, removeTag}:{id: string, name: string, removeTag: 
 }
 
 interface ArticleTagEditorProperties {
-    tags: string[];
-    setTagState: React.Dispatch<string[]>;
+  tags: string[];
+  setTagState: React.Dispatch<string[]>;
 }
 
-function ArticleTagEditor({tags, setTagState}: ArticleTagEditorProperties) {
+function ArticleTagEditor({ tags, setTagState }: ArticleTagEditorProperties) {
   const [input, setInput] = useState("");
 
   function removeTagById(id: string) {
@@ -167,20 +166,20 @@ function ArticleTagEditor({tags, setTagState}: ArticleTagEditorProperties) {
       className={editorStyle.tageditor}>
       <button
         className={editorStyle.button}
-        onClick={() => setTagState([]) }
+        onClick={() => setTagState([])}
       >Clear</button>
-      {tags?.map((tag) => <TagDisplay removeTag={removeTagById} key={tag} id={tag} name={tag}/>)}
+      {tags?.map((tag) => <TagDisplay removeTag={removeTagById} key={tag} id={tag} name={tag} />)}
       <input
         value={input}
-        onChange = {
+        onChange={
           function (event) {
             setInput(event.target.value);
           }
         }
-        onKeyDown = {
-          function ({key}) {
+        onKeyDown={
+          function ({ key }) {
             if (key === "Backspace" && input.length === 0) {
-              setTagState(tags?.slice(0, tags.length-1));
+              setTagState(tags?.slice(0, tags.length - 1));
             } else if (key === "Enter" && input.length > 0) {
               // too lazy to google for proper function.
               const doesIndexAlreadyExist = tags?.indexOf(input) !== -1;
@@ -201,9 +200,59 @@ interface ImageContextSettingsProperties {
   imageRef: React.RefObject<HTMLImageElement>,
 }
 
+enum ImageDimensionsType {
+  Custom,
+  Default,
+}
+
+interface ImageDimensions {
+  type: ImageDimensionsType,
+  width: undefined | number,
+  height: undefined | number,
+}
+
+enum LayoutFloatMode {
+  Left,
+  Center,
+  Right,
+}
+
 function ImageContextSettings(properties: ImageContextSettingsProperties) {
   const imageObject = properties.imageRef?.current;
 
+  const [layoutFloatMode, setLayoutFloatMode] = useState(LayoutFloatMode.Left);
+  const [imageDimensions, setImageDimensions] = useState({
+    type: ImageDimensionsType.Default,
+    width: undefined,
+    height: undefined
+  } as ImageDimensions);
+
+  function applyChanges() {
+    if (imageObject) {
+      if (imageDimensions.type === ImageDimensionsType.Custom) {
+        imageObject.width = imageDimensions.width || imageObject.width;
+        imageObject.height = imageDimensions.height || imageObject.height;
+      }
+
+      imageObject.classList.forEach((e) => imageObject.classList.remove(e));
+      switch (layoutFloatMode) {
+      case LayoutFloatMode.Left:
+        imageObject.classList.add(articleStyles.floatLeft);
+        break;
+      case LayoutFloatMode.Center:
+        imageObject.classList.add(articleStyles.floatCenter);
+        break;
+      case LayoutFloatMode.Right:
+        imageObject.classList.add(articleStyles.floatRight);
+        break;
+      }
+    }
+
+    properties.closeShownStatus();
+  }
+
+  // This is being done as dirty as possible because I just need it to work.
+  // although you can autogenerate the UI from the objects.
   return (
     <div id={editorStyle.blotOut}>
       <div id={editorStyle.imageContextSettingsWindow}>
@@ -215,10 +264,46 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
 
             We&lsquo;ll center stuff in different ways, and set size.
           </p>
-          <div style={{width: "100px", height: "100px", margin: "auto"}} dangerouslySetInnerHTML={{__html:  imageObject?.outerHTML || "<p>no image</p>" }}/>
+          <div style={{ width: "100px", height: "100px", margin: "auto" }} dangerouslySetInnerHTML={{ __html: imageObject?.outerHTML || "<p>no image</p>" }} />
+          {/* Float Type */}
+          <div>
+            <a onClick={
+              (e) => { setLayoutFloatMode(LayoutFloatMode.Left); }
+            }>Left</a>
+            <br></br>
+            <a onClick={
+              (e) => { setLayoutFloatMode(LayoutFloatMode.Center); }
+            }>Center</a>
+            <br></br>
+            <a onClick={
+              (e) => { setLayoutFloatMode(LayoutFloatMode.Right); }
+            }>Right</a>
+          </div>
+          <hr></hr>
+          {/* Dimension Type */}
+          <div>
+            <a onClick={
+              (e) => { setImageDimensions({ ...imageDimensions, type: ImageDimensionsType.Default }); }
+            }>Default</a>
+            <br></br>
+            <a onClick={
+              (e) => { setImageDimensions({ ...imageDimensions, type: ImageDimensionsType.Custom }); }
+            }>Custom</a>
+          </div>
+          {
+            (imageDimensions.type === ImageDimensionsType.Custom) ?
+              <div>
+                <label>Width: </label>
+                <input type={"number"}></input>
+                <br></br>
+                <label>Height: </label>
+                <input type={"number"}></input>
+              </div>
+              : <></>
+          }
         </div>
         <div className={editorStyle.alignToBottom}>
-          <button>Apply Changes</button>
+          <button onClick={applyChanges}>Apply Changes</button>
         </div>
       </div>
     </div>
@@ -247,7 +332,7 @@ export function RichTextEditor({
   const currentImageRef = useRef<HTMLImageElement>(null);
 
   useEffect(
-    function() {
+    function () {
       if (editableAreaDOMRef.current) {
         editableAreaDOMRef.current.onmousedown =
           function (e) {
