@@ -72,6 +72,9 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
 
           // float style for the classList.
           let floatingMethod = "";
+          let captionString = "";
+
+          const width = 150;
 
           while (inbetween.stillParsing() && !error) {
             eatWhitespace(inbetween);
@@ -90,6 +93,29 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
                     console.error("Missing pipe separator!");
                     error = true;
                   }
+                }
+              }
+            } else if (property === "caption") {
+              eatWhitespace(inbetween);
+              if (inbetween.requireCharacter("=")) {
+                eatWhitespace(inbetween);
+                // @ts-ignore
+                const maybe_string = tryParseString(inbetween, { delimiter: "'" });
+                eatWhitespace(inbetween);
+
+                if (maybe_string) {
+                  captionString = maybe_string;
+                } else {
+                  console.error("No string for caption string?");
+                  error = true;
+                }
+              }
+
+              if (!inbetween.requireCharacter("|")) {
+                // @ts-ignore
+                if (eatIdentifier(inbetween) || tryParseString(inbetween, { delimiter: "'" })) {
+                  console.error("Missing pipe separator!");
+                  error = true;
                 }
               }
             } else if (property) {
@@ -139,17 +165,25 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
             image_tag += " ";
           }
 
-          image_tag += "class='";
-          switch (floatingMethod) {
-          case "floatLeft": image_tag += styles.floatLeft; break;
-          case "floatCenter": image_tag += styles.floatCenter; break;
-          case "floatRight": image_tag += styles.floatRight; break;
+          if (captionString !== "") {
+            image_tag += "style=\"border: 1px solid gray; display: block; margin: auto; margin-top: 1.2em; \"";
           }
-          image_tag += "'";
 
-          image_tag += "/>";
           if (!error) {
-            result += image_tag;
+            if (captionString !== "") {
+              image_tag += "/>";
+              result += `<div class="${styles.captionBox + " " + styles.floatLeft}" style="width: ${width*1.3}px;">${image_tag}\n<div class=${styles.captionBoxInner}><p>${captionString}</p></div></div>`;
+            } else {
+              image_tag += "class='";
+              switch (floatingMethod) {
+              case "floatLeft": image_tag += styles.floatLeft; break;
+              case "floatCenter": image_tag += styles.floatCenter; break;
+              case "floatRight": image_tag += styles.floatRight; break;
+              }
+              image_tag += "'";
+              image_tag += "/>";
+              result += image_tag;
+            }
           } else {
             console.log("error happened");
           }
