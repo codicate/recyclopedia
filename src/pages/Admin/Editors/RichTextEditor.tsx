@@ -255,13 +255,17 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
       <div id={editorStyle.imageContextSettingsWindow}>
         <h1>Image Settings <a onClick={(_) => properties.closeShownStatus()} className={editorStyle.xOut}>X</a></h1>
         <div style={{ margin: "2.5em" }}>
-          <p>
-            This is some stuff that will be used for images, mostly editting the width and height.
-            We&lsquo;ll probably have a nice little context menu to open this up.
-
-            We&lsquo;ll center stuff in different ways, and set size.
-          </p>
-          <div className={editorStyle.imagePreview} dangerouslySetInnerHTML={{ __html: imageObject?.outerHTML || "<p>no image</p>" }} />
+          <p style={{textAlign: "center"}}><i>{imageObject?.src}</i></p>
+          <div className={editorStyle.imagePreview} dangerouslySetInnerHTML={{
+            __html:
+              function () {
+                if (imageObject) {
+                  return `<img src=${imageObject.src}></img>`;
+                } else {
+                  return "<p>no image</p>";
+                }
+              }()
+          }} />
           {/* Float Type */}
           <div>
             <a onClick={
