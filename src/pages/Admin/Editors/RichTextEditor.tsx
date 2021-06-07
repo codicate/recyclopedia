@@ -205,12 +205,6 @@ enum ImageDimensionsType {
   Default,
 }
 
-interface ImageDimensions {
-  type: ImageDimensionsType,
-  width: undefined | number,
-  height: undefined | number,
-}
-
 enum LayoutFloatMode {
   Left,
   Center,
@@ -221,17 +215,15 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
   const imageObject = properties.imageRef?.current;
 
   const [layoutFloatMode, setLayoutFloatMode] = useState(LayoutFloatMode.Left);
-  const [imageDimensions, setImageDimensions] = useState({
-    type: ImageDimensionsType.Default,
-    width: undefined,
-    height: undefined
-  } as ImageDimensions);
+  const [imageDimensionType, setImageDimensionType] = useState(ImageDimensionsType.Default);
+  const [imageDimensionCustomWidth, setImageDimensionCustomWidth] = useState(imageObject?.width || 150);
+  const [imageDimensionCustomHeight, setImageDimensionCustomHeight] = useState(imageObject?.height || 150);
 
   function applyChanges() {
     if (imageObject) {
-      if (imageDimensions.type === ImageDimensionsType.Custom) {
-        imageObject.width = imageDimensions.width || imageObject.width;
-        imageObject.height = imageDimensions.height || imageObject.height;
+      if (imageDimensionType === ImageDimensionsType.Custom) {
+        imageObject.width = imageDimensionCustomWidth || imageObject.width;
+        imageObject.height = imageDimensionCustomHeight || imageObject.height;
       }
 
       imageObject.classList.forEach((e) => imageObject.classList.remove(e));
@@ -283,21 +275,27 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
           {/* Dimension Type */}
           <div>
             <a onClick={
-              (e) => { setImageDimensions({ ...imageDimensions, type: ImageDimensionsType.Default }); }
+              (e) => { setImageDimensionType(ImageDimensionsType.Default); }
             }>Default</a>
             <br></br>
             <a onClick={
-              (e) => { setImageDimensions({ ...imageDimensions, type: ImageDimensionsType.Custom }); }
+              (e) => { setImageDimensionType(ImageDimensionsType.Custom); }
             }>Custom</a>
           </div>
           {
-            (imageDimensions.type === ImageDimensionsType.Custom) ?
+            (imageDimensionType === ImageDimensionsType.Custom) ?
               <div>
                 <label>Width: </label>
-                <input type={"number"}></input>
+                <input
+                  value={imageDimensionCustomWidth}
+                  onChange={(e) => setImageDimensionCustomWidth(Number.parseInt(e.target.value))}
+                  type="number"></input>
                 <br></br>
                 <label>Height: </label>
-                <input type={"number"}></input>
+                <input
+                  value={imageDimensionCustomHeight}
+                  onChange={(e) => setImageDimensionCustomHeight(Number.parseInt(e.target.value))}
+                  type="number"></input>
               </div>
               : <></>
           }
