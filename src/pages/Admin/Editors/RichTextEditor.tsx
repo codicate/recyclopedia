@@ -1,4 +1,4 @@
-import { useState, useRef, KeyboardEventHandler, } from "react";
+import React, { useState, useRef, KeyboardEventHandler, useEffect, createRef, } from "react";
 import { preprocessMarkdown } from "utils/preprocessMarkdown";
 import { uploadImage, retrieveImageData } from "utils/functions";
 
@@ -122,14 +122,6 @@ function editorHandleKeybindings({
   };
 }
 
-const editModeInlineStyle = {
-  outline: "0px solid transparent",
-  borderColor: "black",
-  borderWidth: "1px",
-  borderStyle: "solid",
-  margin: "0",
-};
-
 interface EditorToolbarProperties {
     toggleDraftStatus: () => void,
     saveDocument: () => void,
@@ -205,10 +197,13 @@ function ArticleTagEditor({tags, setTagState}: ArticleTagEditorProperties) {
 }
 
 interface ImageContextSettingsProperties {
-  closeShownStatus: () => void
+  closeShownStatus: () => void,
+  imageRef: React.RefObject<HTMLImageElement>,
 }
 
 function ImageContextSettings(properties: ImageContextSettingsProperties) {
+  const imageObject = properties.imageRef?.current;
+
   return (
     <div id={editorStyle.blotOut}>
       <div id={editorStyle.imageContextSettingsWindow}>
@@ -220,6 +215,7 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
 
             We&lsquo;ll center stuff in different ways, and set size.
           </p>
+          <div style={{width: "100px", height: "100px", margin: "auto"}} dangerouslySetInnerHTML={{__html:  imageObject?.outerHTML || "<p>no image</p>" }}/>
         </div>
         <div className={editorStyle.alignToBottom}>
           <button>Apply Changes</button>
@@ -248,6 +244,35 @@ export function RichTextEditor({
 
   const editableTitleDOMRef = useRef<HTMLHeadingElement>(null);
   const editableAreaDOMRef = useRef<HTMLDivElement>(null);
+  const currentImageRef = useRef<HTMLImageElement>(null);
+
+  useEffect(
+    function() {
+      if (editableAreaDOMRef.current) {
+        editableAreaDOMRef.current.onmousedown =
+          function (e) {
+            const imageTarget = e.target;
+            /*
+              I do not know of a way to get a ref into newly generated
+              HTML, so we can't exactly do this in a very React way.
+
+              The only other thing I could think of is generating react friendly
+              mark-up, but I don't want a ref to every single element, but I could
+              probably do it with
+
+              onClick for all of the images to set a "currentFocusedImage" to whatever
+              was clicked on, which would suffice.
+
+              I'm pretty sure markdown-it exposes an "AST" sort of thing so I can get
+              that to generate JSX which can use the above. That's later though.
+            */
+            // @ts-expect-error
+            currentImageRef.current = imageTarget;
+            setImageContextEditorVisibility(true);
+          };
+      }
+    }
+    , [editableAreaDOMRef]);
 
   document.execCommand("defaultParagraphSeparator", false, "br");
   const [widgetStates, updateWidgetState] = useState(widgets);
@@ -345,7 +370,7 @@ export function RichTextEditor({
       </div>
       <EditorToolbar isInitial={(!!initialArticleState)} saveDocument={saveDocument} toggleDraftStatus={toggleDraftStatus} />
       { (imageContextEditorShown) ?
-        <ImageContextSettings closeShownStatus={() => { setImageContextEditorVisibility(false); }} /> : <></>}
+        <ImageContextSettings imageRef={currentImageRef} closeShownStatus={() => { setImageContextEditorVisibility(false); }} /> : <></>}
     </>
   );
 }
