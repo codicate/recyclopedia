@@ -8,6 +8,7 @@ import { dictionaryUpdateKeyNested } from "utils/functions";
 import { widgets, toggleWidgetActiveState, flattenWidgetStateTypes, WidgetCategory } from "./RichTextEditWidgetInformation";
 
 import { Article } from "app/articlesSlice";
+import Input from "components/Form/Input";
 
 import bottomToolbarStyle from "./bottomToolbar.module.scss";
 import editorStyle from "./RichTextEditor.module.scss";
@@ -215,6 +216,10 @@ enum LayoutFloatMode {
 function ImageContextSettings(properties: ImageContextSettingsProperties) {
   const imageObject = properties.imageRef?.current;
 
+  const [imageCaptionText, setImageCaptionText] = useState("");
+  // unused
+  const [alternateImageText, setAlternateImageText] = useState("");
+
   const [layoutFloatMode, setLayoutFloatMode] = useState(LayoutFloatMode.Left);
   const [imageDimensionType, setImageDimensionType] = useState(ImageDimensionsType.Default);
   const [imageDimensionCustomWidth, setImageDimensionCustomWidth] = useState(imageObject?.width || 150);
@@ -308,6 +313,23 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
               </div>
               : <></>
           }
+          {/*Caption Text*/}
+          <Input 
+            label="Image Caption"
+            changeHandler={
+              function (e) {
+                setImageCaptionText(e.target.value);
+              }
+            }
+            value={imageCaptionText} />
+          <Input 
+            label="Alternate Text"
+            changeHandler={
+              function (e) {
+                setAlternateImageText(e.target.value);
+              }
+            }
+            value={alternateImageText} />
         </div>
         <div className={editorStyle.alignToBottom}>
           <button onClick={applyChanges}>Apply Changes</button>
