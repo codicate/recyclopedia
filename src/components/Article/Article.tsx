@@ -15,6 +15,8 @@ import Admin from "pages/Admin/Admin";
 // however, the styling cannot be preserved as I may want it to look different...
 // someone may look into this later.
 
+// https://www.npmjs.com/package/markdown-it-toc-done-right ?
+
 // @ts-ignore
 function TableOfContents({sectionHeaders} : {sectionHeaders: any[]}) {
   const [foldedStatus, updateFoldedStatus] = useState(false);
@@ -30,17 +32,10 @@ function TableOfContents({sectionHeaders} : {sectionHeaders: any[]}) {
         </a>
       </h3>
       {(!foldedStatus) ? 
-        (<div style={{ marginLeft: "3em", }}>
+        (<nav style={{ marginLeft: "3em", }}>
           {
             sectionHeaders.map(
               ({ level, text }) => {
-                /*
-                                  Technically I should be making this a list, but it's kind of
-                                  PITA to do it as it requires me to nest them in a specific way, that would
-                                  make me special case the header parsing generation.
-                                  
-                                  This may look wrong on screen-readers or something. Sorry.
-                                */
                 return (
                   <a key={text} href={"#" + text}>
                     <p style=
@@ -55,7 +50,7 @@ function TableOfContents({sectionHeaders} : {sectionHeaders: any[]}) {
               }
             )
           }
-        </div>) :
+        </nav>) :
         <></>}
     </div>
     ) : null;
