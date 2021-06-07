@@ -46,6 +46,7 @@ function fileHandlerOnChange({ target }: Event): void {
           function (imgURL) {
             if (imgURL.success) {
               document.execCommand("insertImage", false, imgURL.data.url);
+              document.execCommand("insertParagraph");
             } else {
               console.error("IMGBB is down. Tony pls get us a server");
             }
