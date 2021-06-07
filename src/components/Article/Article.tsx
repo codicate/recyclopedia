@@ -37,6 +37,9 @@ function TableOfContents({sectionHeaders} : {sectionHeaders: any[]}) {
             sectionHeaders.map(
               ({ level, text }) => {
                 return (
+                  /*
+                    This scroll is unfortunately, not perfect because of the navbar...
+                  */
                   <a key={text} href={"#" + text}>
                     <p style=
                       {
