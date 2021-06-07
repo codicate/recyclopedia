@@ -1,6 +1,8 @@
 /*
     Inhouse DOM to Markdown interpreter.
 */
+import articleStyles from "components/Article/Article.module.scss";
+
 function log_message(msg) {
   // This is intentional... This should be in a module called "debug" or something? idk
 }
@@ -86,7 +88,38 @@ function renderElement(root, text_contents) {
   } else {
     if (root.tagName === "IMG") {
       const src = root.getAttribute("src");
-      const result = `@@ src = '${src}' @@\n`;
+      let result = `@@ src = '${src}' | `;
+
+      const anyStyles = root.classList.length > 0;
+      if (!anyStyles) {
+        result += "floatingMethod = floatCenter |";
+      } else {
+        root.classList.forEach(
+          (e) => {
+            console.log("E");
+            console.log(e);
+            console.log(articleStyles.floatLeft);
+            console.log(articleStyles.floatCenter);
+            console.log(articleStyles.floatRight);
+            switch (e) {
+            case articleStyles.floatLeft:
+              result += "floatingMethod = floatLeft |";
+              break;
+            case articleStyles.floatCenter:
+              result += "floatingMethod = floatCenter |";
+              break;
+            case articleStyles.floatRight:
+              result += "floatingMethod = floatRight |";
+              break;
+            }
+          }
+        );
+      }
+
+      result += `width = ${root.width} | height = ${root.height}`;
+      
+      result += "@@\n";
+      console.log(result);
       return result;
     }
 

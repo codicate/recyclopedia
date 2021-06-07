@@ -220,6 +220,7 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
   const [imageDimensionCustomHeight, setImageDimensionCustomHeight] = useState(imageObject?.height || 150);
 
   function applyChanges() {
+    console.log("Begin applying changes");
     if (imageObject) {
       if (imageDimensionType === ImageDimensionsType.Custom) {
         imageObject.width = imageDimensionCustomWidth || imageObject.width;
@@ -238,8 +239,11 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
         imageObject.classList.add(articleStyles.floatRight);
         break;
       }
+
+      console.log(imageObject.classList);
     }
 
+    console.log("end of apply changes");
     properties.closeShownStatus();
   }
 
@@ -256,7 +260,7 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
 
             We&lsquo;ll center stuff in different ways, and set size.
           </p>
-          <div style={{ width: "100px", height: "100px", margin: "auto" }} dangerouslySetInnerHTML={{ __html: imageObject?.outerHTML || "<p>no image</p>" }} />
+          <div className={editorStyle.imagePreview} dangerouslySetInnerHTML={{ __html: imageObject?.outerHTML || "<p>no image</p>" }} />
           {/* Float Type */}
           <div>
             <a onClick={
@@ -334,24 +338,26 @@ export function RichTextEditor({
       if (editableAreaDOMRef.current) {
         editableAreaDOMRef.current.onmousedown =
           function (e) {
-            const imageTarget = e.target;
-            /*
-              I do not know of a way to get a ref into newly generated
-              HTML, so we can't exactly do this in a very React way.
-
-              The only other thing I could think of is generating react friendly
-              mark-up, but I don't want a ref to every single element, but I could
-              probably do it with
-
-              onClick for all of the images to set a "currentFocusedImage" to whatever
-              was clicked on, which would suffice.
-
-              I'm pretty sure markdown-it exposes an "AST" sort of thing so I can get
-              that to generate JSX which can use the above. That's later though.
-            */
-            // @ts-expect-error
-            currentImageRef.current = imageTarget;
-            setImageContextEditorVisibility(true);
+            const imageTarget = e.target as HTMLElement;
+            if (imageTarget?.tagName === "IMG") {
+              /*
+                I do not know of a way to get a ref into newly generated
+                HTML, so we can't exactly do this in a very React way.
+  
+                The only other thing I could think of is generating react friendly
+                mark-up, but I don't want a ref to every single element, but I could
+                probably do it with
+  
+                onClick for all of the images to set a "currentFocusedImage" to whatever
+                was clicked on, which would suffice.
+  
+                I'm pretty sure markdown-it exposes an "AST" sort of thing so I can get
+                that to generate JSX which can use the above. That's later though.
+              */
+              // @ts-expect-error
+              currentImageRef.current = imageTarget;
+              setImageContextEditorVisibility(true);
+            }
           };
       }
     }

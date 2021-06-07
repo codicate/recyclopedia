@@ -70,10 +70,29 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
           let image_tag = "<img ";
           let error = false;
 
+          // float style for the classList.
+          let floatingMethod = "";
+
           while (inbetween.stillParsing() && !error) {
             eatWhitespace(inbetween);
             const property = eatIdentifier(inbetween);
-            if (property) {
+
+            if (property === "floatingMethod") {
+              eatWhitespace(inbetween);
+              if (inbetween.requireCharacter("=")) {
+                eatWhitespace(inbetween);
+                floatingMethod = eatIdentifier(inbetween);
+                eatWhitespace(inbetween);
+
+                if (!inbetween.requireCharacter("|")) {
+                  // @ts-ignore
+                  if (eatIdentifier(inbetween) || tryParseString(inbetween, { delimiter: "'" })) {
+                    console.error("Missing pipe separator!");
+                    error = true;
+                  }
+                }
+              }
+            } else if (property) {
               image_tag += property;
               eatWhitespace(inbetween);
               if (inbetween.requireCharacter("=")) {
@@ -119,6 +138,15 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
             }
             image_tag += " ";
           }
+
+          image_tag += "class='";
+          switch (floatingMethod) {
+          case "floatLeft": image_tag += styles.floatLeft; break;
+          case "floatCenter": image_tag += styles.floatCenter; break;
+          case "floatRight": image_tag += styles.floatRight; break;
+          }
+          image_tag += "'";
+
           image_tag += "/>";
           if (!error) {
             result += image_tag;
@@ -136,11 +164,11 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
       }
     } else {
       if (input.peekCharacter() === "#") {
-        const headerCount  = input.consumeUntil(() => input.peekCharacter() !== "#").length;
+        const headerCount = input.consumeUntil(() => input.peekCharacter() !== "#").length;
         const textContents = input.consumeUntil(() => input.peekCharacter() === "\n");
 
         actualResult.headers.push({
-        // @ts-ignore
+          // @ts-ignore
           level: headerCount,
           // @ts-ignore
           text: textContents

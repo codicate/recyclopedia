@@ -150,4 +150,14 @@
 
 [contentEditable] { 
     outline: 0px solid transparent;
+    min-width: 100%;
+    min-height: 10%;
+}
+
+.imagePreview {
+    margin: auto;
+    :first-child {
+        width: 100px !important;
+        height: 100px !important;
+    } 
 }

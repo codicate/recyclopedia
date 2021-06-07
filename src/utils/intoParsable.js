@@ -146,7 +146,6 @@ export function eatWhitespace(parsable) {
     if (parsable.peekCharacter() === " ") {
       parsable.eatCharacter();
     } else {
-      console.log(parsable.peekCharacter());
       break;
     }
   }
