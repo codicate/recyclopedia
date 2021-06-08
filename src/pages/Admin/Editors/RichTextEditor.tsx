@@ -18,18 +18,36 @@ import editorStyle from "./RichTextEditor.module.scss";
 import articleStyles from "components/Article/Article.module.scss";
 import Button from "components/Form/Button";
 
-function executeRichTextCommand(commandName: string, optionalArgument?: string) {
-  if (commandName === "@_insertImage") {
-    console.log("image handling");
+/** Unsafe wrappers... Cause most of this has to be unsafe to be even possible... **/
+/** Well... Draft.JS is a thing, but that can't exactly do the same thing as this... Otherwise it would require way less code. **/
+/** Although Draft.JS itself is actually pretty big. **/
+function unsafeDOMStyleSet(element: HTMLElement, style: string) {
+  // @ts-expect-error
+  element.style = style;
+}
+function unsafeReferenceSet<T>(ref: React.RefObject<T>, value: T) {
+  //@ts-expect-error
+  ref.current = value;
+}
+
+function ExecuteRichTextCommand(commandName: string, optionalArgument?: string, hookFn?: (name: string) => void) {
+  switch (commandName) {
+  case "@_insertImage": {
     const fileDialog = document.createElement("input");
     fileDialog.type = "file";
     fileDialog.click();
-
-    // TODO(jerry): cleanup
     fileDialog.addEventListener("change", fileHandlerOnChange);
-  } else {
-    document.execCommand(commandName, false, optionalArgument);
   }
+    break;
+  case "@_hyperlink":
+    document.execCommand("insertHorizontalRule");
+    break;
+  default:
+    document.execCommand(commandName, false, optionalArgument);
+    return;
+  }
+
+  hookFn?.(commandName);
 }
 
 function queryRichTextCommand(command: string, wantedValue?: boolean) {
@@ -67,7 +85,7 @@ function editorHandleKeybindings({
 }: {
   saveDocument: () => void,
   toggleWidget: (widgetId: string, categoryValue?: string) => void,
-  executeRichTextCommand: (command: string, argument?: string) => void,
+  executeRichTextCommand: typeof ExecuteRichTextCommand,
   updateDirtyFlag: React.Dispatch<boolean>,
 }): KeyboardEventHandler<HTMLDivElement> {
   return function (event) {
@@ -263,7 +281,6 @@ function floatModeStyle(layoutFloatMode: LayoutFloatMode) {
   }
 }
 
-
 // You are calling this only if you know you can do this safely.
 function imageDOMUpdateCaptionWithNoChecks(rootNode: Element | null, newWidth: number, newHeight: number, layoutFloatMode: LayoutFloatMode, textContent: string) {
   if (rootNode) {
@@ -271,10 +288,8 @@ function imageDOMUpdateCaptionWithNoChecks(rootNode: Element | null, newWidth: n
 
     if (parentNode.tagName === "DIV") {
       const imageNode = rootNode as HTMLImageElement;
-      //@ts-expect-error
-      imageNode.style = captionImageThumbnailStyleString(newWidth, newHeight);
-      //@ts-expect-error
-      parentNode.style = captionImageBlockStyleString(newWidth);
+      unsafeDOMStyleSet(imageNode, captionImageThumbnailStyleString(newWidth, newHeight));
+      unsafeDOMStyleSet(parentNode, captionImageBlockStyleString(newWidth));
 
       if (parentNode.classList.contains(articleStyles.captionBox)) {
         classListReplace(parentNode, [articleStyles.captionBox, floatModeStyle(layoutFloatMode)]);
@@ -369,8 +384,7 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
             imageDOMConstructCaptionedImage(imageObject as HTMLImageElement, layoutFloatMode, imageCaptionText);
 
           imageObject.replaceWith(captionBuildResult.captionNode);
-          // @ts-expect-error
-          properties.imageRef.current = captionBuildResult.imageNode;
+          unsafeReferenceSet(properties.imageRef, captionBuildResult.imageNode);
         }
         setImageCaptionText("");
       }
@@ -469,6 +483,37 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
   );
 }
 
+interface HyperlinkContextSettingsProperties {
+  closeShownStatus: () => void,
+}
+function HyperlinkContextSettings(properties: HyperlinkContextSettingsProperties) {
+  const [hyperlinkText, setHyperlinkText] = useState("");
+
+  return (
+    <div id={editorStyle.blotOut}>
+      <div id={editorStyle.imageContextSettingsWindow}>
+        <h1>Hyperlink Creation <a onClick={(_) => properties.closeShownStatus()} className={editorStyle.xOut}>X</a></h1>
+        <div style={{ margin: "2.5em" }}>
+          {/*Caption Text*/}
+          <p>Hyperlink</p>
+          <Input 
+            label="Hyperlink Contents"
+            changeHandler={
+              function (e) {
+                setHyperlinkText(e.target.value);
+              }
+            }
+            defaultValue={hyperlinkText}
+            value={hyperlinkText} />
+        </div>
+        <div className={editorStyle.alignToBottom}>
+          <button>Apply Changes</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function RichTextEditor({
   submissionHandler,
   currentArticle,
@@ -483,20 +528,24 @@ export function RichTextEditor({
   }) {
   const [initialArticleState, _] = useState(currentArticle);
   const [tagEditorShown, setTagEditorVisibility] = useState(true);
+
   const [imageContextEditorShown, setImageContextEditorVisibility] = useState(false);
+  const [hyperlinkContextEditorShown, setHyperlinkContextEditorShown] = useState(false);
+
   const [tags, setTagState] = useState((currentArticle?.tags) || []);
 
   const editableTitleDOMRef = useRef<HTMLHeadingElement>(null);
   const editableAreaDOMRef = useRef<HTMLDivElement>(null);
   const currentImageRef = useRef<HTMLImageElement>(null);
+  const currentHyperlinkRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(
     function () {
       if (editableAreaDOMRef.current) {
         editableAreaDOMRef.current.onmousedown =
           function (e) {
-            const imageTarget = e.target as HTMLElement;
-            if (imageTarget?.tagName === "IMG") {
+            const target = e.target as HTMLElement;
+            if (target?.tagName === "IMG") {
               /*
                 I do not know of a way to get a ref into newly generated
                 HTML, so we can't exactly do this in a very React way.
@@ -511,9 +560,10 @@ export function RichTextEditor({
                 I'm pretty sure markdown-it exposes an "AST" sort of thing so I can get
                 that to generate JSX which can use the above. That's later though.
               */
-              // @ts-expect-error
-              currentImageRef.current = imageTarget;
+              unsafeReferenceSet(currentImageRef, target);
               setImageContextEditorVisibility(true);
+            } else if (target?.tagName === "A") {
+              unsafeReferenceSet(currentHyperlinkRef, target);
             }
           };
       }
@@ -572,7 +622,7 @@ export function RichTextEditor({
           onKeyDown={editorHandleKeybindings({
             saveDocument: saveDocument,
             toggleWidget: _toggleWidgetActiveState,
-            executeRichTextCommand: executeRichTextCommand,
+            executeRichTextCommand: ExecuteRichTextCommand,
             updateDirtyFlag: updateDirtyFlag,
           })}
           dangerouslySetInnerHTML={
@@ -605,7 +655,13 @@ export function RichTextEditor({
                 onClick={
                   (_) => {
                     _toggleWidgetActiveState(widgetId, widget.category);
-                    executeRichTextCommand(widget.command, widget.argument);
+                    ExecuteRichTextCommand(widget.command, 
+                      widget.argument,
+                      function (name: string) {
+                        if (name === "@_hyperlink") {
+                          setHyperlinkContextEditorShown(true);
+                        }
+                      });
                   }
                 }>{(widget.display) ? widget.display : widget.name}
               </button>
@@ -619,6 +675,8 @@ export function RichTextEditor({
       <EditorToolbar isInitial={(!!initialArticleState)} saveDocument={saveDocument} toggleDraftStatus={toggleDraftStatus} />
       { (imageContextEditorShown) ?
         <ImageContextSettings imageRef={currentImageRef} closeShownStatus={() => { setImageContextEditorVisibility(false); }} /> : <></>}
+      {(hyperlinkContextEditorShown) ?
+        <HyperlinkContextSettings closeShownStatus={() => { setHyperlinkContextEditorShown(false); }} /> : <></>}
     </>
   );
 }
