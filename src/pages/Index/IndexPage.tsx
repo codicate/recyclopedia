@@ -8,73 +8,59 @@ import { LoginType, selectLoginType } from "app/adminSlice";
 
 import { validPageLink, dictionaryUpdateKey } from "utils/functions";
 
+import Collapsible from "components/UI/Collapsible";
+import CheckboxButton from "components/UI/CheckboxButton";
+
 interface TagFilter {
-    filterName: string;
-    active: boolean;
+  filterName: string;
+  active: boolean;
 }
 
 interface FilterSettings {
-    draftStatus: boolean;
-    tagFilters: TagFilter[];
+  draftStatus: boolean;
+  tagFilters: TagFilter[];
 }
 
 interface IndexFilterProperties {
-    filterSettings: FilterSettings;
-    updateFilters: {
-        updateTagFilter: (id: string, newValue: boolean) => void,
-    }
+  filterSettings: FilterSettings;
+  updateFilters: {
+    updateTagFilter: (id: string, newValue: boolean) => void,
+  };
 }
 
-// I would've made a foldable component atm, but maybe I don't want it exactly
-// identical, so I'll just replicate it for now since it's not very difficult
-// to do it, and it'll be self-contained.
-function IndexFilter({filterSettings, updateFilters} : IndexFilterProperties) {
-  const [foldedStatus, updateFoldedStatus] = useState(false);
-    
-  return (<>
-    <div id={styles.index_filter}>
-      <h2>Index Filtering</h2>
-      <button onClick={() => updateFoldedStatus(!foldedStatus)}>{(foldedStatus) ? "+" : "-"}</button>
-      <hr/>
-      {(!foldedStatus) ? (
-        <>
-          <h3>Tag Filters:</h3>
-          {
-            filterSettings.tagFilters.map(
-              ({filterName, active}) => (
-                <div key={filterName}>
-                  <input type="checkbox"
-                    value={filterName}
-                    checked={active}
-                    onChange={
-                      function (event) {
-                        updateFilters.updateTagFilter(filterName, event.target.checked);
-                      }
-                    }/>
-                  <label htmlFor={filterName}>{filterName}</label>
-                </div>
-              )
-
-            )
-          }
-        </>
-      ): <></>}
-      <hr/>
-    </div>
-  </>);
+function IndexFilter({ filterSettings, updateFilters }: IndexFilterProperties) {
+  return (
+    <Collapsible header='Tags'>
+      <div id={styles.tagList}>
+        {
+          filterSettings.tagFilters.map(({ filterName, active }) =>
+            <CheckboxButton
+              key={filterName}
+              checked={active}
+              onCheck={(checked) =>
+                updateFilters.updateTagFilter(filterName, checked)
+              }
+            >
+              {filterName}
+            </CheckboxButton>
+          )
+        }
+      </div>
+    </Collapsible>
+  );
 }
 
 function IndexPage() {
   const articlesData = useAppSelector(selectArticlesData);
   const allTags = useAppSelector(selectAllTags);
-  const [filterSettings, updateFilterSettings] = useState({draftStatus: false, tagFilters: [] as TagFilter[]});
+  const [filterSettings, updateFilterSettings] = useState({ draftStatus: false, tagFilters: [] as TagFilter[] });
 
   useEffect(
-    function() {
+    function () {
       updateFilterSettings(
         {
           draftStatus: false,
-          tagFilters: allTags.map((tag) => { return {filterName: tag, active: false}; })
+          tagFilters: allTags.map((tag) => { return { filterName: tag, active: false }; })
         }
       );
     },
@@ -85,35 +71,37 @@ function IndexPage() {
 
   return (
     <div className={styles.index}>
+      <h2>Index Page</h2>
       <IndexFilter
         filterSettings={filterSettings}
         updateFilters={
           {
-            updateTagFilter: function(id: string, v: boolean) {
+            updateTagFilter: function (id: string, v: boolean) {
               updateFilterSettings(
-                            dictionaryUpdateKey(
-                              filterSettings,
-                              ["tagFilters"],
-                              function (filterArray) {
-                                for (const filter of filterArray as TagFilter[]) {
-                                  if (filter.filterName === id) {
-                                    filter.active = v;
-                                    break;
-                                  }
-                                }
-                                return filterArray;
-                              }
-                            ) as FilterSettings
+                dictionaryUpdateKey(
+                  filterSettings,
+                  ["tagFilters"],
+                  function (filterArray) {
+                    for (const filter of filterArray as TagFilter[]) {
+                      if (filter.filterName === id) {
+                        filter.active = v;
+                        break;
+                      }
+                    }
+                    return filterArray;
+                  }
+                ) as FilterSettings
               );
             }
           }
-        }/>
+        }
+      />
       {
         ((isAdmin) ?
           articlesData.articles :
           articlesData.articles.filter(({ draftStatus }) => !draftStatus)).
-          filter(function ({tags})  {
-            let result = function(){
+          filter(function ({ tags }) {
+            let result = function () {
               for (const tagFilter of filterSettings.tagFilters) {
                 if (tagFilter.active) return false;
               }

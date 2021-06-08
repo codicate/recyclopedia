@@ -45,7 +45,7 @@ import Input from "components/Form/Input";
 import bottomToolbarStyle from "./bottomToolbar.module.scss";
 import editorStyle from "./RichTextEditor.module.scss";
 import articleStyles from "components/Article/Article.module.scss";
-import Button from "components/Form/Button";
+import Button from "components/UI/Button";
 
 /** Unsafe wrappers... Cause most of this has to be unsafe to be even possible... **/
 /** Well... Draft.JS is a thing, but that can't exactly do the same thing as this... Otherwise it would require way less code. **/

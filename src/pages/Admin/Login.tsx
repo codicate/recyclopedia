@@ -5,7 +5,7 @@ import { useAppDispatch } from "app/hooks";
 import { LoginAttemptResult, loginWithEmailAndPassword, LoginType } from "app/adminSlice";
 
 import Form from "components/Form/Form";
-import Button from "components/Form/Button";
+import Button from "components/UI/Button";
 
 
 function Login(_: Record<string, never>) {
@@ -38,7 +38,9 @@ function Login(_: Record<string, never>) {
           }
         }}
       >
-        <Button type='submit'>Login</Button>
+        <Button type='submit'>
+          Login
+        </Button>
       </Form>
     </>
   );

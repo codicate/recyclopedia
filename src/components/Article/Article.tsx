@@ -9,6 +9,7 @@ import { LoginType, selectLoginType } from "app/adminSlice";
 import { preprocessMarkdown } from "utils/preprocessMarkdown";
 
 import MarkdownRender from "components/Article/MarkdownRender";
+import Collapsible from "components/UI/Collapsible";
 import Admin from "pages/Admin/Admin";
 
 // It would be very useful to pull the Foldable part into a reusable component
@@ -18,48 +19,28 @@ import Admin from "pages/Admin/Admin";
 // https://www.npmjs.com/package/markdown-it-toc-done-right ?
 
 // @ts-ignore
-function TableOfContents({sectionHeaders} : {sectionHeaders: any[]}) {
-  const [foldedStatus, updateFoldedStatus] = useState(false);
-
-  return (sectionHeaders.length > 0) ?
-    (<div id={styles.table_of_contents}>
-      <h3 id={styles.header}>
-            Table Of Contents 
-        <a id={styles.folder}
-          onClick={() => 
-            updateFoldedStatus(!foldedStatus)}>
-          {(foldedStatus) ? "+" : "-"}
-        </a>
-      </h3>
-      {(!foldedStatus) ? 
-        (<nav style={{ marginLeft: "3em", }}>
-          {
-            sectionHeaders.map(
-              ({ level, text }) => {
-                return (
-                  /*
-                    This scroll is unfortunately, not perfect because of the navbar...
-                  */
-                  <a key={text} href={"#" + text}>
-                    <p style=
-                      {
-                        {
-                          marginLeft: `${(level - 1) * 2}em`
-                        }
-                      }>&bull; {text}
-                    </p>
-                  </a>
-                );
-              }
-            )
-          }
-        </nav>) :
-        <></>}
-    </div>
-    ) : null;
+function TableOfContents({ sectionHeaders }: { sectionHeaders: any[]; }) {
+  return (sectionHeaders.length > 0) ? (
+    <Collapsible header='Table of Contents'>
+      <nav style={{ marginLeft: "3em", }}>
+        {
+          sectionHeaders.map(({ level, text }) => (
+            // This scroll is unfortunately, not perfect because of the navbar...
+            <a key={text} href={"#" + text}>
+              <p style={{
+                marginLeft: `${(level - 1) * 2}em`
+              }}>
+                &bull; {text}
+              </p>
+            </a>
+          ))
+        }
+      </nav>
+    </Collapsible>
+  ) : null;
 }
 
-function TagViews({ tags } : { tags?: string[] }) {
+function TagViews({ tags }: { tags?: string[]; }) {
   return (
     <div id={styles.tag_view}>
       {
@@ -79,7 +60,7 @@ function TagViews({ tags } : { tags?: string[] }) {
 function ArticleComponent({
   article
 }: {
-    article: Article;
+  article: Article;
 }) {
   const history = useHistory();
   const dispatch = useAppDispatch();
@@ -93,7 +74,7 @@ function ArticleComponent({
   return (
     <>
       {
-        isAdmin && (
+        (isAdmin) && (
           <>
             <button
               onClick={() => {
@@ -101,32 +82,30 @@ function ArticleComponent({
                 history.push("/");
               }}
             >
-                        Delete Page
+              Delete Page
             </button>
             <button
               onClick={() => updateAdminEditView(!adminEditView)}
             >
-                        Edit This Page
+              Edit This Page
             </button>
           </>
         )
       }
-      {(
-        isAdmin && adminEditView
-      ) ? (
-          <Admin
-            currentArticle={article}
-          />
-        ) : (
-          <>
-            <h1 className={styles.title}> {name} </h1>
-            <TableOfContents sectionHeaders={processedMarkdown.headers}/>
-            <MarkdownRender className={styles.article}>
-              {processedMarkdown.processed} 
-            </MarkdownRender>
-            <TagViews tags={article.tags}/>
-          </>
-        )}
+      {(isAdmin && adminEditView) ? (
+        <Admin
+          currentArticle={article}
+        />
+      ) : (
+        <>
+          <h1 className={styles.title}> {name} </h1>
+          <TableOfContents sectionHeaders={processedMarkdown.headers} />
+          <MarkdownRender className={styles.article}>
+            {processedMarkdown.processed}
+          </MarkdownRender>
+          <TagViews tags={article.tags} />
+        </>
+      )}
     </>
   );
 }

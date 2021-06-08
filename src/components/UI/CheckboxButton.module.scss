@@ -1,0 +1,36 @@
+@import "/src/styles/variables";
+
+input {
+  cursor: pointer;
+  opacity: 0;
+
+  position: absolute;
+  height: 100%;
+  width: 100%;
+
+  &:hover+label {
+    background-color: hsl(147, 40%, 90%);
+  }
+
+  &:checked+label {
+    color: white;
+    background-color: hsl(147, 60%, 30%);
+  }
+
+  &:hover+label,
+  &:checked+label {
+    box-shadow:
+      0 0 6px hsl(147, 20%, 80%),
+      0 0 12px hsl(147, 10%, 90%),
+  }
+}
+
+label {
+  padding: 0.5em 1em;
+  border-radius: 999rem;
+
+  color: $very-green;
+  background-color: hsl(147, 40%, 96%);
+
+  transition: .2s ease-out;
+}
