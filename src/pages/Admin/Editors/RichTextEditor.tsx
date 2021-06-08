@@ -67,6 +67,13 @@ function ExecuteRichTextCommand(commandName: string, optionalArgument?: string, 
 }
 
 function queryRichTextCommand(command: string, wantedValue?: boolean) {
+  /*
+    NOTE(jerry):
+
+    Is there no way to query the selection state of a link?
+
+    I would like to know if this is the case cause otherwise... That's kind of fucked.
+  */
   if (wantedValue) {
     return document.queryCommandValue(command);
   } else {
@@ -513,7 +520,7 @@ function HyperlinkContextSettings(properties: HyperlinkContextSettingsProperties
   function applyChanges() {
     if (hyperlinkText !== "" && hyperlinkAnchorText !== "") {
       selectionStackPop();
-      ExecuteRichTextCommand("insertHTML", `<a href=${hyperlinkAnchorText}><p>${hyperlinkText}</p></a>`);
+      ExecuteRichTextCommand("insertHTML", `<a href=${hyperlinkAnchorText}>${hyperlinkText}</a>`);
       properties.closeShownStatus();
     }
   }
