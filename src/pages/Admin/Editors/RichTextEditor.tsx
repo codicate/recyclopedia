@@ -1,4 +1,7 @@
-import React, { useState, useRef, KeyboardEventHandler, useEffect, createRef, } from "react";
+/*
+  A very minimal in-house Rich Text Editor.
+*/
+import React, { useState, useRef, KeyboardEventHandler, useEffect, createRef, DOMElement, } from "react";
 import { preprocessMarkdown } from "utils/preprocessMarkdown";
 import { uploadImage, retrieveImageData } from "utils/functions";
 
@@ -213,12 +216,44 @@ enum LayoutFloatMode {
   Right,
 }
 
+// May return more information in the future?
+export function imageDOMGetCaption(rootNode: Element | null) {
+  if (rootNode) {
+    let captionTextContents = "";
+
+    if (rootNode.tagName === "IMG") {
+      const parentNode = (rootNode.parentNode as Element);
+
+      if (parentNode.tagName === "DIV") {
+        if (parentNode.classList.contains(articleStyles.captionBox)) {
+          const captionElement = parentNode.getElementsByClassName(articleStyles.captionBoxInner)[0];
+          captionTextContents = captionElement.textContent || "";
+        }
+      }
+    }
+
+    return {
+      text: captionTextContents
+    };
+  }
+
+  return undefined;
+}
+
+export function imageDOMHasCaption(rootNode: Element | null) {
+  if (rootNode) {
+    return imageDOMGetCaption(rootNode) !== undefined;
+  }
+
+  return false;
+}
+
 function ImageContextSettings(properties: ImageContextSettingsProperties) {
   const imageObject = properties.imageRef?.current;
+  const captionInformation = imageDOMGetCaption(imageObject);
 
-  const [imageCaptionText, setImageCaptionText] = useState("");
-  // unused
-  const [alternateImageText, setAlternateImageText] = useState("");
+  const [imageCaptionText, setImageCaptionText] = useState(captionInformation?.text || "");
+  console.log(imageCaptionText);
 
   const [layoutFloatMode, setLayoutFloatMode] = useState(LayoutFloatMode.Left);
   const [imageDimensionType, setImageDimensionType] = useState(ImageDimensionsType.Default);
@@ -234,19 +269,21 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
       }
 
       imageObject.classList.forEach((e) => imageObject.classList.remove(e));
-      switch (layoutFloatMode) {
-      case LayoutFloatMode.Left:
-        imageObject.classList.add(articleStyles.floatLeft);
-        break;
-      case LayoutFloatMode.Center:
-        imageObject.classList.add(articleStyles.floatCenter);
-        break;
-      case LayoutFloatMode.Right:
-        imageObject.classList.add(articleStyles.floatRight);
-        break;
-      }
+      if (!imageDOMHasCaption(imageObject)) {
+        switch (layoutFloatMode) {
+        case LayoutFloatMode.Left:
+          imageObject.classList.add(articleStyles.floatLeft);
+          break;
+        case LayoutFloatMode.Center:
+          imageObject.classList.add(articleStyles.floatCenter);
+          break;
+        case LayoutFloatMode.Right:
+          imageObject.classList.add(articleStyles.floatRight);
+          break;
+        }
 
-      console.log(imageObject.classList);
+        console.log(imageObject.classList);
+      }
     }
 
     console.log("end of apply changes");
@@ -314,6 +351,7 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
               : <></>
           }
           {/*Caption Text*/}
+          <p>{imageCaptionText}</p>
           <Input 
             label="Image Caption"
             changeHandler={
@@ -321,15 +359,8 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
                 setImageCaptionText(e.target.value);
               }
             }
+            defaultValue={imageCaptionText}
             value={imageCaptionText} />
-          <Input 
-            label="Alternate Text"
-            changeHandler={
-              function (e) {
-                setAlternateImageText(e.target.value);
-              }
-            }
-            value={alternateImageText} />
         </div>
         <div className={editorStyle.alignToBottom}>
           <button onClick={applyChanges}>Apply Changes</button>

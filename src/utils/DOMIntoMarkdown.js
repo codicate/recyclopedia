@@ -2,6 +2,7 @@
     Inhouse DOM to Markdown interpreter.
 */
 import articleStyles from "components/Article/Article.module.scss";
+import { imageDOMGetCaption, imageDOMHasCaption } from "pages/Admin/Editors/RichTextEditor";
 
 function log_message(msg) {
   // This is intentional... This should be in a module called "debug" or something? idk
@@ -91,6 +92,14 @@ function renderElement(root, text_contents) {
       let result = `@@ src = '${src}' | `;
 
       const anyStyles = root.classList.length > 0;
+      const hasCaption = imageDOMHasCaption(root);
+
+      if (hasCaption) {
+        console.warn("Experimentally writing captions?");
+        const captionContents = imageDOMGetCaption(root);
+        result += `caption = '${captionContents.text}' |`;
+      }
+
       if (!anyStyles) {
         result += "floatingMethod = floatCenter |";
       } else {
