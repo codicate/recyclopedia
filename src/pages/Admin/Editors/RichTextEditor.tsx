@@ -228,7 +228,11 @@ export function imageDOMGetCaption(rootNode: Element | null) {
         if (parentNode.classList.contains(articleStyles.captionBox)) {
           const captionElement = parentNode.getElementsByClassName(articleStyles.captionBoxInner)[0];
           captionTextContents = captionElement.textContent || "";
+        } else {
+          return undefined;
         }
+      } else {
+        return undefined;
       }
     }
 
@@ -240,12 +244,47 @@ export function imageDOMGetCaption(rootNode: Element | null) {
   return undefined;
 }
 
+// You are calling this only if you know you can do this safely.
+function imageDOMUpdateCaptionWithNoChecks(rootNode: Element | null, textContent: string) {
+  if (rootNode) {
+    const parentNode = (rootNode.parentNode as Element);
+
+    if (parentNode.tagName === "DIV") {
+      if (parentNode.classList.contains(articleStyles.captionBox)) {
+        const captionElement = parentNode.getElementsByClassName(articleStyles.captionBoxInner)[0];
+        captionElement.children[0].textContent = textContent;
+      }
+    }
+  }
+}
+
 export function imageDOMHasCaption(rootNode: Element | null) {
   if (rootNode) {
-    return imageDOMGetCaption(rootNode) !== undefined;
+    const check = imageDOMGetCaption(rootNode);
+    console.log(check);
+    return check !== undefined;
   }
 
   return false;
+}
+
+function imageDOMConstructCaptionedImage(imageOriginalNode: HTMLImageElement, captionText: string) {
+  const result = document.createElement("DIV");
+
+  result.innerHTML = `<div class="${articleStyles.captionBox + " " + articleStyles.floatLeft}" style="width: ${imageOriginalNode.width * 1.3}px;">
+      ${imageOriginalNode.outerHTML}
+      <div class=${articleStyles.captionBoxInner}>
+        <p contenteditable="false">${captionText}</p>
+      </div>
+    </div>`.trim();
+
+  console.log(result.outerHTML);
+  const innerResult = result.firstChild;
+  return {
+    captionNode: innerResult as Element,
+    //@ts-ignore
+    imageNode: innerResult.childNodes[0]
+  };
 }
 
 function ImageContextSettings(properties: ImageContextSettingsProperties) {
@@ -269,7 +308,9 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
       }
 
       imageObject.classList.forEach((e) => imageObject.classList.remove(e));
-      if (!imageDOMHasCaption(imageObject)) {
+
+      const hasCaption = imageDOMHasCaption(imageObject);
+      if (!hasCaption && imageCaptionText === "") {
         switch (layoutFloatMode) {
         case LayoutFloatMode.Left:
           imageObject.classList.add(articleStyles.floatLeft);
@@ -283,6 +324,22 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
         }
 
         console.log(imageObject.classList);
+      } else {
+        console.log("Try to build something new");
+        if (hasCaption) {
+          console.log("Attempt to update?");
+          imageDOMUpdateCaptionWithNoChecks(imageObject, imageCaptionText);
+        } else {
+          console.log("Build new node?");
+          // build a new caption object...
+          const captionBuildResult =
+            imageDOMConstructCaptionedImage(imageObject as HTMLImageElement, imageCaptionText);
+
+          imageObject.replaceWith(captionBuildResult.captionNode);
+          // @ts-expect-error
+          properties.imageRef.current = captionBuildResult.imageNode;
+        }
+        setImageCaptionText("");
       }
     }
 
