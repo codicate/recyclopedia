@@ -73,89 +73,91 @@ function getSpecialNodeParentType(root) {
 }
 
 function renderElement(root, text_contents) {
-  if (text_contents !== "") {
-    if (root.tagName === "P") {
-      const parentType = getSpecialNodeParentType(root);
+  return "Hello Moto";
+  // console.log(root, text_contents);
+  // if (text_contents !== "") {
+  //   if (root.tagName === "P") {
+  //     const parentType = getSpecialNodeParentType(root);
 
-      console.log(parentType);
-      switch (parentType) {
-      case SpecialNodeParent_None:
-        return text_contents + "\n\n";
-      case SpecialNodeParent_List:
-        return text_contents;
-      case SpecialNodeParent_CaptionBox:
-        break;
-      }
-    } else if (root.tagName[0] === "H") {
-      return "#".repeat(Number(root.tagName[1])) + " " + text_contents + "\n";
-    } else if (root.tagName === "OL") {
-      let i = 0;
-      return Array.from(root.children).reduce(
-        function (accumulator, listItem) {
-          const childText = renderDomAsMarkdown(listItem);
-          if (childText !== "") {
-            return accumulator + `${((i++) + 1)}. ${childText}\n`;
-          } else {
-            return accumulator;
-          }
-        }, "");
-    } else if (root.tagName === "UL") {
-      return Array.from(root.children).reduce(
-        function (accumulator, listItem) {
-          const childText = renderDomAsMarkdown(listItem);
-          if (childText !== "") {
-            return accumulator + `- ${childText}\n`;
-          } else {
-            return "";
-          }
-        }, "");
-    }
+  //     console.log(parentType);
+  //     switch (parentType) {
+  //     case SpecialNodeParent_None:
+  //       return text_contents + "\n\n";
+  //     case SpecialNodeParent_List:
+  //       return text_contents;
+  //     case SpecialNodeParent_CaptionBox:
+  //       break;
+  //     }
+  //   } else if (root.tagName[0] === "H") {
+  //     return "#".repeat(Number(root.tagName[1])) + " " + text_contents + "\n";
+  //   } else if (root.tagName === "OL") {
+  //     let i = 0;
+  //     return Array.from(root.children).reduce(
+  //       function (accumulator, listItem) {
+  //         const childText = renderDomAsMarkdown(listItem);
+  //         if (childText !== "") {
+  //           return accumulator + `${((i++) + 1)}. ${childText}\n`;
+  //         } else {
+  //           return accumulator;
+  //         }
+  //       }, "");
+  //   } else if (root.tagName === "UL") {
+  //     return Array.from(root.children).reduce(
+  //       function (accumulator, listItem) {
+  //         const childText = renderDomAsMarkdown(listItem);
+  //         if (childText !== "") {
+  //           return accumulator + `- ${childText}\n`;
+  //         } else {
+  //           return "";
+  //         }
+  //       }, "");
+  //   }
 
-    console.log("going to try and root out tags friends", root.tagName);
-    return safe_call(surrounders[root.tagName])(text_contents);
-  } else {
-    if (root.tagName === "IMG") {
-      const src = root.getAttribute("src");
-      let result = `@@ src = '${src}' | `;
+  //   console.log("going to try and root out tags friends", root.tagName);
+  //   return safe_call(surrounders[root.tagName])(text_contents);
+  // } else {
+  //   if (root.tagName === "IMG") {
+  //     const src = root.getAttribute("src");
+  //     let result = `@@ src = '${src}' | `;
 
-      const anyStyles = root.classList.length > 0;
-      const hasCaption = imageDOMHasCaption(root);
+  //     const anyStyles = root.classList.length > 0;
+  //     const hasCaption = imageDOMHasCaption(root);
 
-      if (hasCaption) {
-        console.warn("Experimentally writing captions?");
-        const captionContents = imageDOMGetCaption(root);
-        result += `caption = '${captionContents.text.trim()}' |`;
-      }
+  //     if (hasCaption) {
+  //       console.warn("Experimentally writing captions?");
+  //       const captionContents = imageDOMGetCaption(root);
+  //       result += `caption = '${captionContents.text.trim()}' |`;
+  //     }
 
-      if (!anyStyles) {
-        result += "floatingMethod = floatCenter |";
-      } else {
-        root.classList.forEach(
-          (e) => {
-            switch (e) {
-            case articleStyles.floatLeft:
-              result += "floatingMethod = floatLeft |";
-              break;
-            case articleStyles.floatCenter:
-              result += "floatingMethod = floatCenter |";
-              break;
-            case articleStyles.floatRight:
-              result += "floatingMethod = floatRight |";
-              break;
-            }
-          }
-        );
-      }
+  //     if (!anyStyles) {
+  //       result += "floatingMethod = floatCenter |";
+  //     } else {
+  //       root.classList.forEach(
+  //         (e) => {
+  //           switch (e) {
+  //           case articleStyles.floatLeft:
+  //             result += "floatingMethod = floatLeft |";
+  //             break;
+  //           case articleStyles.floatCenter:
+  //             result += "floatingMethod = floatCenter |";
+  //             break;
+  //           case articleStyles.floatRight:
+  //             result += "floatingMethod = floatRight |";
+  //             break;
+  //           }
+  //         }
+  //       );
+  //     }
 
-      result += `width = ${root.width} | height = ${root.height}`;
+  //     result += `width = ${root.width} | height = ${root.height}`;
       
-      result += "@@\n";
-      console.log(result);
-      return result;
-    }
+  //     result += "@@\n";
+  //     console.log("image result: ", result);
+  //     return result;
+  //   }
 
-    return (root.tagName === "P" || root.tagName === "BR") ? "\\\n" : "";
-  }
+  //   return (root.tagName === "P" || root.tagName === "BR") ? "\\\n" : "";
+  // }
 }
 
 export function renderDomAsMarkdown(root) {

@@ -279,7 +279,8 @@ function imageDOMConstructCaptionedImage(imageOriginalNode: HTMLImageElement, ca
       <div class=${articleStyles.captionBoxInner}>
         <p contenteditable="false">${captionText}</p>
       </div>
-    </div>`.trim();
+    </div>
+    <p></p>`.trim();
 
   console.log(result.outerHTML);
   const innerResult = result.firstChild;
