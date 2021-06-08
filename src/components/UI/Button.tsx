@@ -1,25 +1,26 @@
+import { HtmlHTMLAttributes } from "react";
 import styles from "./Button.module.scss";
 
-const Button = ({
-  children = "",
+function Button({
+  children,
   type = "button",
-  styleOption,
+  styledAs,
   ...props
 }: {
   children?: React.ReactNode;
   type?: "submit" | "reset" | "button";
-  styleOption?: string;
-  onClick?(): void;
-}) => {
+  styledAs?: "regular" | "small";
+} & HtmlHTMLAttributes<HTMLButtonElement>
+) {
   return (
     <button
-      className={`${styles.button} ${styleOption ? styles[styleOption] : ""}`}
+      className={`${styles.button} ${styledAs ? styles[styledAs] : ""}`}
       type={type}
       {...props}
     >
       {children}
     </button>
   );
-};
+}
 
 export default Button;

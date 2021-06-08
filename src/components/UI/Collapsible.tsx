@@ -10,7 +10,8 @@ function Collapsible({
   header: string | React.ReactNode;
   collapsed?: boolean;
   children: React.ReactNode;
-} & React.HTMLAttributes<HTMLDivElement>) {
+} & React.HTMLAttributes<HTMLDivElement>
+) {
   const [isCollapsed, setIsCollapsed] = useState(collapsed);
 
   return (
