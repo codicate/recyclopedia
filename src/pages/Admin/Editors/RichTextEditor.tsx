@@ -614,7 +614,12 @@ function ImageContextMenu(properties: ImageContextMenuProperties) {
       <button onClick={openEdit} className={editorStyle.contextMenuButton}>Edit</button>
       <button onClick={
         function() {
-          image.remove();
+          const hasCaption = imageDOMHasCaption(image);
+          if (hasCaption) {
+            ((image.parentNode) as HTMLElement).remove();
+          } else {
+            image.remove();
+          }
           close();
         }
       } className={editorStyle.contextMenuButton}>Remove Image</button>
@@ -802,13 +807,13 @@ export function RichTextEditor({
           closeShownStatus={() => { setHyperlinkContextEditorShown(false); }} /> : <></>}
       { (imageContextMenuPosition) ? (
         <ImageContextMenu 
-        close={ () => setImageContextMenuPosition(undefined) }
-        openEdit={
-          function() {
-            setImageContextMenuPosition(undefined);
-            setImageContextEditorVisibility(true);
-          }
-        } image={currentImageRef.current} position={imageContextMenuPosition}/>
+          close={ () => setImageContextMenuPosition(undefined) }
+          openEdit={
+            function() {
+              setImageContextMenuPosition(undefined);
+              setImageContextEditorVisibility(true);
+            }
+          } image={currentImageRef.current} position={imageContextMenuPosition}/>
       ) : <></> }
     </>
   );
