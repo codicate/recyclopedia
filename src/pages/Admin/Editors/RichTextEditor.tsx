@@ -340,7 +340,6 @@ function imageDOMUpdateCaptionWithNoChecks(rootNode: Element | null, newWidth: n
 export function imageDOMHasCaption(rootNode: Element | null) {
   if (rootNode) {
     const check = imageDOMGetCaption(rootNode);
-    console.log(check);
     return check !== undefined;
   }
 
@@ -595,10 +594,11 @@ interface ImageContextMenuProperties {
   image: HTMLImageElement | null,
   position: Position,
   openEdit: () => void,
+  close: () => void,
 }
 
 function ImageContextMenu(properties: ImageContextMenuProperties) {
-  const {position, image, openEdit} = properties;
+  const {position, image, openEdit, close} = properties;
   if (!image) return <></>;
 
   const positioningStyle: CSSProperties = {
@@ -612,7 +612,12 @@ function ImageContextMenu(properties: ImageContextMenuProperties) {
       <br></br>
       <br></br>
       <button onClick={openEdit} className={editorStyle.contextMenuButton}>Edit</button>
-      <button className={editorStyle.contextMenuButton}>Remove Image</button>
+      <button onClick={
+        function() {
+          image.remove();
+          close();
+        }
+      } className={editorStyle.contextMenuButton}>Remove Image</button>
     </div>
   );
 }
@@ -796,7 +801,9 @@ export function RichTextEditor({
           currentSelection={window.getSelection()}
           closeShownStatus={() => { setHyperlinkContextEditorShown(false); }} /> : <></>}
       { (imageContextMenuPosition) ? (
-        <ImageContextMenu openEdit={
+        <ImageContextMenu 
+        close={ () => setImageContextMenuPosition(undefined) }
+        openEdit={
           function() {
             setImageContextMenuPosition(undefined);
             setImageContextEditorVisibility(true);
