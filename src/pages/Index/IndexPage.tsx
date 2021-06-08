@@ -27,14 +27,9 @@ interface IndexFilterProperties {
   };
 }
 
-// I would've made a foldable component atm, but maybe I don't want it exactly
-// identical, so I'll just replicate it for now since it's not very difficult
-// to do it, and it'll be self-contained.
 function IndexFilter({ filterSettings, updateFilters }: IndexFilterProperties) {
   return (
-    <Collapsible
-      title='Tags'
-    >
+    <Collapsible header='Tags'>
       <div id={styles.tagList}>
         {
           filterSettings.tagFilters.map(({ filterName, active }) =>

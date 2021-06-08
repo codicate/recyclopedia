@@ -1,13 +1,13 @@
 import styles from "./Collapsible.module.scss";
-import { useState } from "react";
+import React, { useState } from "react";
 
 function Collapsible({
-  title,
+  header,
   collapsed = false,
   children,
   ...props
 }: {
-  title: string;
+  header: string | React.ReactNode;
   collapsed?: boolean;
   children: React.ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>) {
@@ -21,7 +21,7 @@ function Collapsible({
           setIsCollapsed((isCollapsed) => !isCollapsed)
         }
       >
-        <p>{title}</p>
+        <p>{header}</p>
         <div className={`material-icons + ${isCollapsed ? styles.collapsed : ""}`}>
           expand_more
         </div>
