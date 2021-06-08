@@ -10,6 +10,22 @@
   
   You just need a title element and body element to focus on, and the rest may work just
   fine.
+
+  NOTE(jerry):
+  Hmmm, I am curious to know what would the best method be to allow for draggable images with
+  captions? It probably doesn't matter too much, but I'd like to know.
+
+  It might not be worth the effort to try and do, as I'm certain someone can probably just
+  put the image at the right place later on.
+
+  I'll probably leave it out until it's requested?
+
+  NOTE(jerry):
+  For obvious reasons, this can be shortened later. Probably not 100%, and I might have to do
+  something like a weird tagged union with a single context menu component that just does conditional
+  rendering for every type of thing, which I guess is fine too.
+
+  Keeping it one place or something like that.
 */
 import React, {
   useState,
@@ -529,7 +545,7 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
 
 interface HyperlinkContextSettingsProperties {
   closeShownStatus: () => void,
-  currentSelection: Selection | null,
+  hyperlinkRef: React.RefObject<HTMLAnchorElement>,
 }
 
 /*
@@ -544,9 +560,15 @@ function HyperlinkContextSettings(properties: HyperlinkContextSettingsProperties
   useEffect(() => { selectionStackPush(); }, []);
 
   function applyChanges() {
+    console.log(properties.hyperlinkRef.current);
     if (hyperlinkText !== "" && hyperlinkAnchorText !== "") {
       selectionStackPop();
-      ExecuteRichTextCommand("insertHTML", `<a href=${hyperlinkAnchorText}>${hyperlinkText}</a>`);
+      if (!properties.hyperlinkRef?.current) {
+        ExecuteRichTextCommand("insertHTML", `<a href=${hyperlinkAnchorText}>${hyperlinkText}</a>`);
+      } else {
+        properties.hyperlinkRef.current.href = hyperlinkAnchorText;
+        properties.hyperlinkRef.current.textContent = hyperlinkText;
+      }
       properties.closeShownStatus();
     }
   }
@@ -627,6 +649,39 @@ function ImageContextMenu(properties: ImageContextMenuProperties) {
   );
 }
 
+interface HyperlinkContextMenuProperties {
+  link: HTMLAnchorElement | null,
+  position: Position,
+  openEdit: () => void,
+  close: () => void,
+}
+
+function HyperlinkContextMenu(properties: HyperlinkContextMenuProperties) {
+  const {position, link, openEdit, close} = properties;
+  if (!link) return <></>;
+
+  const positioningStyle: CSSProperties = {
+    position: "absolute",
+    left: `${position.x}px`,
+    top: `calc(${position.y}px + 1.2em)`,
+  };
+
+  return (
+    <div className={editorStyle.imageContextMenu} style={positioningStyle}>
+      <i style={{margin: "2em"}}>{link.href || "No href selected?"}</i>
+      <br></br>
+      <br></br>
+      <button onClick={openEdit} className={editorStyle.contextMenuButton}>Edit</button>
+      <button onClick={
+        function() {
+          link.remove();
+          close();
+        }
+      } className={editorStyle.contextMenuButton}>Remove Hyperlink</button>
+    </div>
+  );
+}
+
 interface RichTextEditorProperties {
   submissionHandler: (f: { name: string, tags: string[], content: string; }) => void,
   currentArticle?: Article,
@@ -654,6 +709,7 @@ export function RichTextEditor({
   const currentHyperlinkRef = useRef<HTMLAnchorElement>(null);
 
   const [imageContextMenuPosition, setImageContextMenuPosition] = useState<undefined | Position>(undefined);
+  const [hyperLinkContextMenuPosition, setHyperLinkContextMenuPosition] = useState<undefined | Position>(undefined);
 
   useEffect(
     function () {
@@ -689,6 +745,10 @@ export function RichTextEditor({
               });
             } else if (target?.tagName === "A") {
               unsafeReferenceSet(currentHyperlinkRef, target);
+              setHyperLinkContextMenuPosition({
+                x: target.offsetLeft,
+                y: target.offsetTop,
+              });
             }
           };
       }
@@ -803,7 +863,7 @@ export function RichTextEditor({
         <ImageContextSettings imageRef={currentImageRef} closeShownStatus={() => { setImageContextEditorVisibility(false); }} /> : <></>}
       {(hyperlinkContextEditorShown) ?
         <HyperlinkContextSettings 
-          currentSelection={window.getSelection()}
+          hyperlinkRef={currentHyperlinkRef}
           closeShownStatus={() => { setHyperlinkContextEditorShown(false); }} /> : <></>}
       { (imageContextMenuPosition) ? (
         <ImageContextMenu 
@@ -815,6 +875,16 @@ export function RichTextEditor({
             }
           } image={currentImageRef.current} position={imageContextMenuPosition}/>
       ) : <></> }
+      {(hyperLinkContextMenuPosition) ? (
+        <HyperlinkContextMenu
+          close={() => setHyperLinkContextMenuPosition(undefined)}
+          openEdit={
+            function () {
+              setHyperLinkContextMenuPosition(undefined);
+              setHyperlinkContextEditorShown(true);
+            }
+          } link={currentHyperlinkRef.current} position={hyperLinkContextMenuPosition} />
+      ) : <></>}
     </>
   );
 }
