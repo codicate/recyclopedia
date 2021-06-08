@@ -9,6 +9,7 @@ import { LoginType, selectLoginType } from "app/adminSlice";
 import { validPageLink, dictionaryUpdateKey } from "utils/functions";
 
 import Collapsible from "components/UI/Collapsible";
+import CheckboxButton from "components/UI/CheckboxButton";
 
 interface TagFilter {
   filterName: string;
@@ -33,16 +34,15 @@ function IndexFilter({ filterSettings, updateFilters }: IndexFilterProperties) {
       <div id={styles.tagList}>
         {
           filterSettings.tagFilters.map(({ filterName, active }) =>
-            <div key={filterName}>
-              <input type="checkbox"
-                value={filterName}
-                checked={active}
-                onChange={(event) => {
-                  updateFilters.updateTagFilter(filterName, event.target.checked);
-                }}
-              />
-              <label htmlFor={filterName}>{filterName}</label>
-            </div>
+            <CheckboxButton
+              key={filterName}
+              checked={active}
+              onCheck={(checked) =>
+                updateFilters.updateTagFilter(filterName, checked)
+              }
+            >
+              {filterName}
+            </CheckboxButton>
           )
         }
       </div>

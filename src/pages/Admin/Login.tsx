@@ -38,7 +38,9 @@ function Login(_: Record<string, never>) {
           }
         }}
       >
-        <Button type='submit'>Login</Button>
+        <Button type='submit'>
+          Login
+        </Button>
       </Form>
     </>
   );

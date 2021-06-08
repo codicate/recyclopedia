@@ -1,3 +1,5 @@
+@import "/src/styles/variables";
+
 .button {
   min-width: 165px;
   width: auto;
@@ -12,14 +14,17 @@
   font-weight: bolder;
   border: none;
   cursor: pointer;
-s
+
   &:hover {
     background-color: white;
     color: black;
     border: 1px solid black;
   }
 
-  &.google {
+  
+}
+
+.small {
     background-color: #4285f4;
     color: white;
 
@@ -27,5 +32,5 @@ s
       background-color: #357ae8;
       border: none;
     }
-  }
+  
 }

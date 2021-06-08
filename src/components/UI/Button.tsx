@@ -1,16 +1,16 @@
-import { HtmlHTMLAttributes } from "react";
 import styles from "./Button.module.scss";
+
+export interface ButtonProps {
+  children: string;
+  styledAs?: "regular" | "small";
+} 
 
 function Button({
   children,
   type = "button",
   styledAs,
   ...props
-}: {
-  children?: React.ReactNode;
-  type?: "submit" | "reset" | "button";
-  styledAs?: "regular" | "small";
-} & HtmlHTMLAttributes<HTMLButtonElement>
+}: ButtonProps & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
 ) {
   return (
     <button
