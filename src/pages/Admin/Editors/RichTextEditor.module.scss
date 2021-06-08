@@ -121,16 +121,16 @@
     right: 1em;
     transition: color 0.3s;
     transition: transform 0.3s;
-}
 
-.xOut:hover {
-    cursor: pointer;
-    color: red;
-    transform: scale(1.15);
-}
-.xOut:active {
-    color: blue;
-    transform: scale(0.95);
+    &:hover {
+        cursor: pointer;
+        color: red;
+        transform: scale(1.15);
+    }
+    &:active {
+        color: blue;
+        transform: scale(0.95);
+    }
 }
 
 // lots of stupid stuff. TODO get rid of this.
@@ -185,12 +185,13 @@
 
     transition: color 0.2s;
     transition: background-color 0.2s;
+
+    &:hover {
+        background-color: yellow;
+        color: black;
+    }
 }
 
-.contextMenuButton:hover {
-    background-color: yellow;
-    color: black;
-}
 
 .imageContextMenu {
     display: inline;
