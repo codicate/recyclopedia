@@ -1,4 +1,4 @@
-#collapsibleContainer {
+.collapsibleContainer {
   border-radius: 1em;
   overflow: hidden;
 
@@ -7,7 +7,7 @@
     0 6px 14px hsl(0, 0%, 92%),
 }
 
-#collapsibleTitle {
+.collapsibleTitle {
   user-select: none;
   cursor: pointer;
 

@@ -4,18 +4,19 @@ import { useState } from "react";
 function Collapsible({
   title,
   collapsed = false,
-  children
+  children,
+  ...props
 }: {
   title: string;
   collapsed?: boolean;
   children: React.ReactNode;
-}) {
+} & React.HTMLAttributes<HTMLDivElement>) {
   const [isCollapsed, setIsCollapsed] = useState(collapsed);
 
   return (
-    <div id={styles.collapsibleContainer}>
+    <div className={styles.collapsibleContainer} {...props}>
       <div
-        id={styles.collapsibleTitle}
+        className={styles.collapsibleTitle}
         onClick={() =>
           setIsCollapsed((isCollapsed) => !isCollapsed)
         }
