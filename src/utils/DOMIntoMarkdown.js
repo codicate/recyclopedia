@@ -48,16 +48,42 @@ Most other normal elements are handled fine, it's really just the lists I'm conc
 This is entirely recursive, and because it's recursive it loses some information that may be useful for
 cleaner and probably easier rendering...
 */
+
+
+/*
+Using consts since we don't typescript the file yet.
+ */
+const SpecialNodeParent_None = 0;
+const SpecialNodeParent_List = 1;
+const SpecialNodeParent_CaptionBox = 2;
+
+function getSpecialNodeParentType(root) {
+  const parent = root.parentElement;
+  if (parent) {
+    if (parent.tagName === "DIV" && parent.classList.contains(articleStyles.captionBoxInner)) {
+      return SpecialNodeParent_CaptionBox;
+    } else if (parent.tagName === "LI") {
+      return SpecialNodeParent_List;
+    }
+
+    return SpecialNodeParent_None;
+  }
+
+  return SpecialNodeParent_None;
+}
+
 function renderElement(root, text_contents) {
   if (text_contents !== "") {
     if (root.tagName === "P") {
-      log_message("paragraph");
-      log_message(root.parentElement);
-      if (root.parentElement && (root.parentElement.tagName === "LI")) {
-        log_message("Parent was list?");
-        return text_contents;
-      } else {
+      const parentType = getSpecialNodeParentType(root);
+
+      switch (parentType) {
+      case SpecialNodeParent_None:
         return text_contents + "\n\n";
+      case SpecialNodeParent_List:
+        return text_contents;
+      case SpecialNodeParent_CaptionBox:
+        break;
       }
     } else if (root.tagName[0] === "H") {
       return "#".repeat(Number(root.tagName[1])) + " " + text_contents + "\n";

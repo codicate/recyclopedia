@@ -19,6 +19,7 @@ export interface MarkdownParsedMetaInformation {
 export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInformation {
   let result = "";
   const input = intoParsable(stringInput);
+  console.warn("input: ", stringInput);
 
   const actualResult = {
     processed: "",
@@ -172,7 +173,11 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
           if (!error) {
             if (captionString !== "") {
               image_tag += "/>";
-              result += `<div class="${styles.captionBox + " " + styles.floatLeft}" style="width: ${width*1.3}px;">${image_tag}\n<div class=${styles.captionBoxInner}><p>${captionString}</p></div></div>`;
+              result += `<div class="${styles.captionBox + " " + styles.floatLeft}" style="width: ${width*1.3}px;">
+                          ${image_tag}
+                          <div class=${styles.captionBoxInner}>
+                            <p contenteditable="false">${captionString}</p>
+                          </div></div>`;
             } else {
               image_tag += "class='";
               switch (floatingMethod) {
