@@ -19,7 +19,7 @@ export interface MarkdownParsedMetaInformation {
 export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInformation {
   let result = "";
   const input = intoParsable(stringInput);
-  console.warn("input: ", stringInput);
+  console.log("input: ", stringInput);
 
   const actualResult = {
     processed: "",
@@ -51,9 +51,7 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
         const inbetween = intoParsable(
           input.consumeUntil(
             function () {
-              if (input.requireCharacter("\n")) {
-                return true;
-              } else if (input.requireCharacter("@")) {
+              if (input.requireCharacter("@")) {
                 /*
                   When we encounter an @ sign, it's likely to be the end of parsing a "region".
                  */
@@ -75,6 +73,7 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
           let floatingMethod = "";
           let captionString = "";
 
+          // TEST?
           const width = 150;
 
           while (inbetween.stillParsing() && !error) {
@@ -101,7 +100,8 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
               if (inbetween.requireCharacter("=")) {
                 eatWhitespace(inbetween);
                 // @ts-ignore
-                const maybe_string = tryParseString(inbetween, { delimiter: "'" });
+                const maybe_string = tryParseString(inbetween, { delimiter: "'", acceptMultiline: true });
+                console.log(maybe_string);
                 eatWhitespace(inbetween);
 
                 if (maybe_string) {
@@ -188,6 +188,7 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
               image_tag += "'";
               image_tag += "/>";
               result += image_tag;
+              console.log("finished parsing special image");
             }
           } else {
             console.log("error happened");

@@ -271,8 +271,11 @@ export function imageDOMHasCaption(rootNode: Element | null) {
 function imageDOMConstructCaptionedImage(imageOriginalNode: HTMLImageElement, captionText: string) {
   const result = document.createElement("DIV");
 
+  let image_tag = "<img ";
+  image_tag += `src=${imageOriginalNode.src} style="width: ${imageOriginalNode.width}px; height: ${imageOriginalNode.height}px; border: 1px solid gray; display: block; margin: auto; margin-top: 1.2em;"></img>`;
+
   result.innerHTML = `<div class="${articleStyles.captionBox + " " + articleStyles.floatLeft}" style="width: ${imageOriginalNode.width * 1.3}px;">
-      ${imageOriginalNode.outerHTML}
+          ${image_tag}
       <div class=${articleStyles.captionBoxInner}>
         <p contenteditable="false">${captionText}</p>
       </div>

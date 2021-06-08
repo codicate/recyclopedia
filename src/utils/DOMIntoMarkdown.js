@@ -77,6 +77,7 @@ function renderElement(root, text_contents) {
     if (root.tagName === "P") {
       const parentType = getSpecialNodeParentType(root);
 
+      console.log(parentType);
       switch (parentType) {
       case SpecialNodeParent_None:
         return text_contents + "\n\n";
@@ -110,7 +111,7 @@ function renderElement(root, text_contents) {
         }, "");
     }
 
-    log_message("going to try and root out tags friends", root.tagName);
+    console.log("going to try and root out tags friends", root.tagName);
     return safe_call(surrounders[root.tagName])(text_contents);
   } else {
     if (root.tagName === "IMG") {
@@ -123,7 +124,7 @@ function renderElement(root, text_contents) {
       if (hasCaption) {
         console.warn("Experimentally writing captions?");
         const captionContents = imageDOMGetCaption(root);
-        result += `caption = '${captionContents.text}' |`;
+        result += `caption = '${captionContents.text.trim()}' |`;
       }
 
       if (!anyStyles) {
@@ -131,11 +132,6 @@ function renderElement(root, text_contents) {
       } else {
         root.classList.forEach(
           (e) => {
-            console.log("E");
-            console.log(e);
-            console.log(articleStyles.floatLeft);
-            console.log(articleStyles.floatCenter);
-            console.log(articleStyles.floatRight);
             switch (e) {
             case articleStyles.floatLeft:
               result += "floatingMethod = floatLeft |";
