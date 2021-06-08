@@ -1,45 +1,6 @@
 @import "/src/styles/variables";
 
-#indexFilter {
-
-  border-radius: 1em;
-  border: 1px solid hsl(147, 20%, 86%);
-  overflow: hidden;
-
-
-}
-
-#filterFoldHeader {
-  user-select: none;
-  cursor: pointer;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: .75em 1.25em;
-  border-radius: 1em;
-
-  &:hover {
-    background-color: hsl(0, 0%, 98%);
-  }
-
-  p {
-    margin: 0;
-    font-weight: bold;
-  }
-
-  div {
-    font-size: 2rem;
-    transition: .3s ease-in-out;
-
-    &.folded {
-      transform: rotate(90deg);
-    }
-  }
-}
-
-#filterList {
+#tagList {
   display: flex;
   flex-flow: wrap;
   gap: 1em;
@@ -68,15 +29,22 @@
       color: white;
       background-color: hsl(147, 60%, 30%);
     }
+
+    &:hover+label,
+    &:checked+label {
+      box-shadow:
+        0 0 6px hsl(147, 20%, 80%),
+        0 0 12px hsl(147, 10%, 90%),
+    }
   }
 
   label {
     padding: 0.5em 1em;
-    border-radius: 0.5em;
+    border-radius: 999rem;
 
     color: $very-green;
     background-color: hsl(147, 40%, 96%);
 
-    transition: 0.2s ease-out;
+    transition: .2s ease-out;
   }
 }

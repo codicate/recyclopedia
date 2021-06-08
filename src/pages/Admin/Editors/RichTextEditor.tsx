@@ -13,7 +13,7 @@ import Input from "components/Form/Input";
 import bottomToolbarStyle from "./bottomToolbar.module.scss";
 import editorStyle from "./RichTextEditor.module.scss";
 import articleStyles from "components/Article/Article.module.scss";
-import Button from "components/Form/Button";
+import Button from "components/UI/Button";
 
 function executeRichTextCommand(commandName: string, optionalArgument?: string) {
   if (commandName === "@_insertImage") {

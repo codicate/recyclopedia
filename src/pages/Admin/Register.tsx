@@ -5,7 +5,7 @@ import { useAppDispatch } from "app/hooks";
 import { registerAccount } from "app/adminSlice";
 
 import Form from "components/Form/Form";
-import Button from "components/Form/Button";
+import Button from "components/UI/Button";
 
 
 function Register(_: Record<string, never>) {

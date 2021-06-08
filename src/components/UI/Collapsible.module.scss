@@ -1,0 +1,38 @@
+#collapsibleContainer {
+  border-radius: 1em;
+  overflow: hidden;
+
+  box-shadow:
+    0 2px 4px hsl(0, 0%, 82%),
+    0 6px 14px hsl(0, 0%, 92%),
+}
+
+#collapsibleTitle {
+  user-select: none;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: .75em 1.25em;
+  border-radius: 1em;
+
+  &:hover {
+    background-color: hsl(0, 0%, 98%);
+  }
+
+  p {
+    margin: 0;
+    font-weight: bold;
+  }
+
+  div {
+    font-size: 2rem;
+    transition: .3s ease-in-out;
+
+    &.collapsed {
+      transform: rotate(90deg);
+    }
+  }
+}

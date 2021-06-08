@@ -1,4 +1,4 @@
-import styles from "components/Form/Button.module.scss";
+import styles from "./Button.module.scss";
 
 const Button = ({
   children = "",

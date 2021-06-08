@@ -8,6 +8,8 @@ import { LoginType, selectLoginType } from "app/adminSlice";
 
 import { validPageLink, dictionaryUpdateKey } from "utils/functions";
 
+import Collapsible from "components/UI/Collapsible";
+
 interface TagFilter {
   filterName: string;
   active: boolean;
@@ -29,42 +31,28 @@ interface IndexFilterProperties {
 // identical, so I'll just replicate it for now since it's not very difficult
 // to do it, and it'll be self-contained.
 function IndexFilter({ filterSettings, updateFilters }: IndexFilterProperties) {
-  const [foldedStatus, updateFoldedStatus] = useState(false);
-
-  return (<>
-    <div id={styles.indexFilter}>
-      <div
-        id={styles.filterFoldHeader}
-        onClick={() =>
-          updateFoldedStatus(!foldedStatus)
+  return (
+    <Collapsible
+      title='Tags'
+    >
+      <div id={styles.tagList}>
+        {
+          filterSettings.tagFilters.map(({ filterName, active }) =>
+            <div key={filterName}>
+              <input type="checkbox"
+                value={filterName}
+                checked={active}
+                onChange={(event) => {
+                  updateFilters.updateTagFilter(filterName, event.target.checked);
+                }}
+              />
+              <label htmlFor={filterName}>{filterName}</label>
+            </div>
+          )
         }
-      >
-        <p>Tag Filters:</p>
-        <div className={`material-icons + ${foldedStatus ? styles.folded : ""}`}>
-          expand_more
-        </div>
       </div>
-
-      {(!foldedStatus) && (
-        <div id={styles.filterList}>
-          {
-            filterSettings.tagFilters.map(({ filterName, active }) =>
-              <div key={filterName}>
-                <input type="checkbox"
-                  value={filterName}
-                  checked={active}
-                  onChange={(event) => {
-                    updateFilters.updateTagFilter(filterName, event.target.checked);
-                  }}
-                />
-                <label htmlFor={filterName}>{filterName}</label>
-              </div>
-            )
-          }
-        </div>
-      )}
-    </div>
-  </>);
+    </Collapsible>
+  );
 }
 
 function IndexPage() {
