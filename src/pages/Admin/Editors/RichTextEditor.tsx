@@ -411,6 +411,9 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
         this properly.
   
         Probably doesn't matter too much...
+
+        Also new styling for input[type="check"] ended up breaking this. That's not so
+        great.
         */
         if (!imageAllowsWrapAround) {
           imageObject.classList.add(articleStyles.noWrapAroundText);
