@@ -1,0 +1,82 @@
+@import "/src/styles/variables";
+
+#indexFilter {
+
+  border-radius: 1em;
+  border: 1px solid hsl(147, 20%, 86%);
+  overflow: hidden;
+
+
+}
+
+#filterFoldHeader {
+  user-select: none;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: .75em 1.25em;
+  border-radius: 1em;
+
+  &:hover {
+    background-color: hsl(0, 0%, 98%);
+  }
+
+  p {
+    margin: 0;
+    font-weight: bold;
+  }
+
+  div {
+    font-size: 2rem;
+    transition: .3s ease-in-out;
+
+    &.folded {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+#filterList {
+  display: flex;
+  flex-flow: wrap;
+  gap: 1em;
+
+  padding: 1em;
+
+  div {
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+
+  input {
+    cursor: pointer;
+    opacity: 0;
+
+    position: absolute;
+    height: 100%;
+    width: 100%;
+
+    &:hover+label {
+      background-color: hsl(147, 40%, 90%);
+    }
+
+    &:checked+label {
+      color: white;
+      background-color: hsl(147, 60%, 30%);
+    }
+  }
+
+  label {
+    padding: 0.5em 1em;
+    border-radius: 0.5em;
+
+    color: $very-green;
+    background-color: hsl(147, 40%, 96%);
+
+    transition: 0.2s ease-out;
+  }
+}
