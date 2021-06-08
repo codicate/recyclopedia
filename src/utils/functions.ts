@@ -107,3 +107,24 @@ export function classListReplace(node: Element, classes: string[]) {
     node.classList.add(classItem);
   }
 }
+
+// push and pop the current selection stack
+// this is mostly to keep the selection consistent for stuff...
+// that needs to temporarily break focus or whatever...
+const _selectionStack: Range[] = [];
+export function selectionStackPush() {
+  const selection = window.getSelection();
+  const topMostSelection = selection?.getRangeAt(0);
+
+  if (topMostSelection) {
+    selection?.removeRange(topMostSelection);
+    _selectionStack.push(topMostSelection);
+  }
+}
+
+export function selectionStackPop() {
+  if (_selectionStack.length) {
+    const selection = window.getSelection();
+    selection?.addRange(_selectionStack.pop() as Range);
+  }
+}

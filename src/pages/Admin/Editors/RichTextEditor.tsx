@@ -1,14 +1,32 @@
 /*
   A very minimal in-house Rich Text Editor.
 */
-import React, { useState, useRef, KeyboardEventHandler, useEffect, } from "react";
+import React, {
+  useState,
+  useRef,
+  KeyboardEventHandler,
+  useEffect,
+} from "react";
+
 import { preprocessMarkdown } from "utils/preprocessMarkdown";
-import { uploadImage, retrieveImageData, classListReplace, classListClear } from "utils/functions";
+import {
+  uploadImage,
+  retrieveImageData,
+  classListReplace,
+  classListClear,
+  selectionStackPop,
+  selectionStackPush,
+  dictionaryUpdateKeyNested,
+} from "utils/functions";
 
 import { renderMarkdown } from "components/Article/MarkdownRender";
 import { renderDomAsMarkdown } from "utils/DOMIntoMarkdown";
-import { dictionaryUpdateKeyNested } from "utils/functions";
-import { widgets, toggleWidgetActiveState, flattenWidgetStateTypes, WidgetCategory } from "./RichTextEditWidgetInformation";
+
+import {
+  widgets,
+  toggleWidgetActiveState,
+  flattenWidgetStateTypes,
+} from "./RichTextEditWidgetInformation";
 
 import { Article } from "app/articlesSlice";
 import Input from "components/Form/Input";
@@ -490,20 +508,11 @@ function HyperlinkContextSettings(properties: HyperlinkContextSettingsProperties
   const [hyperlinkText, setHyperlinkText] = useState("");
   const [hyperlinkAnchorText, setHyperlinkAnchorText] = useState("");
 
-  const [restorativeRange, _] = useState(
-    properties.currentSelection?.getRangeAt(0)
-  );
-
-  console.log(restorativeRange);
+  useEffect(() => { selectionStackPush(); }, []);
 
   function applyChanges() {
     if (hyperlinkText !== "" && hyperlinkAnchorText !== "") {
-      const selection = window.getSelection();
-      selection?.removeAllRanges();
-      if (restorativeRange) {
-        selection?.addRange(restorativeRange);
-      }
-
+      selectionStackPop();
       ExecuteRichTextCommand("insertHTML", `<a href=${hyperlinkAnchorText}><p>${hyperlinkText}</p></a>`);
       properties.closeShownStatus();
     }
