@@ -39,9 +39,7 @@ function ExecuteRichTextCommand(commandName: string, optionalArgument?: string, 
     fileDialog.addEventListener("change", fileHandlerOnChange);
   }
     break;
-  case "@_hyperlink":
-    document.execCommand("insertHorizontalRule");
-    break;
+  case "@_hyperlink": break;
   default:
     document.execCommand(commandName, false, optionalArgument);
     return;
@@ -398,7 +396,7 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
   // although you can autogenerate the UI from the objects.
   return (
     <div id={editorStyle.blotOut}>
-      <div id={editorStyle.imageContextSettingsWindow}>
+      <div className={editorStyle.settingsWindow} id={editorStyle.imageContextSettingsWindow}>
         <h1>Image Settings <a onClick={(_) => properties.closeShownStatus()} className={editorStyle.xOut}>X</a></h1>
         <div style={{ margin: "2.5em" }}>
           <p style={{textAlign: "center"}}><i>{imageObject?.src}</i></p>
@@ -485,16 +483,37 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
 
 interface HyperlinkContextSettingsProperties {
   closeShownStatus: () => void,
+  currentSelection: Selection | null,
 }
+
 function HyperlinkContextSettings(properties: HyperlinkContextSettingsProperties) {
   const [hyperlinkText, setHyperlinkText] = useState("");
+  const [hyperlinkAnchorText, setHyperlinkAnchorText] = useState("");
+
+  const [restorativeRange, _] = useState(
+    properties.currentSelection?.getRangeAt(0)
+  );
+
+  console.log(restorativeRange);
+
+  function applyChanges() {
+    if (hyperlinkText !== "" && hyperlinkAnchorText !== "") {
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      if (restorativeRange) {
+        selection?.addRange(restorativeRange);
+      }
+
+      ExecuteRichTextCommand("insertHTML", `<a href=${hyperlinkAnchorText}><p>${hyperlinkText}</p></a>`);
+      properties.closeShownStatus();
+    }
+  }
 
   return (
     <div id={editorStyle.blotOut}>
-      <div id={editorStyle.imageContextSettingsWindow}>
+      <div className={editorStyle.settingsWindow} id={editorStyle.hyperlinkContextSettingsWindow}>
         <h1>Hyperlink Creation <a onClick={(_) => properties.closeShownStatus()} className={editorStyle.xOut}>X</a></h1>
         <div style={{ margin: "2.5em" }}>
-          {/*Caption Text*/}
           <p>Hyperlink</p>
           <Input 
             label="Hyperlink Contents"
@@ -505,9 +524,19 @@ function HyperlinkContextSettings(properties: HyperlinkContextSettingsProperties
             }
             defaultValue={hyperlinkText}
             value={hyperlinkText} />
+          <p>Anchor Location</p>
+          <Input
+            label="Hyperlink Location"
+            changeHandler={
+              function (e) {
+                setHyperlinkAnchorText(e.target.value);
+              }
+            }
+            defaultValue={hyperlinkAnchorText}
+            value={hyperlinkAnchorText} />
         </div>
         <div className={editorStyle.alignToBottom}>
-          <button>Apply Changes</button>
+          <button onClick={applyChanges}>Apply Changes</button>
         </div>
       </div>
     </div>
@@ -676,7 +705,9 @@ export function RichTextEditor({
       { (imageContextEditorShown) ?
         <ImageContextSettings imageRef={currentImageRef} closeShownStatus={() => { setImageContextEditorVisibility(false); }} /> : <></>}
       {(hyperlinkContextEditorShown) ?
-        <HyperlinkContextSettings closeShownStatus={() => { setHyperlinkContextEditorShown(false); }} /> : <></>}
+        <HyperlinkContextSettings 
+          currentSelection={window.getSelection()}
+          closeShownStatus={() => { setHyperlinkContextEditorShown(false); }} /> : <></>}
     </>
   );
 }

@@ -74,11 +74,11 @@
     }
 }
 
-#imageContextSettingsWindow {
+.settingsWindow {
     background-color: white;
     border-radius: 5px;
     width: 50%;
-    height: 80%;
+
     margin-top: 2em;
 
     position: relative;
@@ -106,6 +106,13 @@
         color: yellow;
         transform: scale(0.98);
     }
+}
+
+#imageContextSettingsWindow {
+    height: 80%;
+}
+#hyperlinkContextSettingsWindow {
+    height: 50%;
 }
 
 .xOut {
