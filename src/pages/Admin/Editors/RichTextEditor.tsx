@@ -517,8 +517,7 @@ export function RichTextEditor({
             }
           };
       }
-    }
-    , [editableAreaDOMRef]);
+    }, [editableAreaDOMRef]);
 
   document.execCommand("defaultParagraphSeparator", false, "br");
   const [widgetStates, updateWidgetState] = useState(widgets);
@@ -596,9 +595,12 @@ export function RichTextEditor({
                 key={widgetId}
                 id={widgetId}
                 className={
-                  ((widgetStates[(widget.category !== undefined) ?
-                    widget.category : widgetId].active) === widgetId) ?
-                    editorStyle.active : editorStyle.button
+                  (widget.category) ? (((widgetStates[
+                    (widget.category !== undefined) ?
+                      widget.category :
+                      widgetId].active) === widgetId) ?
+                    editorStyle.active : editorStyle.button)
+                    : editorStyle.button
                 }
                 onClick={
                   (_) => {

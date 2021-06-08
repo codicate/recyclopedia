@@ -62,6 +62,12 @@ export const widgets: WidgetCategoryDic = {
       underline: { name: "Underline", display: <u>UL</u>, command: "underline" }
     }
   },
+  hyperlink: {
+    active: null,
+    types: {
+      hyperlink: { name: "Hyperlink", display: <b>HREF</b>, command: "@_hyperlink" }
+    }
+  },
 };
 
 export function toggleWidgetActiveState(widgets: WidgetCategoryDic, widgetId: string, categoryValue?: string) {
