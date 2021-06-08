@@ -170,3 +170,38 @@
         height: 200px !important;
     } 
 }
+
+@keyframes image-context-menu-open-up {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.contextMenuButton {
+    margin: 0.2em;
+    padding: 0.3em;
+    border-radius: 2px;
+    background-color: royalblue;
+    color: white;
+
+    transition: color 0.2s;
+    transition: background-color 0.2s;
+}
+
+.contextMenuButton:hover {
+    background-color: yellow;
+    color: black;
+}
+
+.imageContextMenu {
+    display: inline;
+    overflow: hidden;
+
+    animation-duration: 0.2s;
+    animation-timing-function: ease-in-out;
+    animation-name: image-context-menu-open-up;
+
+    background-color: white;
+    padding: 0.4em;
+    border-radius: 5px;
+    box-shadow: black 3px 3px 5px;
+}

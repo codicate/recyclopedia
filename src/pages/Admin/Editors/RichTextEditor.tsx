@@ -1,11 +1,22 @@
 /*
   A very minimal in-house Rich Text Editor.
+
+  Please keep this as one giant file. I'd rather sift through
+  a thousand lines here, than going through multiple different files.
+
+  Also this is not a "modular" Rich Text Editor, and it isn't really supposed to be.
+  Although it probably could with some slightly more careful thought since most of the logic
+  will work fine.
+  
+  You just need a title element and body element to focus on, and the rest may work just
+  fine.
 */
 import React, {
   useState,
   useRef,
   KeyboardEventHandler,
   useEffect,
+  CSSProperties,
 } from "react";
 
 import { preprocessMarkdown } from "utils/preprocessMarkdown";
@@ -100,17 +111,18 @@ function fileHandlerOnChange({ target }: Event): void {
       });
 }
 
+interface EditorHandleKeyBindingsProperties {
+  saveDocument: () => void,
+  toggleWidget: (widgetId: string, categoryValue?: string) => void,
+  executeRichTextCommand: typeof ExecuteRichTextCommand,
+  updateDirtyFlag: React.Dispatch<boolean>,
+}
 function editorHandleKeybindings({
   saveDocument,
   toggleWidget,
   executeRichTextCommand,
   updateDirtyFlag
-}: {
-  saveDocument: () => void,
-  toggleWidget: (widgetId: string, categoryValue?: string) => void,
-  executeRichTextCommand: typeof ExecuteRichTextCommand,
-  updateDirtyFlag: React.Dispatch<boolean>,
-}): KeyboardEventHandler<HTMLDivElement> {
+}: EditorHandleKeyBindingsProperties): KeyboardEventHandler<HTMLDivElement> {
   return function (event) {
     const { key, shiftKey, ctrlKey } = event;
     let disableDefaultBehavior = false;
@@ -200,6 +212,7 @@ interface ArticleTagEditorProperties {
   setTagState: React.Dispatch<string[]>;
 }
 
+// You know, this looks ugly, but it's almost hilarious that this is the shortest thing here...
 function ArticleTagEditor({ tags, setTagState }: ArticleTagEditorProperties) {
   const [input, setInput] = useState("");
 
@@ -340,6 +353,7 @@ function imageDOMConstructCaptionedImage(imageOriginalNode: HTMLImageElement, la
   let image_tag = "<img ";
   image_tag += `class="${articleStyles.captionImagePreview}" src=${imageOriginalNode.src} style="${captionImageThumbnailStyleString(imageOriginalNode.width, imageOriginalNode.height)}"></img>`;
 
+  // TODO(jerry): This needs to be factored out, as it is also used by the markdown preprocessor to generate our captions.
   result.innerHTML = `<div class="${articleStyles.captionBox + " " + floatModeStyle(layoutFloatMode)}" style="${captionImageBlockStyleString(imageOriginalNode.width)}">
           ${image_tag}
       <div class=${articleStyles.captionBoxInner}>
@@ -357,6 +371,11 @@ function imageDOMConstructCaptionedImage(imageOriginalNode: HTMLImageElement, la
   };
 }
 
+/*
+  TODO(jerry):
+  Like the other context settings, I would prefer if this had more feedback,
+  and obviously I would prefer this to be shorter.
+*/
 function ImageContextSettings(properties: ImageContextSettingsProperties) {
   const imageObject = properties.imageRef?.current;
   const captionInformation = imageDOMGetCaption(imageObject);
@@ -511,6 +530,11 @@ interface HyperlinkContextSettingsProperties {
   currentSelection: Selection | null,
 }
 
+/*
+  TODO(jerry):
+
+  I would like this to give more feedback regarding inputs.
+*/
 function HyperlinkContextSettings(properties: HyperlinkContextSettingsProperties) {
   const [hyperlinkText, setHyperlinkText] = useState("");
   const [hyperlinkAnchorText, setHyperlinkAnchorText] = useState("");
@@ -559,18 +583,50 @@ function HyperlinkContextSettings(properties: HyperlinkContextSettingsProperties
   );
 }
 
+interface Position {
+  x: number,
+  y: number,
+}
+
+interface ImageContextMenuProperties {
+  image: HTMLImageElement | null,
+  position: Position,
+  openEdit: () => void,
+}
+
+function ImageContextMenu(properties: ImageContextMenuProperties) {
+  const {position, image, openEdit} = properties;
+  if (!image) return <></>;
+
+  const positioningStyle: CSSProperties = {
+    position: "absolute",
+    left: `${position.x}px`,
+    top: `${position.y}px`,
+  };
+  return (
+    <div className={editorStyle.imageContextMenu} style={positioningStyle}>
+      <i style={{margin: "2em"}}>{image.src || "No image selected?"}</i>
+      <br></br>
+      <br></br>
+      <button onClick={openEdit} className={editorStyle.contextMenuButton}>Edit</button>
+      <button className={editorStyle.contextMenuButton}>Remove Image</button>
+    </div>
+  );
+}
+
+interface RichTextEditorProperties {
+  submissionHandler: (f: { name: string, tags: string[], content: string; }) => void,
+  currentArticle?: Article,
+  updateDirtyFlag: React.Dispatch<React.SetStateAction<boolean>>,
+  toggleDraftStatus: () => void,
+}
+
 export function RichTextEditor({
   submissionHandler,
   currentArticle,
   updateDirtyFlag,
   toggleDraftStatus
-}:
-  {
-    submissionHandler: (f: { name: string, tags: string[], content: string; }) => void,
-    currentArticle?: Article,
-    updateDirtyFlag: React.Dispatch<React.SetStateAction<boolean>>,
-    toggleDraftStatus: () => void,
-  }) {
+}: RichTextEditorProperties) {
   const [initialArticleState, _] = useState(currentArticle);
   const [tagEditorShown, setTagEditorVisibility] = useState(true);
 
@@ -584,29 +640,40 @@ export function RichTextEditor({
   const currentImageRef = useRef<HTMLImageElement>(null);
   const currentHyperlinkRef = useRef<HTMLAnchorElement>(null);
 
+  const [imageContextMenuPosition, setImageContextMenuPosition] = useState<undefined | Position>(undefined);
+
   useEffect(
     function () {
       if (editableAreaDOMRef.current) {
         editableAreaDOMRef.current.onmousedown =
           function (e) {
+            /*
+              I do not know of a way to get a ref into newly generated
+              HTML, so we can't exactly do this in a very React way.
+ 
+              The only other thing I could think of is generating react friendly
+              mark-up, but I don't want a ref to every single element, but I could
+              probably do it with
+ 
+              onClick for all of the images to set a "currentFocusedImage" to whatever
+              was clicked on, which would suffice.
+ 
+              I'm pretty sure markdown-it exposes an "AST" sort of thing so I can get
+              that to generate JSX which can use the above. That's later though.
+            */
+
             const target = e.target as HTMLElement;
+
+            setImageContextMenuPosition(undefined);
+            unsafeReferenceSet(currentImageRef, null);
+            unsafeReferenceSet(currentHyperlinkRef, null);
+
             if (target?.tagName === "IMG") {
-              /*
-                I do not know of a way to get a ref into newly generated
-                HTML, so we can't exactly do this in a very React way.
-  
-                The only other thing I could think of is generating react friendly
-                mark-up, but I don't want a ref to every single element, but I could
-                probably do it with
-  
-                onClick for all of the images to set a "currentFocusedImage" to whatever
-                was clicked on, which would suffice.
-  
-                I'm pretty sure markdown-it exposes an "AST" sort of thing so I can get
-                that to generate JSX which can use the above. That's later though.
-              */
               unsafeReferenceSet(currentImageRef, target);
-              setImageContextEditorVisibility(true);
+              setImageContextMenuPosition({
+                x: target.offsetLeft,
+                y: target.offsetTop,
+              });
             } else if (target?.tagName === "A") {
               unsafeReferenceSet(currentHyperlinkRef, target);
             }
@@ -690,6 +757,7 @@ export function RichTextEditor({
                 key={widgetId}
                 id={widgetId}
                 className={
+                  // NOTE(jerry): Wtf happened here?
                   (widget.category) ? (((widgetStates[
                     (widget.category !== undefined) ?
                       widget.category :
@@ -724,6 +792,14 @@ export function RichTextEditor({
         <HyperlinkContextSettings 
           currentSelection={window.getSelection()}
           closeShownStatus={() => { setHyperlinkContextEditorShown(false); }} /> : <></>}
+      { (imageContextMenuPosition) ? (
+        <ImageContextMenu openEdit={
+          function() {
+            setImageContextMenuPosition(undefined);
+            setImageContextEditorVisibility(true);
+          }
+        } image={currentImageRef.current} position={imageContextMenuPosition}/>
+      ) : <></> }
     </>
   );
 }

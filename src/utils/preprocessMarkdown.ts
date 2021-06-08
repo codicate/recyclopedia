@@ -19,7 +19,6 @@ export interface MarkdownParsedMetaInformation {
 export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInformation {
   let result = "";
   const input = intoParsable(stringInput);
-  console.log("input: ", stringInput);
 
   const actualResult = {
     processed: "",
