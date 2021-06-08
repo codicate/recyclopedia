@@ -95,3 +95,15 @@ export const useTimeout = (callback: (f: void) => void, delay: number) => {
 export function randomElt(array: any[]) {
   return array[Math.floor(Math.random() * array.length)];
 }
+
+// dom helps?
+export function classListClear(node: Element) {
+  node.classList.forEach((e) => node.classList.remove(e));
+}
+
+export function classListReplace(node: Element, classes: string[]) {
+  classListClear(node);
+  for (const classItem of classes) {
+    node.classList.add(classItem);
+  }
+}

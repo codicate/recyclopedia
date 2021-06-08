@@ -1,9 +1,9 @@
 /*
   A very minimal in-house Rich Text Editor.
 */
-import React, { useState, useRef, KeyboardEventHandler, useEffect, createRef, DOMElement, } from "react";
+import React, { useState, useRef, KeyboardEventHandler, useEffect, } from "react";
 import { preprocessMarkdown } from "utils/preprocessMarkdown";
-import { uploadImage, retrieveImageData } from "utils/functions";
+import { uploadImage, retrieveImageData, classListReplace, classListClear } from "utils/functions";
 
 import { renderMarkdown } from "components/Article/MarkdownRender";
 import { renderDomAsMarkdown } from "utils/DOMIntoMarkdown";
@@ -244,13 +244,41 @@ export function imageDOMGetCaption(rootNode: Element | null) {
   return undefined;
 }
 
+function captionImageThumbnailStyleString(width: number, height: number) {
+  return `width: ${width}px; height: ${height}px;`;
+}
+
+function captionImageBlockStyleString(width: number) {
+  return `width: ${width * 1.3}px;`;
+}
+
+function floatModeStyle(layoutFloatMode: LayoutFloatMode) {
+  switch (layoutFloatMode) {
+  case LayoutFloatMode.Left:
+    return(articleStyles.floatLeft);
+  case LayoutFloatMode.Center:
+    return(articleStyles.floatCenter);
+  case LayoutFloatMode.Right:
+    return(articleStyles.floatRight);
+  }
+}
+
+
 // You are calling this only if you know you can do this safely.
-function imageDOMUpdateCaptionWithNoChecks(rootNode: Element | null, textContent: string) {
+function imageDOMUpdateCaptionWithNoChecks(rootNode: Element | null, newWidth: number, newHeight: number, layoutFloatMode: LayoutFloatMode, textContent: string) {
   if (rootNode) {
-    const parentNode = (rootNode.parentNode as Element);
+    const parentNode = (rootNode.parentNode as HTMLElement);
 
     if (parentNode.tagName === "DIV") {
+      const imageNode = rootNode as HTMLImageElement;
+      //@ts-expect-error
+      imageNode.style = captionImageThumbnailStyleString(newWidth, newHeight);
+      //@ts-expect-error
+      parentNode.style = captionImageBlockStyleString(newWidth);
+
       if (parentNode.classList.contains(articleStyles.captionBox)) {
+        classListReplace(parentNode, [articleStyles.captionBox, floatModeStyle(layoutFloatMode)]);
+
         const captionElement = parentNode.getElementsByClassName(articleStyles.captionBoxInner)[0];
         captionElement.children[0].textContent = textContent;
       }
@@ -268,13 +296,13 @@ export function imageDOMHasCaption(rootNode: Element | null) {
   return false;
 }
 
-function imageDOMConstructCaptionedImage(imageOriginalNode: HTMLImageElement, captionText: string) {
+function imageDOMConstructCaptionedImage(imageOriginalNode: HTMLImageElement, layoutFloatMode: LayoutFloatMode, captionText: string) {
   const result = document.createElement("DIV");
 
   let image_tag = "<img ";
-  image_tag += `src=${imageOriginalNode.src} style="width: ${imageOriginalNode.width}px; height: ${imageOriginalNode.height}px; border: 1px solid gray; display: block; margin: auto; margin-top: 1.2em;"></img>`;
+  image_tag += `class="${articleStyles.captionImagePreview}" src=${imageOriginalNode.src} style="${captionImageThumbnailStyleString(imageOriginalNode.width, imageOriginalNode.height)}"></img>`;
 
-  result.innerHTML = `<div class="${articleStyles.captionBox + " " + articleStyles.floatLeft}" style="width: ${imageOriginalNode.width * 1.3}px;">
+  result.innerHTML = `<div class="${articleStyles.captionBox + " " + floatModeStyle(layoutFloatMode)}" style="${captionImageBlockStyleString(imageOriginalNode.width)}">
           ${image_tag}
       <div class=${articleStyles.captionBoxInner}>
         <p contenteditable="false">${captionText}</p>
@@ -299,45 +327,46 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
   console.log(imageCaptionText);
 
   const [layoutFloatMode, setLayoutFloatMode] = useState(LayoutFloatMode.Left);
+  const [imageAllowsWrapAround, setImageAllowWrapAroundText] = useState(true);
   const [imageDimensionType, setImageDimensionType] = useState(ImageDimensionsType.Default);
   const [imageDimensionCustomWidth, setImageDimensionCustomWidth] = useState(imageObject?.width || 150);
   const [imageDimensionCustomHeight, setImageDimensionCustomHeight] = useState(imageObject?.height || 150);
 
   function applyChanges() {
-    console.log("Begin applying changes");
     if (imageObject) {
+      let newWidth = imageObject.width;
+      let newHeight = imageObject.height; 
+
       if (imageDimensionType === ImageDimensionsType.Custom) {
-        imageObject.width = imageDimensionCustomWidth || imageObject.width;
-        imageObject.height = imageDimensionCustomHeight || imageObject.height;
+        newWidth = imageDimensionCustomWidth || imageObject.width;
+        newHeight = imageDimensionCustomHeight || imageObject.height;
       }
 
-      imageObject.classList.forEach((e) => imageObject.classList.remove(e));
+      imageObject.width = newWidth;
+      imageObject.height = newHeight;
 
       const hasCaption = imageDOMHasCaption(imageObject);
       if (!hasCaption && imageCaptionText === "") {
-        switch (layoutFloatMode) {
-        case LayoutFloatMode.Left:
-          imageObject.classList.add(articleStyles.floatLeft);
-          break;
-        case LayoutFloatMode.Center:
-          imageObject.classList.add(articleStyles.floatCenter);
-          break;
-        case LayoutFloatMode.Right:
-          imageObject.classList.add(articleStyles.floatRight);
-          break;
+        classListClear(imageObject);
+        /*
+        NOTE(jerry):
+        This is kind of iffy and I'm not particularly sure how to get the CSS to do
+        this properly.
+  
+        Probably doesn't matter too much...
+        */
+        if (!imageAllowsWrapAround) {
+          imageObject.classList.add(articleStyles.noWrapAroundText);
         }
 
-        console.log(imageObject.classList);
+        imageObject.classList.add(floatModeStyle(layoutFloatMode));
       } else {
-        console.log("Try to build something new");
         if (hasCaption) {
-          console.log("Attempt to update?");
-          imageDOMUpdateCaptionWithNoChecks(imageObject, imageCaptionText);
+          imageDOMUpdateCaptionWithNoChecks(imageObject, newWidth, newHeight, layoutFloatMode, imageCaptionText);
         } else {
-          console.log("Build new node?");
           // build a new caption object...
           const captionBuildResult =
-            imageDOMConstructCaptionedImage(imageObject as HTMLImageElement, imageCaptionText);
+            imageDOMConstructCaptionedImage(imageObject as HTMLImageElement, layoutFloatMode, imageCaptionText);
 
           imageObject.replaceWith(captionBuildResult.captionNode);
           // @ts-expect-error
@@ -422,6 +451,15 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
             }
             defaultValue={imageCaptionText}
             value={imageCaptionText} />
+          {/*Wrap*/}
+          <label>Wrap Around</label>
+          <input type="checkbox" 
+            checked={imageAllowsWrapAround}
+            onChange={
+              function(e) {
+                setImageAllowWrapAroundText(e.target.checked);
+              }
+            }></input>
         </div>
         <div className={editorStyle.alignToBottom}>
           <button onClick={applyChanges}>Apply Changes</button>
