@@ -47,19 +47,25 @@ export const widgets: WidgetCategoryDic = {
   bold: {
     active: null,
     types: {
-      bold: { name: "Bold", display: <b>B</b>, command: "bold" }
+      bold: { name: "Bold", display: <b>B</b>, command: "bold", category: "bold" }
     }
   },
   italic: {
     active: null,
     types: {
-      italic: { name: "Italic", display: <em>I</em>, command: "italic" }
+      italic: { name: "Italic", display: <em>I</em>, command: "italic", category: "italic" }
     }
   },
   underline: {
     active: null,
     types: {
-      underline: { name: "Underline", display: <u>UL</u>, command: "underline" }
+      underline: { name: "Underline", display: <u>UL</u>, command: "underline", category: "underline" }
+    }
+  },
+  hyperlink: {
+    active: null,
+    types: {
+      hyperlink: { name: "Hyperlink", display: <b>HREF</b>, command: "@_hyperlink" }
     }
   },
 };

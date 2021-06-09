@@ -95,3 +95,36 @@ export const useTimeout = (callback: (f: void) => void, delay: number) => {
 export function randomElt(array: any[]) {
   return array[Math.floor(Math.random() * array.length)];
 }
+
+// dom helps?
+export function classListClear(node: Element) {
+  node.classList.forEach((e) => node.classList.remove(e));
+}
+
+export function classListReplace(node: Element, classes: string[]) {
+  classListClear(node);
+  for (const classItem of classes) {
+    node.classList.add(classItem);
+  }
+}
+
+// push and pop the current selection stack
+// this is mostly to keep the selection consistent for stuff...
+// that needs to temporarily break focus or whatever...
+const _selectionStack: Range[] = [];
+export function selectionStackPush() {
+  const selection = window.getSelection();
+  const topMostSelection = selection?.getRangeAt(0);
+
+  if (topMostSelection) {
+    selection?.removeRange(topMostSelection);
+    _selectionStack.push(topMostSelection);
+  }
+}
+
+export function selectionStackPop() {
+  if (_selectionStack.length) {
+    const selection = window.getSelection();
+    selection?.addRange(_selectionStack.pop() as Range);
+  }
+}

@@ -81,10 +81,21 @@ img {
 .floatRight { 
   float: right;
 }
+.noWrapAroundText {
+  float: none;
+  clear: none;
+}
 
 .captionBox {
   display: block;
   border: 1px solid black;
+}
+
+.captionImagePreview {
+  border: 1px solid gray;
+  display: block;
+  margin: auto;
+  margin-top: 1.2em;
 }
 
 .captionBoxInner {

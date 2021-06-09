@@ -3,6 +3,7 @@
     color: white;
     border-color: black;
     border-radius: 5px;
+    margin-right: 0.5em;
 }
 
 .active {
@@ -73,11 +74,11 @@
     }
 }
 
-#imageContextSettingsWindow {
+.settingsWindow {
     background-color: white;
     border-radius: 5px;
     width: 50%;
-    height: 80%;
+
     margin-top: 2em;
 
     position: relative;
@@ -107,22 +108,29 @@
     }
 }
 
+#imageContextSettingsWindow {
+    height: 80%;
+}
+#hyperlinkContextSettingsWindow {
+    height: 50%;
+}
+
 .xOut {
     user-select: none;
     position: absolute;
     right: 1em;
     transition: color 0.3s;
     transition: transform 0.3s;
-}
 
-.xOut:hover {
-    cursor: pointer;
-    color: red;
-    transform: scale(1.15);
-}
-.xOut:active {
-    color: blue;
-    transform: scale(0.95);
+    &:hover {
+        cursor: pointer;
+        color: red;
+        transform: scale(1.15);
+    }
+    &:active {
+        color: blue;
+        transform: scale(0.95);
+    }
 }
 
 // lots of stupid stuff. TODO get rid of this.
@@ -161,4 +169,40 @@
         margin: auto;
         height: 200px !important;
     } 
+}
+
+@keyframes image-context-menu-open-up {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.contextMenuButton {
+    margin: 0.2em;
+    padding: 0.3em;
+    border-radius: 2px;
+    background-color: royalblue;
+    color: white;
+
+    transition: color 0.2s;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: yellow;
+        color: black;
+    }
+}
+
+
+.imageContextMenu {
+    display: inline;
+    overflow: hidden;
+
+    animation-duration: 0.2s;
+    animation-timing-function: ease-in-out;
+    animation-name: image-context-menu-open-up;
+
+    background-color: white;
+    padding: 0.4em;
+    border-radius: 5px;
+    box-shadow: black 3px 3px 5px;
 }

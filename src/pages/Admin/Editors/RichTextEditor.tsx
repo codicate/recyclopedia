@@ -1,11 +1,64 @@
-import React, { useState, useRef, KeyboardEventHandler, useEffect, createRef, } from "react";
+/*
+  A very minimal in-house Rich Text Editor.
+
+  Please keep this as one giant file. I'd rather sift through
+  a thousand lines here, than going through multiple different files.
+
+  Also this is not a "modular" Rich Text Editor, and it isn't really supposed to be.
+  Although it probably could with some slightly more careful thought since most of the logic
+  will work fine.
+  
+  You just need a title element and body element to focus on, and the rest may work just
+  fine.
+
+  NOTE(jerry):
+  Hmmm, I am curious to know what would the best method be to allow for draggable images with
+  captions? It probably doesn't matter too much, but I'd like to know.
+
+  It might not be worth the effort to try and do, as I'm certain someone can probably just
+  put the image at the right place later on.
+
+  I'll probably leave it out until it's requested?
+
+  NOTE(jerry):
+  For obvious reasons, this can be shortened later. Probably not 100%, and I might have to do
+  something like a weird tagged union with a single context menu component that just does conditional
+  rendering for every type of thing, which I guess is fine too.
+
+  Keeping it one place or something like that.
+
+  Why is contenteditable so hacky?
+
+  NOTE(jerry):
+  Hmmm, considering folding since this is one hell of an engineering feat.
+*/
+import React, {
+  useState,
+  useRef,
+  KeyboardEventHandler,
+  useEffect,
+  CSSProperties,
+} from "react";
+
 import { preprocessMarkdown } from "utils/preprocessMarkdown";
-import { uploadImage, retrieveImageData } from "utils/functions";
+import {
+  uploadImage,
+  retrieveImageData,
+  classListReplace,
+  classListClear,
+  selectionStackPop,
+  selectionStackPush,
+  dictionaryUpdateKeyNested,
+} from "utils/functions";
 
 import { renderMarkdown } from "components/Article/MarkdownRender";
 import { renderDomAsMarkdown } from "utils/DOMIntoMarkdown";
-import { dictionaryUpdateKeyNested } from "utils/functions";
-import { widgets, toggleWidgetActiveState, flattenWidgetStateTypes, WidgetCategory } from "./RichTextEditWidgetInformation";
+
+import {
+  widgets,
+  toggleWidgetActiveState,
+  flattenWidgetStateTypes,
+} from "./RichTextEditWidgetInformation";
 
 import { Article } from "app/articlesSlice";
 import Input from "components/Form/Input";
@@ -15,21 +68,44 @@ import editorStyle from "./RichTextEditor.module.scss";
 import articleStyles from "components/Article/Article.module.scss";
 import Button from "components/UI/Button";
 
-function executeRichTextCommand(commandName: string, optionalArgument?: string) {
-  if (commandName === "@_insertImage") {
-    console.log("image handling");
+/** Unsafe wrappers... Cause most of this has to be unsafe to be even possible... **/
+/** Well... Draft.JS is a thing, but that can't exactly do the same thing as this... Otherwise it would require way less code. **/
+/** Although Draft.JS itself is actually pretty big. **/
+function unsafeDOMStyleSet(element: HTMLElement, style: string) {
+  // @ts-expect-error
+  element.style = style;
+}
+function unsafeReferenceSet<T>(ref: React.RefObject<T>, value: T) {
+  //@ts-expect-error
+  ref.current = value;
+}
+
+function ExecuteRichTextCommand(commandName: string, optionalArgument?: string, hookFn?: (name: string) => void) {
+  switch (commandName) {
+  case "@_insertImage": {
     const fileDialog = document.createElement("input");
     fileDialog.type = "file";
     fileDialog.click();
-
-    // TODO(jerry): cleanup
     fileDialog.addEventListener("change", fileHandlerOnChange);
-  } else {
-    document.execCommand(commandName, false, optionalArgument);
   }
+    break;
+  case "@_hyperlink": break;
+  default:
+    document.execCommand(commandName, false, optionalArgument);
+    return;
+  }
+
+  hookFn?.(commandName);
 }
 
 function queryRichTextCommand(command: string, wantedValue?: boolean) {
+  /*
+    NOTE(jerry):
+
+    Is there no way to query the selection state of a link?
+
+    I would like to know if this is the case cause otherwise... That's kind of fucked.
+  */
   if (wantedValue) {
     return document.queryCommandValue(command);
   } else {
@@ -56,17 +132,18 @@ function fileHandlerOnChange({ target }: Event): void {
       });
 }
 
+interface EditorHandleKeyBindingsProperties {
+  saveDocument: () => void,
+  toggleWidget: (widgetId: string, categoryValue?: string) => void,
+  executeRichTextCommand: typeof ExecuteRichTextCommand,
+  updateDirtyFlag: React.Dispatch<boolean>,
+}
 function editorHandleKeybindings({
   saveDocument,
   toggleWidget,
   executeRichTextCommand,
   updateDirtyFlag
-}: {
-  saveDocument: () => void,
-  toggleWidget: (widgetId: string, categoryValue?: string) => void,
-  executeRichTextCommand: (command: string, argument?: string) => void,
-  updateDirtyFlag: React.Dispatch<boolean>,
-}): KeyboardEventHandler<HTMLDivElement> {
+}: EditorHandleKeyBindingsProperties): KeyboardEventHandler<HTMLDivElement> {
   return function (event) {
     const { key, shiftKey, ctrlKey } = event;
     let disableDefaultBehavior = false;
@@ -156,6 +233,7 @@ interface ArticleTagEditorProperties {
   setTagState: React.Dispatch<string[]>;
 }
 
+// You know, this looks ugly, but it's almost hilarious that this is the shortest thing here...
 function ArticleTagEditor({ tags, setTagState }: ArticleTagEditorProperties) {
   const [input, setInput] = useState("");
 
@@ -213,40 +291,168 @@ enum LayoutFloatMode {
   Right,
 }
 
+// May return more information in the future?
+export function imageDOMGetCaption(rootNode: Element | null) {
+  if (rootNode) {
+    let captionTextContents = "";
+
+    if (rootNode.tagName === "IMG") {
+      const parentNode = (rootNode.parentNode as Element);
+
+      if (parentNode.tagName === "DIV") {
+        if (parentNode.classList.contains(articleStyles.captionBox)) {
+          const captionElement = parentNode.getElementsByClassName(articleStyles.captionBoxInner)[0];
+          captionTextContents = captionElement.textContent || "";
+        } else {
+          return undefined;
+        }
+      } else {
+        return undefined;
+      }
+    }
+
+    return {
+      text: captionTextContents
+    };
+  }
+
+  return undefined;
+}
+
+function captionImageThumbnailStyleString(width: number, height: number) {
+  return `width: ${width}px; height: ${height}px;`;
+}
+
+function captionImageBlockStyleString(width: number) {
+  return `width: ${width * 1.3}px;`;
+}
+
+function floatModeStyle(layoutFloatMode: LayoutFloatMode) {
+  switch (layoutFloatMode) {
+  case LayoutFloatMode.Left:
+    return(articleStyles.floatLeft);
+  case LayoutFloatMode.Center:
+    return(articleStyles.floatCenter);
+  case LayoutFloatMode.Right:
+    return(articleStyles.floatRight);
+  }
+}
+
+// You are calling this only if you know you can do this safely.
+function imageDOMUpdateCaptionWithNoChecks(rootNode: Element | null, newWidth: number, newHeight: number, layoutFloatMode: LayoutFloatMode, textContent: string) {
+  if (rootNode) {
+    const parentNode = (rootNode.parentNode as HTMLElement);
+
+    if (parentNode.tagName === "DIV") {
+      const imageNode = rootNode as HTMLImageElement;
+      unsafeDOMStyleSet(imageNode, captionImageThumbnailStyleString(newWidth, newHeight));
+      unsafeDOMStyleSet(parentNode, captionImageBlockStyleString(newWidth));
+
+      if (parentNode.classList.contains(articleStyles.captionBox)) {
+        classListReplace(parentNode, [articleStyles.captionBox, floatModeStyle(layoutFloatMode)]);
+
+        const captionElement = parentNode.getElementsByClassName(articleStyles.captionBoxInner)[0];
+        captionElement.children[0].textContent = textContent;
+      }
+    }
+  }
+}
+
+export function imageDOMHasCaption(rootNode: Element | null) {
+  if (rootNode) {
+    const check = imageDOMGetCaption(rootNode);
+    return check !== undefined;
+  }
+
+  return false;
+}
+
+function imageDOMConstructCaptionedImage(imageOriginalNode: HTMLImageElement, layoutFloatMode: LayoutFloatMode, captionText: string) {
+  const result = document.createElement("DIV");
+
+  let image_tag = "<img ";
+  image_tag += `class="${articleStyles.captionImagePreview}" src=${imageOriginalNode.src} style="${captionImageThumbnailStyleString(imageOriginalNode.width, imageOriginalNode.height)}"></img>`;
+
+  // TODO(jerry): This needs to be factored out, as it is also used by the markdown preprocessor to generate our captions.
+  result.innerHTML = `<div class="${articleStyles.captionBox + " " + floatModeStyle(layoutFloatMode)}" style="${captionImageBlockStyleString(imageOriginalNode.width)}">
+          ${image_tag}
+      <div class=${articleStyles.captionBoxInner}>
+        <p contenteditable="false">${captionText}</p>
+      </div>
+    </div>
+    <p></p>`.trim();
+
+  console.log(result.outerHTML);
+  const innerResult = result.firstChild;
+  return {
+    captionNode: innerResult as Element,
+    //@ts-ignore
+    imageNode: innerResult.childNodes[0]
+  };
+}
+
+/*
+  TODO(jerry):
+  Like the other context settings, I would prefer if this had more feedback,
+  and obviously I would prefer this to be shorter.
+*/
 function ImageContextSettings(properties: ImageContextSettingsProperties) {
   const imageObject = properties.imageRef?.current;
+  const captionInformation = imageDOMGetCaption(imageObject);
 
-  const [imageCaptionText, setImageCaptionText] = useState("");
-  // unused
-  const [alternateImageText, setAlternateImageText] = useState("");
+  const [imageCaptionText, setImageCaptionText] = useState(captionInformation?.text || "");
+  console.log(imageCaptionText);
 
   const [layoutFloatMode, setLayoutFloatMode] = useState(LayoutFloatMode.Left);
+  const [imageAllowsWrapAround, setImageAllowWrapAroundText] = useState(true);
   const [imageDimensionType, setImageDimensionType] = useState(ImageDimensionsType.Default);
   const [imageDimensionCustomWidth, setImageDimensionCustomWidth] = useState(imageObject?.width || 150);
   const [imageDimensionCustomHeight, setImageDimensionCustomHeight] = useState(imageObject?.height || 150);
 
   function applyChanges() {
-    console.log("Begin applying changes");
     if (imageObject) {
+      let newWidth = imageObject.width;
+      let newHeight = imageObject.height; 
+
       if (imageDimensionType === ImageDimensionsType.Custom) {
-        imageObject.width = imageDimensionCustomWidth || imageObject.width;
-        imageObject.height = imageDimensionCustomHeight || imageObject.height;
+        newWidth = imageDimensionCustomWidth || imageObject.width;
+        newHeight = imageDimensionCustomHeight || imageObject.height;
       }
 
-      imageObject.classList.forEach((e) => imageObject.classList.remove(e));
-      switch (layoutFloatMode) {
-      case LayoutFloatMode.Left:
-        imageObject.classList.add(articleStyles.floatLeft);
-        break;
-      case LayoutFloatMode.Center:
-        imageObject.classList.add(articleStyles.floatCenter);
-        break;
-      case LayoutFloatMode.Right:
-        imageObject.classList.add(articleStyles.floatRight);
-        break;
-      }
+      imageObject.width = newWidth;
+      imageObject.height = newHeight;
 
-      console.log(imageObject.classList);
+      const hasCaption = imageDOMHasCaption(imageObject);
+      if (!hasCaption && imageCaptionText === "") {
+        classListClear(imageObject);
+        /*
+        NOTE(jerry):
+        This is kind of iffy and I'm not particularly sure how to get the CSS to do
+        this properly.
+  
+        Probably doesn't matter too much...
+
+        Also new styling for input[type="check"] ended up breaking this. That's not so
+        great.
+        */
+        if (!imageAllowsWrapAround) {
+          imageObject.classList.add(articleStyles.noWrapAroundText);
+        }
+
+        imageObject.classList.add(floatModeStyle(layoutFloatMode));
+      } else {
+        if (hasCaption) {
+          imageDOMUpdateCaptionWithNoChecks(imageObject, newWidth, newHeight, layoutFloatMode, imageCaptionText);
+        } else {
+          // build a new caption object...
+          const captionBuildResult =
+            imageDOMConstructCaptionedImage(imageObject as HTMLImageElement, layoutFloatMode, imageCaptionText);
+
+          imageObject.replaceWith(captionBuildResult.captionNode);
+          unsafeReferenceSet(properties.imageRef, captionBuildResult.imageNode);
+        }
+        setImageCaptionText("");
+      }
     }
 
     console.log("end of apply changes");
@@ -257,7 +463,7 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
   // although you can autogenerate the UI from the objects.
   return (
     <div id={editorStyle.blotOut}>
-      <div id={editorStyle.imageContextSettingsWindow}>
+      <div className={editorStyle.settingsWindow} id={editorStyle.imageContextSettingsWindow}>
         <h1>Image Settings <a onClick={(_) => properties.closeShownStatus()} className={editorStyle.xOut}>X</a></h1>
         <div style={{ margin: "2.5em" }}>
           <p style={{textAlign: "center"}}><i>{imageObject?.src}</i></p>
@@ -314,6 +520,7 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
               : <></>
           }
           {/*Caption Text*/}
+          <p>{imageCaptionText}</p>
           <Input 
             label="Image Caption"
             changeHandler={
@@ -321,15 +528,17 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
                 setImageCaptionText(e.target.value);
               }
             }
+            defaultValue={imageCaptionText}
             value={imageCaptionText} />
-          <Input 
-            label="Alternate Text"
-            changeHandler={
-              function (e) {
-                setAlternateImageText(e.target.value);
+          {/*Wrap*/}
+          <label>Wrap Around</label>
+          <input type="checkbox" 
+            checked={imageAllowsWrapAround}
+            onChange={
+              function(e) {
+                setImageAllowWrapAroundText(e.target.checked);
               }
-            }
-            value={alternateImageText} />
+            }></input>
         </div>
         <div className={editorStyle.alignToBottom}>
           <button onClick={applyChanges}>Apply Changes</button>
@@ -339,63 +548,225 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
   );
 }
 
+interface HyperlinkContextSettingsProperties {
+  closeShownStatus: () => void,
+  hyperlinkRef: React.RefObject<HTMLAnchorElement>,
+}
+
+/*
+  TODO(jerry):
+
+  I would like this to give more feedback regarding inputs.
+*/
+function HyperlinkContextSettings(properties: HyperlinkContextSettingsProperties) {
+  const [hyperlinkText, setHyperlinkText] = useState("");
+  const [hyperlinkAnchorText, setHyperlinkAnchorText] = useState("");
+
+  useEffect(() => { selectionStackPush(); }, []);
+
+  function applyChanges() {
+    console.log(properties.hyperlinkRef.current);
+    if (hyperlinkText !== "" && hyperlinkAnchorText !== "") {
+      selectionStackPop();
+      if (!properties.hyperlinkRef?.current) {
+        ExecuteRichTextCommand("insertHTML", `<a href=${hyperlinkAnchorText}>${hyperlinkText}</a>`);
+      } else {
+        properties.hyperlinkRef.current.href = hyperlinkAnchorText;
+        properties.hyperlinkRef.current.textContent = hyperlinkText;
+      }
+      properties.closeShownStatus();
+    }
+  }
+
+  return (
+    <div id={editorStyle.blotOut}>
+      <div className={editorStyle.settingsWindow} id={editorStyle.hyperlinkContextSettingsWindow}>
+        <h1>Hyperlink Creation <a onClick={(_) => properties.closeShownStatus()} className={editorStyle.xOut}>X</a></h1>
+        <div style={{ margin: "2.5em" }}>
+          <p>Hyperlink</p>
+          <Input 
+            label="Hyperlink Contents"
+            changeHandler={
+              function (e) {
+                setHyperlinkText(e.target.value);
+              }
+            }
+            defaultValue={hyperlinkText}
+            value={hyperlinkText} />
+          <p>Anchor Location</p>
+          <Input
+            label="Hyperlink Location"
+            changeHandler={
+              function (e) {
+                setHyperlinkAnchorText(e.target.value);
+              }
+            }
+            defaultValue={hyperlinkAnchorText}
+            value={hyperlinkAnchorText} />
+        </div>
+        <div className={editorStyle.alignToBottom}>
+          <button onClick={applyChanges}>Apply Changes</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface Position {
+  x: number,
+  y: number,
+}
+
+interface ImageContextMenuProperties {
+  image: HTMLImageElement | null,
+  position: Position,
+  openEdit: () => void,
+  close: () => void,
+}
+
+function ImageContextMenu(properties: ImageContextMenuProperties) {
+  const {position, image, openEdit, close} = properties;
+  if (!image) return <></>;
+
+  const positioningStyle: CSSProperties = {
+    position: "absolute",
+    left: `${position.x}px`,
+    top: `${position.y}px`,
+  };
+  return (
+    <div className={editorStyle.imageContextMenu} style={positioningStyle}>
+      <i style={{margin: "2em"}}>{image.src || "No image selected?"}</i>
+      <br></br>
+      <br></br>
+      <button onClick={openEdit} className={editorStyle.contextMenuButton}>Edit</button>
+      <button onClick={
+        function() {
+          const hasCaption = imageDOMHasCaption(image);
+          if (hasCaption) {
+            ((image.parentNode) as HTMLElement).remove();
+          } else {
+            image.remove();
+          }
+          close();
+        }
+      } className={editorStyle.contextMenuButton}>Remove Image</button>
+    </div>
+  );
+}
+
+interface HyperlinkContextMenuProperties {
+  link: HTMLAnchorElement | null,
+  position: Position,
+  openEdit: () => void,
+  close: () => void,
+}
+
+function HyperlinkContextMenu(properties: HyperlinkContextMenuProperties) {
+  const {position, link, openEdit, close} = properties;
+  if (!link) return <></>;
+
+  const positioningStyle: CSSProperties = {
+    position: "absolute",
+    left: `${position.x}px`,
+    top: `calc(${position.y}px + 1.2em)`,
+  };
+
+  return (
+    <div className={editorStyle.imageContextMenu} style={positioningStyle}>
+      <i style={{margin: "2em"}}>{link.href || "No href selected?"}</i>
+      <br></br>
+      <br></br>
+      <button onClick={openEdit} className={editorStyle.contextMenuButton}>Edit</button>
+      <button onClick={
+        function() {
+          link.remove();
+          close();
+        }
+      } className={editorStyle.contextMenuButton}>Remove Hyperlink</button>
+    </div>
+  );
+}
+
+interface RichTextEditorProperties {
+  submissionHandler: (f: { name: string, tags: string[], content: string; }) => void,
+  currentArticle?: Article,
+  updateDirtyFlag: React.Dispatch<React.SetStateAction<boolean>>,
+  toggleDraftStatus: () => void,
+}
+
 export function RichTextEditor({
   submissionHandler,
   currentArticle,
   updateDirtyFlag,
   toggleDraftStatus
-}:
-  {
-    submissionHandler: (f: { name: string, tags: string[], content: string; }) => void,
-    currentArticle?: Article,
-    updateDirtyFlag: React.Dispatch<React.SetStateAction<boolean>>,
-    toggleDraftStatus: () => void,
-  }) {
+}: RichTextEditorProperties) {
   const [initialArticleState, _] = useState(currentArticle);
   const [tagEditorShown, setTagEditorVisibility] = useState(true);
+
   const [imageContextEditorShown, setImageContextEditorVisibility] = useState(false);
+  const [hyperlinkContextEditorShown, setHyperlinkContextEditorShown] = useState(false);
+
   const [tags, setTagState] = useState((currentArticle?.tags) || []);
 
   const editableTitleDOMRef = useRef<HTMLHeadingElement>(null);
   const editableAreaDOMRef = useRef<HTMLDivElement>(null);
   const currentImageRef = useRef<HTMLImageElement>(null);
+  const currentHyperlinkRef = useRef<HTMLAnchorElement>(null);
+
+  const [imageContextMenuPosition, setImageContextMenuPosition] = useState<undefined | Position>(undefined);
+  const [hyperLinkContextMenuPosition, setHyperLinkContextMenuPosition] = useState<undefined | Position>(undefined);
 
   useEffect(
     function () {
+      document.execCommand("defaultParagraphSeparator", false, "p");
       if (editableAreaDOMRef.current) {
         editableAreaDOMRef.current.onmousedown =
           function (e) {
-            const imageTarget = e.target as HTMLElement;
-            if (imageTarget?.tagName === "IMG") {
-              /*
-                I do not know of a way to get a ref into newly generated
-                HTML, so we can't exactly do this in a very React way.
-  
-                The only other thing I could think of is generating react friendly
-                mark-up, but I don't want a ref to every single element, but I could
-                probably do it with
-  
-                onClick for all of the images to set a "currentFocusedImage" to whatever
-                was clicked on, which would suffice.
-  
-                I'm pretty sure markdown-it exposes an "AST" sort of thing so I can get
-                that to generate JSX which can use the above. That's later though.
-              */
-              // @ts-expect-error
-              currentImageRef.current = imageTarget;
-              setImageContextEditorVisibility(true);
+            /*
+              I do not know of a way to get a ref into newly generated
+              HTML, so we can't exactly do this in a very React way.
+ 
+              The only other thing I could think of is generating react friendly
+              mark-up, but I don't want a ref to every single element, but I could
+              probably do it with
+ 
+              onClick for all of the images to set a "currentFocusedImage" to whatever
+              was clicked on, which would suffice.
+ 
+              I'm pretty sure markdown-it exposes an "AST" sort of thing so I can get
+              that to generate JSX which can use the above. That's later though.
+            */
+
+            const target = e.target as HTMLElement;
+
+            setImageContextMenuPosition(undefined);
+            unsafeReferenceSet(currentImageRef, null);
+            unsafeReferenceSet(currentHyperlinkRef, null);
+
+            if (target?.tagName === "IMG") {
+              unsafeReferenceSet(currentImageRef, target);
+              setImageContextMenuPosition({
+                x: target.offsetLeft,
+                y: target.offsetTop,
+              });
+            } else if (target?.tagName === "A") {
+              unsafeReferenceSet(currentHyperlinkRef, target);
+              setHyperLinkContextMenuPosition({
+                x: target.offsetLeft,
+                y: target.offsetTop,
+              });
             }
           };
       }
-    }
-    , [editableAreaDOMRef]);
+    }, [editableAreaDOMRef]);
 
-  document.execCommand("defaultParagraphSeparator", false, "br");
   const [widgetStates, updateWidgetState] = useState(widgets);
 
   function saveDocument() {
     if (editableAreaDOMRef.current && editableTitleDOMRef.current) {
       const markdownText = renderDomAsMarkdown(editableAreaDOMRef.current);
+      console.log("output:");
+      console.log(markdownText);
       submissionHandler({
         name: (initialArticleState?.name) || (editableTitleDOMRef.current.textContent || ""),
         content: markdownText,
@@ -443,7 +814,7 @@ export function RichTextEditor({
           onKeyDown={editorHandleKeybindings({
             saveDocument: saveDocument,
             toggleWidget: _toggleWidgetActiveState,
-            executeRichTextCommand: executeRichTextCommand,
+            executeRichTextCommand: ExecuteRichTextCommand,
             updateDirtyFlag: updateDirtyFlag,
           })}
           dangerouslySetInnerHTML={
@@ -466,14 +837,24 @@ export function RichTextEditor({
                 key={widgetId}
                 id={widgetId}
                 className={
-                  ((widgetStates[(widget.category !== undefined) ?
-                    widget.category : widgetId].active) === widgetId) ?
-                    editorStyle.active : editorStyle.button
+                  // NOTE(jerry): Wtf happened here?
+                  (widget.category) ? (((widgetStates[
+                    (widget.category !== undefined) ?
+                      widget.category :
+                      widgetId].active) === widgetId) ?
+                    editorStyle.active : editorStyle.button)
+                    : editorStyle.button
                 }
                 onClick={
                   (_) => {
                     _toggleWidgetActiveState(widgetId, widget.category);
-                    executeRichTextCommand(widget.command, widget.argument);
+                    ExecuteRichTextCommand(widget.command, 
+                      widget.argument,
+                      function (name: string) {
+                        if (name === "@_hyperlink") {
+                          setHyperlinkContextEditorShown(true);
+                        }
+                      });
                   }
                 }>{(widget.display) ? widget.display : widget.name}
               </button>
@@ -487,6 +868,30 @@ export function RichTextEditor({
       <EditorToolbar isInitial={(!!initialArticleState)} saveDocument={saveDocument} toggleDraftStatus={toggleDraftStatus} />
       { (imageContextEditorShown) ?
         <ImageContextSettings imageRef={currentImageRef} closeShownStatus={() => { setImageContextEditorVisibility(false); }} /> : <></>}
+      {(hyperlinkContextEditorShown) ?
+        <HyperlinkContextSettings 
+          hyperlinkRef={currentHyperlinkRef}
+          closeShownStatus={() => { setHyperlinkContextEditorShown(false); }} /> : <></>}
+      { (imageContextMenuPosition) ? (
+        <ImageContextMenu 
+          close={ () => setImageContextMenuPosition(undefined) }
+          openEdit={
+            function() {
+              setImageContextMenuPosition(undefined);
+              setImageContextEditorVisibility(true);
+            }
+          } image={currentImageRef.current} position={imageContextMenuPosition}/>
+      ) : <></> }
+      {(hyperLinkContextMenuPosition) ? (
+        <HyperlinkContextMenu
+          close={() => setHyperLinkContextMenuPosition(undefined)}
+          openEdit={
+            function () {
+              setHyperLinkContextMenuPosition(undefined);
+              setHyperlinkContextEditorShown(true);
+            }
+          } link={currentHyperlinkRef.current} position={hyperLinkContextMenuPosition} />
+      ) : <></>}
     </>
   );
 }

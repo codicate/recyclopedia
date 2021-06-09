@@ -50,9 +50,7 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
         const inbetween = intoParsable(
           input.consumeUntil(
             function () {
-              if (input.requireCharacter("\n")) {
-                return true;
-              } else if (input.requireCharacter("@")) {
+              if (input.requireCharacter("@")) {
                 /*
                   When we encounter an @ sign, it's likely to be the end of parsing a "region".
                  */
@@ -74,6 +72,7 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
           let floatingMethod = "";
           let captionString = "";
 
+          // TEST?
           const width = 150;
 
           while (inbetween.stillParsing() && !error) {
@@ -100,7 +99,7 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
               if (inbetween.requireCharacter("=")) {
                 eatWhitespace(inbetween);
                 // @ts-ignore
-                const maybe_string = tryParseString(inbetween, { delimiter: "'" });
+                const maybe_string = tryParseString(inbetween, { delimiter: "'", acceptMultiline: true });
                 eatWhitespace(inbetween);
 
                 if (maybe_string) {
@@ -172,7 +171,19 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
           if (!error) {
             if (captionString !== "") {
               image_tag += "/>";
-              result += `<div class="${styles.captionBox + " " + styles.floatLeft}" style="width: ${width*1.3}px;">${image_tag}\n<div class=${styles.captionBoxInner}><p>${captionString}</p></div></div>`;
+
+              let floatingMethodStr = "";
+              switch (floatingMethod) {
+              case "floatLeft": floatingMethodStr = styles.floatLeft; break;
+              case "floatCenter": floatingMethodStr = styles.floatCenter; break;
+              case "floatRight": floatingMethodStr = styles.floatRight; break;
+              }
+
+              result += `<div class="${styles.captionBox + " " + floatingMethodStr}" style="width: ${width*1.3}px;">
+                          ${image_tag}
+                          <div class=${styles.captionBoxInner}>
+                            <p contenteditable="false">${captionString}</p>
+                          </div></div>`;
             } else {
               image_tag += "class='";
               switch (floatingMethod) {
@@ -197,7 +208,8 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
         result += "@";
       }
     } else {
-      if (input.peekCharacter() === "#") {
+      const peeked = input.peekCharacter();
+      if (peeked === "#") {
         const headerCount = input.consumeUntil(() => input.peekCharacter() !== "#").length;
         const textContents = input.consumeUntil(() => input.peekCharacter() === "\n");
 
@@ -209,6 +221,8 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
         });
         const generatedHeader = `\n<h${headerCount} id="${textContents}">${textContents}</h${headerCount}>`;
         result += generatedHeader;
+      } else if (peeked === "\n") {
+        // result += "<br/>";
       }
 
       result += input.eatCharacter();
