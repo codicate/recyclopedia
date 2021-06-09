@@ -202,7 +202,8 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
         result += "@";
       }
     } else {
-      if (input.peekCharacter() === "#") {
+      const peeked = input.peekCharacter();
+      if (peeked === "#") {
         const headerCount = input.consumeUntil(() => input.peekCharacter() !== "#").length;
         const textContents = input.consumeUntil(() => input.peekCharacter() === "\n");
 
@@ -214,6 +215,8 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
         });
         const generatedHeader = `\n<h${headerCount} id="${textContents}">${textContents}</h${headerCount}>`;
         result += generatedHeader;
+      } else if (peeked === "\n") {
+        result += "<br/>";
       }
 
       result += input.eatCharacter();

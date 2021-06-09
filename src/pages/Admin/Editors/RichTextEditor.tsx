@@ -26,6 +26,8 @@
   rendering for every type of thing, which I guess is fine too.
 
   Keeping it one place or something like that.
+
+  Why is contenteditable so hacky?
 */
 import React, {
   useState,
@@ -713,6 +715,7 @@ export function RichTextEditor({
 
   useEffect(
     function () {
+      document.execCommand("defaultParagraphSeparator", false, "p");
       if (editableAreaDOMRef.current) {
         editableAreaDOMRef.current.onmousedown =
           function (e) {
@@ -754,12 +757,13 @@ export function RichTextEditor({
       }
     }, [editableAreaDOMRef]);
 
-  document.execCommand("defaultParagraphSeparator", false, "br");
   const [widgetStates, updateWidgetState] = useState(widgets);
 
   function saveDocument() {
     if (editableAreaDOMRef.current && editableTitleDOMRef.current) {
       const markdownText = renderDomAsMarkdown(editableAreaDOMRef.current);
+      console.log("output:");
+      console.log(markdownText);
       submissionHandler({
         name: (initialArticleState?.name) || (editableTitleDOMRef.current.textContent || ""),
         content: markdownText,
