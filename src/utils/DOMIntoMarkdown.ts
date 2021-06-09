@@ -165,7 +165,13 @@ function renderElementAsMarkdown(root: HTMLElement): string {
   } break;
 
   case "B": case "U": case "I": case "STRONG": case "EM": {
-    return safe_call(surrounders[root.tagName])(renderChildrenOfDomAsMarkdown(root));
+    const inbetween = renderChildrenOfDomAsMarkdown(root);
+    console.log("TWEEN", inbetween);
+    if (inbetween !== "") {
+      return safe_call(surrounders[root.tagName])(inbetween);
+    }
+
+    return "<p><br/></p>";
   } break;
 
   case "OL": {

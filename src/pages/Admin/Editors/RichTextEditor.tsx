@@ -722,7 +722,7 @@ export function RichTextEditor({
       if (editableAreaDOMRef.current) {
         editableAreaDOMRef.current.onmousedown =
           function (e) {
-            /*
+            /*/goodT
               I do not know of a way to get a ref into newly generated
               HTML, so we can't exactly do this in a very React way.
  
@@ -784,7 +784,45 @@ export function RichTextEditor({
     updateWidgetState(toggleWidgetActiveState(widgetStates, widgetId, categoryValue));
   }
 
-  function synchronizeCommandStateToWidgetBar() {
+  // @ts-ignore
+  function synchronizeCommandStateToWidgetBar(e) {
+    const s = window.getSelection();
+    /*
+      This might be in permenantly... This is the stupid trick I call
+
+      put_the_cursor_in_a_fucking_place_i_can_actually_type_in
+
+      why does image have a cursor? This is such a stupid stupid hack, but this one is technically unavoidable
+      behavior afaik.
+
+      We could make images not contenteditable and handle their case individually? But I don't think images get
+      focus so I can't really do the thing I want to do.
+    */
+    //@ts-ignore
+    if (s?.anchorNode.tagName === "IMG") {
+      //@ts-ignore
+      if (s?.anchorNode.nextElementSibling) {
+        //@ts-ignore
+        s?.collapse(s?.anchorNode.nextElementSibling);
+      } else {
+        if (s?.anchorNode.parentNode) {
+          //@ts-ignore
+          console.log(s?.anchorNode.parentNode.nextElementSibling);
+
+          let goodTarget = s?.anchorNode.parentNode.nextSibling;
+          // when the hell does the browser decide to generate <BR> and not <P><BR></P>?????
+          // @ts-ignore
+          while (goodTarget && goodTarget.tagName === "BR") {
+            goodTarget = goodTarget.nextSibling;
+          }
+
+          //@ts-ignore
+          s?.collapse(goodTarget);
+          s?.collapseToEnd();
+        }
+      }
+    }
+
     updateWidgetState(
       Object.keys(widgetStates).reduce(
         (newWidgetState, type) => {
