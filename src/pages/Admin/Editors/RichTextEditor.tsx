@@ -28,6 +28,9 @@
   Keeping it one place or something like that.
 
   Why is contenteditable so hacky?
+
+  NOTE(jerry):
+  Hmmm, considering folding since this is one hell of an engineering feat.
 */
 import React, {
   useState,
