@@ -13,6 +13,16 @@
     height: 100%;
     width: 100%;
 
+    &+label {
+      padding: 0.5em 1em;
+      border-radius: 999rem;
+
+      color: $very-green;
+      background-color: hsl(147, 40%, 96%);
+
+      transition: .2s ease-out;
+    }
+
     &:hover+label {
       background-color: hsl(147, 40%, 90%);
     }
@@ -28,15 +38,5 @@
         0 0 6px hsl(147, 20%, 80%),
         0 0 12px hsl(147, 10%, 90%),
     }
-  }
-
-  label {
-    padding: 0.5em 1em;
-    border-radius: 999rem;
-
-    color: $very-green;
-    background-color: hsl(147, 40%, 96%);
-
-    transition: .2s ease-out;
   }
 }
