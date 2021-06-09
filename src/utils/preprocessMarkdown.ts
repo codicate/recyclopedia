@@ -100,7 +100,6 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
                 eatWhitespace(inbetween);
                 // @ts-ignore
                 const maybe_string = tryParseString(inbetween, { delimiter: "'", acceptMultiline: true });
-                console.log(maybe_string);
                 eatWhitespace(inbetween);
 
                 if (maybe_string) {
@@ -172,7 +171,15 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
           if (!error) {
             if (captionString !== "") {
               image_tag += "/>";
-              result += `<div class="${styles.captionBox + " " + styles.floatLeft}" style="width: ${width*1.3}px;">
+
+              let floatingMethodStr = "";
+              switch (floatingMethod) {
+              case "floatLeft": floatingMethodStr = styles.floatLeft; break;
+              case "floatCenter": floatingMethodStr = styles.floatCenter; break;
+              case "floatRight": floatingMethodStr = styles.floatRight; break;
+              }
+
+              result += `<div class="${styles.captionBox + " " + floatingMethodStr}" style="width: ${width*1.3}px;">
                           ${image_tag}
                           <div class=${styles.captionBoxInner}>
                             <p contenteditable="false">${captionString}</p>
@@ -187,7 +194,6 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
               image_tag += "'";
               image_tag += "/>";
               result += image_tag;
-              console.log("finished parsing special image");
             }
           } else {
             console.log("error happened");
@@ -216,7 +222,7 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
         const generatedHeader = `\n<h${headerCount} id="${textContents}">${textContents}</h${headerCount}>`;
         result += generatedHeader;
       } else if (peeked === "\n") {
-        result += "<br/>";
+        // result += "<br/>";
       }
 
       result += input.eatCharacter();
