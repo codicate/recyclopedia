@@ -1,3 +1,4 @@
+import styles from "./Form.module.scss";
 import { useState, FormEvent } from "react";
 
 import Input, { InputOptions, ChangeHandler } from "components/Form/Input";
@@ -5,16 +6,16 @@ import Input, { InputOptions, ChangeHandler } from "components/Form/Input";
 function Form<
   T extends { [name: string]: InputOptions; }
 >({
-  className,
   submitFn,
+  inputItems,
   children,
-  inputItems
+  ...props
 }: {
-  className?: string;
   submitFn?: (inputItems: Record<keyof T, string>) => void | boolean | Promise<boolean | void>;
-  children?: React.ReactNode;
   inputItems: T;
-}) {
+  children?: React.ReactNode;
+} & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLFormElement>, HTMLFormElement>
+) {
 
   const defaultItems = Object.assign(
     Object.entries(inputItems).map(([name, value]) => ({
@@ -45,7 +46,7 @@ function Form<
 
   return (
     <form
-      className={className}
+      className={`${styles.form} ${props.className || ""}`}
       onSubmit={submitHandler}
     >
       {

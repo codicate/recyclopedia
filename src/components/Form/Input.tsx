@@ -18,7 +18,6 @@ export type ChangeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAre
 const Input = ({
   changeHandler,
   label,
-  defaultValue,
   value,
   option,
   readOnly,

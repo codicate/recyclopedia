@@ -1,6 +1,4 @@
 import styles from "./CheckboxButton.module.scss";
-import buttonStyles from "./Button.module.scss";
-import { ButtonProps } from "./Button";
 
 function CheckedBoxButton({
   children,
@@ -11,11 +9,13 @@ function CheckedBoxButton({
 }: {
   checked?: boolean;
   onCheck?: (checked: boolean) => void,
-} & ButtonProps & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLDivElement>, HTMLDivElement>
+  children: string;
+  styledAs?: "";
+} & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLDivElement>, HTMLDivElement>
 ) {
   return (
     <div
-      className={`${styles.button} ${styledAs ? buttonStyles[styledAs] : ""}`}
+      className={`${styles.button} ${styledAs ? styles[styledAs] : ""} ${props.className || ""}`}
       {...props}
     >
       <input type="checkbox"
