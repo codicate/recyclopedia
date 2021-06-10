@@ -344,13 +344,23 @@ function floatModeStyle(layoutFloatMode: LayoutFloatMode) {
 }
 
 function imageDOMGetFloatStyle(rootNode: Element | null) : LayoutFloatMode {
-  if (rootNode) {
+  function styleFromClassList(rootNode: Element) {
     if (rootNode.classList.contains(articleStyles.floatLeft)) {
       return LayoutFloatMode.Left;
     } else if (rootNode.classList.contains(articleStyles.floatCenter)) {
       return LayoutFloatMode.Center;
     } else if (rootNode.classList.contains(articleStyles.floatRight)) {
       return LayoutFloatMode.Right;
+    }
+    return LayoutFloatMode.Left;
+  }
+
+  if (rootNode) {
+    if (imageDOMHasCaption(rootNode)) {
+      const parentNode = (rootNode.parentNode as HTMLElement);
+      return styleFromClassList(parentNode);
+    } else {
+      return styleFromClassList(rootNode);
     }
   }
 
