@@ -32,6 +32,8 @@
   TODO(jerry):
   Hmmm, for some reason the float changing of images with captions doesn't work.
   Investigate later.
+
+  (Oh... Yeah I should've used a class for that. Whoops)
 */
 import React, {
   useState,
@@ -323,7 +325,7 @@ export function imageDOMGetCaption(rootNode: Element | null) {
 }
 
 function captionImageThumbnailStyleString(width: number, height: number) {
-  return `width: ${width}px; height: ${height}px;`;
+  return `width: ${width}px; height: ${height}px; border: 1px solid gray; display: block; margin: auto; margin-top: 1.2em;`;
 }
 
 function captionImageBlockStyleString(width: number) {
@@ -367,7 +369,9 @@ function imageDOMUpdateCaptionWithNoChecks(rootNode: Element | null, newWidth: n
       unsafeDOMStyleSet(parentNode, captionImageBlockStyleString(newWidth));
 
       if (parentNode.classList.contains(articleStyles.captionBox)) {
+        console.log(parentNode.classList);
         classListReplace(parentNode, [articleStyles.captionBox, floatModeStyle(layoutFloatMode)]);
+        console.log(parentNode.classList);
 
         const captionElement = parentNode.getElementsByClassName(articleStyles.captionBoxInner)[0];
         captionElement.children[0].textContent = textContent;

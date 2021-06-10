@@ -99,14 +99,18 @@ export function randomElt(array: any[]) {
 
 // dom helps?
 export function classListClear(node: Element) {
-  node.classList.forEach((e) => node.classList.remove(e));
+  while (node.classList.length > 0) {
+    node.classList.remove(node.classList.item(0) || "");
+  }
 }
 
 export function classListReplace(node: Element, classes: string[]) {
   classListClear(node);
+  console.log(node.classList);
   for (const classItem of classes) {
     node.classList.add(classItem);
   }
+  console.log(node.classList);
 }
 
 // http://w3c.github.io/html-reference/syntax.html
