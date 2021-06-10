@@ -25,10 +25,9 @@ $screen-sm-min: 768px;
 $screen-md-min: 992px;
 $screen-lg-min: 1200px;
 
+// Okay these aren't so great. TODO fix queries to be better.
 @mixin for-extra-small-screens() {
-    @media only screen and (max-width: $screen-xs-max) {
-        @content;
-    }
+    @content;
 }
 
 @mixin for-small-screens() {
@@ -44,7 +43,7 @@ $screen-lg-min: 1200px;
 }
 
 @mixin for-large-screens() {
-    @media only screen and (min-width: $screen-large-min) {
+    @media only screen and (min-width: $screen-lg-min) {
         @content;
     }
 }
