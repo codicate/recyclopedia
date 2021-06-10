@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk, createDraftSafeSelector } from "@reduxjs/toolkit";
 import { RootState } from "app/store";
-import { loginWithEmailAndPassword, selectAccountDetails } from "app/adminSlice";
-import ArticleComponent from "components/Article/Article";
+import { loginWithEmailAndPassword } from "app/adminSlice";
 
 import { App, User, Credentials } from "realm-web";
+import { MessageLogType, logMessage } from "utils/functions";
 
 export interface Article {
   name: string;
@@ -146,7 +146,7 @@ const articlesSlice = createSlice({
       queryForAllTags.fulfilled,
       (state, action) => {
         state.allTags = action.payload.slice(0);
-        console.log(state.allTags);
+        logMessage(MessageLogType.General, "Loaded Tags: ", state.allTags);
       }
     );
   }

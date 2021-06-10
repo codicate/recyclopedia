@@ -27,7 +27,9 @@ $screen-lg-min: 1200px;
 
 // Okay these aren't so great. TODO fix queries to be better.
 @mixin for-extra-small-screens() {
-    @content;
+    @media only screen and (max-width: $screen-xs-max) {
+        @content;
+    }
 }
 
 @mixin for-small-screens() {

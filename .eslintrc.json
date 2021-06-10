@@ -24,7 +24,7 @@
     "react/react-in-jsx-scope": "off",
 
     // TODO handle the @ts-ignore later. I just need this to work...
-    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/ban-ts-comment": 1,
     "@typescript-eslint/explicit-function-return-type": 0,
     "@typescript-eslint/explicit-module-boundary-types": 0,
     "indent": [

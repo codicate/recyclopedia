@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { NodeType } from "utils/DOMIntoMarkdown";
 import { Secrets } from "secrets";
+import { loginWithEmailAndPassword } from "app/adminSlice";
 
 //Return the current property of a ref if it is a ref
 export const getRefCurrent = (ref: React.MutableRefObject<any>) => {
@@ -152,5 +153,72 @@ export function selectionStackPop() {
   if (_selectionStack.length) {
     const selection = window.getSelection();
     selection?.addRange(_selectionStack.pop() as Range);
+  }
+}
+
+function isDevelopment() {
+  if (process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+    return true;
+  }
+
+  return false;
+}
+
+/*
+  This thing is just useful for having messages that don't show up in production
+  and also allow for more noticable TODOs because probably no one reads comments, but
+  I assure you that we will read the console.
+
+  Although in practice we may only just use General/Warning/Error as just console wrappers
+  to avoid spamming in the console.
+*/
+export enum MessageLogType {
+  General,
+  Warning,
+  Error,
+  Todo,
+  Note,
+}
+
+export function logMessage(type: MessageLogType, message?: any, ...optionalParams: any[]) {
+  if (isDevelopment()) {
+    let messageFn = console.log;
+    const argumentsList = [];
+    let composedMessage = "";
+
+    switch (type) {
+    case MessageLogType.Todo:
+    case MessageLogType.Note:
+    case MessageLogType.General:
+      if (type === MessageLogType.Todo) {
+        composedMessage += "%cTODO%c";
+        argumentsList.push("background-color: black; color: orange; font-size: 1.2em;", "unset: all;");
+      } else if (type === MessageLogType.Note) {
+        composedMessage += "%cNOTE:%c";
+        argumentsList.push("background-color: black; color: lightgreen; font-size: 1.2em;", "unset: all;");
+      } else {
+        composedMessage += "%cINFO: %c";
+        argumentsList.push("background-color: black; color: white; font-size: 1.2em;", "unset: all;");
+      }
+      messageFn = console.log;
+      break;
+    case MessageLogType.Warning:
+      composedMessage += "%cWARNING%c";
+      argumentsList.push("background-color: black; color: white; font-size: 1.2em;", "unset: all;");
+      messageFn = console.warn;
+      break;
+    case MessageLogType.Error:
+      messageFn = console.error;
+      composedMessage += "%cERROR!%c";
+      argumentsList.push("background-color: black; color: red; font-size: 1.2em;", "unset: all;");
+      break;
+    }
+
+    composedMessage += (message || "");
+    for (const element of optionalParams) {
+      argumentsList.push(element);
+    }
+
+    messageFn(composedMessage, argumentsList);
   }
 }
