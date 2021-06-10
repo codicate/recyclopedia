@@ -437,7 +437,7 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
   const originalWidth = (imageObject?.width || 150);
   const originalHeight = (imageObject?.height || 150);
 
-  const [imageCaptionText, setImageCaptionText] = useState(captionInformation?.text || "");
+  const [imageCaptionText, setImageCaptionText] = useState((captionInformation?.text || "").trim());
 
   const [layoutFloatMode, setLayoutFloatMode] = useState(imageDOMGetFloatStyle(imageObject));
   const [imageAllowsWrapAround, setImageAllowWrapAroundText] = useState(true);
