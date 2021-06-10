@@ -1,7 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React, { useDebugValue, useEffect, useRef } from "react";
 import { NodeType } from "utils/DOMIntoMarkdown";
 import { Secrets } from "secrets";
-import { loginWithEmailAndPassword } from "app/adminSlice";
 
 //Return the current property of a ref if it is a ref
 export const getRefCurrent = (ref: React.MutableRefObject<any>) => {

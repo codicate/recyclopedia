@@ -17,7 +17,7 @@ import {
   eatWhitespaceSeparatedString,
 } from "utils/intoParsable";
 
-interface HeaderInformation {
+export interface HeaderInformation {
   level: number,
   text: string
 }

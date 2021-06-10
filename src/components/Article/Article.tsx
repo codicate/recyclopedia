@@ -6,14 +6,13 @@ import { useAppSelector, useAppDispatch } from "app/hooks";
 import { deleteArticle, Article } from "app/articlesSlice";
 import { LoginType, selectLoginType } from "app/adminSlice";
 
-import { preprocessMarkdown } from "utils/preprocessMarkdown";
+import { preprocessMarkdown, HeaderInformation } from "utils/preprocessMarkdown";
 
 import MarkdownRender from "components/Article/MarkdownRender";
 import Collapsible from "components/UI/Collapsible";
 import Admin from "pages/Admin/Admin";
 
-// @ts-ignore
-function TableOfContents({ sectionHeaders }: { sectionHeaders: any[]; }) {
+function TableOfContents({ sectionHeaders }: { sectionHeaders: HeaderInformation[]; }) {
   return (sectionHeaders.length > 0) ? (
     <Collapsible header='Table of Contents' centered={true}>
       <nav style={{ marginLeft: "3em", }}>

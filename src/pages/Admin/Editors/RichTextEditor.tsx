@@ -20,20 +20,11 @@
 
   I'll probably leave it out until it's requested?
 
-  NOTE(jerry):
-  For obvious reasons, this can be shortened later. Probably not 100%, and I might have to do
-  something like a weird tagged union with a single context menu component that just does conditional
-  rendering for every type of thing, which I guess is fine too.
-
-  Keeping it one place or something like that.
-
   Why is contenteditable so hacky?
 
   TODO(jerry):
   Hmmm, for some reason the float changing of images with captions doesn't work.
   Investigate later.
-
-  (Oh... Yeah I should've used a class for that. Whoops)
 */
 import React, {
   useState,
@@ -71,7 +62,7 @@ import bottomToolbarStyle from "./bottomToolbar.module.scss";
 import editorStyle from "./RichTextEditor.module.scss";
 import articleStyles from "components/Article/Article.module.scss";
 import Button from "components/UI/Button";
-import { isVoidExpression } from "typescript";
+import { AssertionError } from "assert";
 
 /** Unsafe wrappers... Cause most of this has to be unsafe to be even possible... **/
 /** Well... Draft.JS is a thing, but that can't exactly do the same thing as this... Otherwise it would require way less code. **/
@@ -401,7 +392,11 @@ export function imageDOMHasCaption(rootNode: Element | null) {
   return false;
 }
 
-function imageDOMConstructCaptionedImage(imageOriginalNode: HTMLImageElement, layoutFloatMode: LayoutFloatMode, captionText: string) {
+interface CaptionedImageDOMInformation {
+  captionNode: HTMLElement,
+  imageNode: HTMLImageElement
+}
+function imageDOMConstructCaptionedImage(imageOriginalNode: HTMLImageElement, layoutFloatMode: LayoutFloatMode, captionText: string): CaptionedImageDOMInformation {
   const result = document.createElement("DIV");
 
   let image_tag = "<img ";
@@ -416,12 +411,21 @@ function imageDOMConstructCaptionedImage(imageOriginalNode: HTMLImageElement, la
     </div>
     <p></p>`.trim();
 
-  console.log(result.outerHTML);
+
   const innerResult = result.firstChild;
+  const firstInnerChild = innerResult?.childNodes[0];
+
+  /*
+    Unless this is an out of memory issue, this should not fail because the DOM
+    string isn't malformed in this instance.
+  */
+  if (!firstInnerChild) {
+    throw new AssertionError;
+  }
+
   return {
-    captionNode: innerResult as Element,
-    //@ts-ignore
-    imageNode: innerResult.childNodes[0]
+    captionNode: innerResult as HTMLElement,
+    imageNode: firstInnerChild as HTMLImageElement,
   };
 }
 
@@ -866,8 +870,7 @@ export function RichTextEditor({
     updateWidgetState(toggleWidgetActiveState(widgetStates, widgetId, categoryValue));
   }
 
-  // @ts-ignore
-  function synchronizeCommandStateToWidgetBar(e) {
+  function synchronizeCommandStateToWidgetBar() {
     put_the_cursor_in_a_fucking_place_i_can_actually_type_in();
     updateWidgetState(
       Object.keys(widgetStates).reduce(
