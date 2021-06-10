@@ -29,8 +29,9 @@
 
   Why is contenteditable so hacky?
 
-  NOTE(jerry):
-  Hmmm, considering folding since this is one hell of an engineering feat.
+  TODO(jerry):
+  Hmmm, for some reason the float changing of images with captions doesn't work.
+  Investigate later.
 */
 import React, {
   useState,
@@ -526,26 +527,22 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
                 </a>)))
             }
           </div>
-          {
-            (imageDimensionType === ImageDimensionsType.Custom) ?
-              <div>
-                <label>Width: </label>
-                <input
-                  value={imageDimensionCustomWidth}
-                  onChange={(e) => setImageDimensionCustomWidth(Number.parseInt(e.target.value))}
-                  type="number"></input>
-                <br></br>
-                <label>Height: </label>
-                <input
-                  value={imageDimensionCustomHeight}
-                  onChange={(e) => setImageDimensionCustomHeight(Number.parseInt(e.target.value))}
-                  type="number"></input>
-              </div>
-              : <></>
-          }
+          <div className={(imageDimensionType !== ImageDimensionsType.Custom) ? editorStyle.unfocused : ""} id={editorStyle.dimensionPicker}>
+            <h2>Resolution Selection</h2>
+            <input
+              value={imageDimensionCustomWidth}
+              onChange={(e) => setImageDimensionCustomWidth(Number.parseInt(e.target.value))}
+              type="number"></input>
+            <span>x</span>
+            <input
+              value={imageDimensionCustomHeight}
+              onChange={(e) => setImageDimensionCustomHeight(Number.parseInt(e.target.value))}
+              type="number"></input>
+          </div>
           {/*Caption Text*/}
-          <p>{imageCaptionText}</p>
-          <Input 
+          <hr></hr>
+          <p style={{textAlign: "center"}}>&ldquo;{imageCaptionText}&rdquo;</p>
+          <Input
             label="Image Caption"
             changeHandler={
               function (e) {
@@ -554,7 +551,13 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
             }
             defaultValue={imageCaptionText}
             value={imageCaptionText} />
-          {/*Wrap*/}
+          {/*
+          Wrap
+
+          What is this supposed to do again?
+          */}
+          {
+            /*
           <label>Wrap Around</label>
           <input type="checkbox" 
             checked={imageAllowsWrapAround}
@@ -563,6 +566,8 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
                 setImageAllowWrapAroundText(e.target.checked);
               }
             }></input>
+            */
+          }
         </div>
         <div className={editorStyle.alignToBottom}>
           <button onClick={applyChanges}>Apply Changes</button>

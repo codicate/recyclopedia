@@ -83,10 +83,8 @@
 
     position: relative;
 
-    h1 {
-        font-size: 2em;
-        text-align: center;
-    }
+    h1,h2,h3,h4,h5,h6 { text-align: center; }
+    h1 { font-size: 2em; }
 
     button {
         font-size: 1.3em;
@@ -106,12 +104,19 @@
         color: yellow;
         transform: scale(0.98);
     }
+
+    .unfocused {
+        opacity: 0.5;
+        pointer-events: none;
+    }
 }
 
 #imageContextSettingsWindow {
     height: 80%;
+    width: 30%;
 }
 #hyperlinkContextSettingsWindow {
+    width: 25%;
     height: 50%;
 }
 
@@ -175,13 +180,14 @@
 
     margin-top: 0.3em;
     width: 100%;
+    justify-content: center;
 
     a {
         display: inline-block;
 
         padding: 0.8em;
-        flex-grow: 2;
         text-align: center;
+        min-width: 15ch;
 
         user-select: none;
         &:before {
@@ -220,6 +226,27 @@
     }
 }
 
+#dimensionPicker {
+    margin: auto;
+    display: table;
+    span {
+        margin: 0.5em;
+    }
+    input {
+        &:focus {
+            border: 0.5px solid gray;
+        }
+
+        text-align: center;
+        width: 5ch;
+        outline: none;
+        appearance: textfield;
+    }
+}
+
+/*
+Context Menu stuff, <ImageSettings> and friends
+*/
 .contextMenu {
     @keyframes open-up {
         from { opacity: 0; }
