@@ -1,5 +1,9 @@
 @import '/src/styles/variables';
 
+html {
+  scroll-behavior: smooth; 
+}
+
 .title {
   font-weight: $article-header-weight;
   font-size: 3em;
@@ -11,7 +15,6 @@
   width: 100%;
   overflow-wrap: break-word;
   line-height: 1.6em;
-  scroll-behavior: smooth; 
 
   h1,h2,h3,h4,h5,h6 {
     font-weight: $general-header-weight;
