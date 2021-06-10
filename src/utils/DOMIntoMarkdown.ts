@@ -5,6 +5,7 @@ import { render } from "@testing-library/react";
 import articleStyles from "components/Article/Article.module.scss";
 import { imageDOMGetCaption, imageDOMHasCaption } from "pages/Admin/Editors/RichTextEditor";
 import { resourceUsage } from "process";
+import { isBreakStatement } from "typescript";
 
 function surrounder(sym: string) {
   return function (content: typeof sym) {
@@ -140,6 +141,18 @@ function renderElementAsMarkdown(root: HTMLElement): string {
     return renderDivElementIntoMarkdown(root as HTMLDivElement); 
   } break;
 
+  /*
+  TODO(jerry):
+  I do not attempt to parse additional decoration here.
+  */
+  case "A": {
+    const anchorElement = root as HTMLAnchorElement;
+    const anchorText = anchorElement.textContent; 
+    const anchorLink = anchorElement.href;
+
+    return `[${anchorText}](${anchorLink})`;
+  } break;
+
   case "IMG": {
     const imageElement = root as HTMLImageElement; 
 
@@ -156,12 +169,12 @@ function renderElementAsMarkdown(root: HTMLElement): string {
       rendered_string += "| floatingMethod = floatRight";
     }
 
-    return "@@ " + rendered_string + " @@";
+    return "@@ " + rendered_string + " @@\n";
   } break;
 
   case "H6": case "H5": case "H4": case "H3": case "H2": case "H1": {
     const headerElement = root as HTMLHeadingElement;
-    return "#".repeat(Number(root.tagName[1])) + " " + renderChildrenOfDomAsMarkdown(root) + "\n";
+    return "\n" + "#".repeat(Number(root.tagName[1])) + " " + renderChildrenOfDomAsMarkdown(root) + "\n";
   } break;
 
   case "B": case "U": case "I": case "STRONG": case "EM": {
@@ -171,7 +184,7 @@ function renderElementAsMarkdown(root: HTMLElement): string {
       return safe_call(surrounders[root.tagName])(inbetween);
     }
 
-    return "<p><br/></p>";
+    // return "<p><br/></p>";
   } break;
 
   case "OL": {

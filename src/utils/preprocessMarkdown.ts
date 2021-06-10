@@ -183,7 +183,8 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
                           ${image_tag}
                           <div class=${styles.captionBoxInner}>
                             <p contenteditable="false">${captionString}</p>
-                          </div></div>`;
+                          </div>
+                          </div>`;
             } else {
               image_tag += "class='";
               switch (floatingMethod) {
