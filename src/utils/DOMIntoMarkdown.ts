@@ -1,11 +1,13 @@
 /*
     Inhouse DOM to Markdown interpreter.
+
+    This is primarily designed to take the DOM Soup from contenteditable
+    on firefox.
+
+    It'll probably work good enough with a properly formed DOM, but don't blame
+    me if something explodes.
 */
-import { render } from "@testing-library/react";
 import articleStyles from "components/Article/Article.module.scss";
-import { imageDOMGetCaption, imageDOMHasCaption } from "pages/Admin/Editors/RichTextEditor";
-import { resourceUsage } from "process";
-import { isBreakStatement } from "typescript";
 
 function surrounder(sym: string) {
   return function (content: typeof sym) {

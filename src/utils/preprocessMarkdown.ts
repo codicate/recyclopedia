@@ -83,7 +83,7 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
               eatWhitespace(inbetween);
               if (inbetween.requireCharacter("=")) {
                 eatWhitespace(inbetween);
-                floatingMethod = eatIdentifier(inbetween);
+                floatingMethod = eatIdentifier(inbetween) || "";
                 eatWhitespace(inbetween);
 
                 if (!inbetween.requireCharacter("|")) {

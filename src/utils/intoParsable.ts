@@ -12,7 +12,22 @@
   There's also a few premade parsable functions that aid in building parsers.
 */
 
-export function intoParsable(input) {
+// Semantic type. There is no such thing as a char
+// and an enforced type might explode stuff (string.length === 1?)
+// considering Unicode is a thing, and the planes might break it depending on
+// how .length calculates.
+type char = string;
+
+interface Parsable {
+  withPreservedPosition: (progn: () => unknown) => unknown;
+  stillParsing: () => boolean,
+  peekCharacter: () => char | null,
+  eatCharacter: () => char | null,
+  requireCharacter: (c: char) =>  boolean,
+  consumeUntil: (predicate: () => boolean) => string,
+}
+
+export function intoParsable(input: string) : Parsable {
   // I'm internally using snake_case because I'm comfortable with it
   // but everyone else uses camel case.
   let current_character_index = 0;
@@ -30,7 +45,7 @@ export function intoParsable(input) {
   }
 
 
-  function require_character(character) {
+  function require_character(character: char) {
     if (peek_character() === character) {
       eat_character();
       return true;
@@ -48,7 +63,7 @@ export function intoParsable(input) {
     }
   }
 
-  function consume_until(ending_predicate_fn) {
+  function consume_until(ending_predicate_fn: () => boolean) {
     let result = "";
 
     while (still_parsing()) {
@@ -62,9 +77,9 @@ export function intoParsable(input) {
     return result;
   }
 
-  function with_preserved_position(progn_fn) {
+  function with_preserved_position(progn_fn: () => unknown) {
     const restoration_index = current_character_index;
-    let result = progn_fn();
+    const result = progn_fn();
     current_character_index = restoration_index;
     return result;
   }
@@ -80,10 +95,14 @@ export function intoParsable(input) {
 }
 
 // TODO(jerry): add escaped characters!
-export function tryParseString(parsable, { delimiter, acceptMultiline }) {
+interface TryParseStringOptions {
+  delimiter: char,
+  acceptMultiline?: boolean,
+}
+export function tryParseString(parsable: Parsable, { delimiter, acceptMultiline } : TryParseStringOptions) {
   if (parsable.requireCharacter(delimiter)) {
     let successful_parse = true;
-    let string_contents = parsable.consumeUntil(
+    const string_contents = parsable.consumeUntil(
       function () {
         if (!acceptMultiline && parsable.requireCharacter("\n")) {
           successful_parse = false;
@@ -102,8 +121,8 @@ export function tryParseString(parsable, { delimiter, acceptMultiline }) {
   return null;
 }
 
-const is_literal_acceptable = (c) => (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || (c >= "0" && c <= "9");
-export function eatIdentifier(parsable) {
+const is_literal_acceptable = (c: char | null) => c && ((c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || (c >= "0" && c <= "9"));
+export function eatIdentifier(parsable: Parsable) {
   if (parsable.stillParsing()) {
     return parsable.consumeUntil(() => !is_literal_acceptable(parsable.peekCharacter()));
   } else {
@@ -111,7 +130,7 @@ export function eatIdentifier(parsable) {
   }
 }
 
-export function eatWhitespace(parsable) {
+export function eatWhitespace(parsable: Parsable) {
   while (parsable.stillParsing()) {
     const peeked = parsable.peekCharacter();
     if (peeked === " " || peeked === "\t" || peeked === "\n" || peeked === "\r") {
