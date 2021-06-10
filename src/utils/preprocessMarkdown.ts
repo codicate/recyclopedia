@@ -4,7 +4,18 @@
   Does not really do tokenizing, so be ware of dragons.
  */
 import styles from "components/Article/Article.module.scss";
-import { intoParsable, tryParseString, eatIdentifier, eatWhitespace } from "utils/intoParsable";
+import {
+  Parsable,
+  intoParsable,
+  tryParseString,
+  eatIdentifier,
+  eatWhitespace,
+  peekWhitespaceSeparatedCharacter,
+  eatWhitespaceSeparatedCharacter,
+  eatWhitespaceSeparatedToken,
+  requireWhitespaceSeparatedCharacter,
+  eatWhitespaceSeparatedString,
+} from "utils/intoParsable";
 
 interface HeaderInformation {
   level: number,
@@ -16,11 +27,22 @@ export interface MarkdownParsedMetaInformation {
   headers: HeaderInformation[],
 }
 
+function pipeSeparatorErrorCheck(parsable: Parsable) {
+  if (!requireWhitespaceSeparatedCharacter(parsable, "|")) {
+    if (eatWhitespaceSeparatedToken(parsable) || tryParseString(parsable, { delimiter: "'" })) {
+      console.error("Missing pipe separator!");
+      return true;
+    }
+  }
+
+  return false;
+}
+
 export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInformation {
   let result = "";
   const input = intoParsable(stringInput);
 
-  const actualResult = {
+  const actualResult: MarkdownParsedMetaInformation = {
     processed: "",
     imageLinks: [],
     headers: []
@@ -76,31 +98,16 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
           const width = 150;
 
           while (inbetween.stillParsing() && !error) {
-            eatWhitespace(inbetween);
-            const property = eatIdentifier(inbetween);
+            const property = eatWhitespaceSeparatedToken(inbetween);
 
             if (property === "floatingMethod") {
-              eatWhitespace(inbetween);
-              if (inbetween.requireCharacter("=")) {
-                eatWhitespace(inbetween);
-                floatingMethod = eatIdentifier(inbetween) || "";
-                eatWhitespace(inbetween);
-
-                if (!inbetween.requireCharacter("|")) {
-                  // @ts-ignore
-                  if (eatIdentifier(inbetween) || tryParseString(inbetween, { delimiter: "'" })) {
-                    console.error("Missing pipe separator!");
-                    error = true;
-                  }
-                }
+              if (requireWhitespaceSeparatedCharacter(inbetween, "=")) {
+                floatingMethod = eatWhitespaceSeparatedToken(inbetween) || "";
+                error = error || pipeSeparatorErrorCheck(inbetween);
               }
             } else if (property === "caption") {
-              eatWhitespace(inbetween);
-              if (inbetween.requireCharacter("=")) {
-                eatWhitespace(inbetween);
-                // @ts-ignore
-                const maybe_string = tryParseString(inbetween, { delimiter: "'", acceptMultiline: true });
-                eatWhitespace(inbetween);
+              if (requireWhitespaceSeparatedCharacter(inbetween, "=")) {
+                const maybe_string = eatWhitespaceSeparatedString(inbetween, { delimiter: "'", acceptMultiline: true });
 
                 if (maybe_string) {
                   captionString = maybe_string;
@@ -110,26 +117,17 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
                 }
               }
 
-              if (!inbetween.requireCharacter("|")) {
-                // @ts-ignore
-                if (eatIdentifier(inbetween) || tryParseString(inbetween, { delimiter: "'" })) {
-                  console.error("Missing pipe separator!");
-                  error = true;
-                }
-              }
+              error = error || pipeSeparatorErrorCheck(inbetween);
             } else if (property) {
               image_tag += property;
-              eatWhitespace(inbetween);
-              if (inbetween.requireCharacter("=")) {
+              if (requireWhitespaceSeparatedCharacter(inbetween, "=")) {
                 image_tag += "=";
-                eatWhitespace(inbetween);
-                if (inbetween.peekCharacter() === "'") {
-                  // @ts-ignore
+                if (peekWhitespaceSeparatedCharacter(inbetween) === "'") {
                   const maybe_string = tryParseString(inbetween, { delimiter: "'" });
+
                   if (maybe_string) {
                     image_tag += "'" + maybe_string + "'";
                     if (property === "src") {
-                      // @ts-ignore
                       actualResult.imageLinks.push(maybe_string);
                     }
                   } else {
@@ -137,7 +135,7 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
                     error = true;
                   }
                 } else {
-                  const value_identifier = eatIdentifier(inbetween);
+                  const value_identifier = eatWhitespaceSeparatedToken(inbetween);
                   if (value_identifier) {
                     image_tag += value_identifier;
                   } else {
@@ -145,14 +143,8 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
                     error = true;
                   }
                 }
-                eatWhitespace(inbetween);
-                if (!inbetween.requireCharacter("|")) {
-                  // @ts-ignore
-                  if (eatIdentifier(inbetween) || tryParseString(inbetween, { delimiter: "'" })) {
-                    console.error("Missing pipe separator!");
-                    error = true;
-                  }
-                }
+
+                error = error || pipeSeparatorErrorCheck(inbetween);
               } else {
                 console.error("Missing assignment for property?");
                 error = true;

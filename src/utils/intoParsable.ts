@@ -18,7 +18,7 @@
 // how .length calculates.
 type char = string;
 
-interface Parsable {
+export interface Parsable {
   withPreservedPosition: (progn: () => unknown) => unknown;
   stillParsing: () => boolean,
   peekCharacter: () => char | null,
@@ -94,6 +94,13 @@ export function intoParsable(input: string) : Parsable {
   };
 }
 
+/*
+  This is the kit of useful stuff that you probably want to
+  use with this thing.
+
+  Probably named too verbosely.
+*/
+
 // TODO(jerry): add escaped characters!
 interface TryParseStringOptions {
   delimiter: char,
@@ -129,6 +136,25 @@ export function eatIdentifier(parsable: Parsable) {
     return null;
   }
 }
+
+
+function withEatWhitespace<T>(procedure: (parsable: Parsable) => T) {
+  return function(parsable: Parsable) {
+    eatWhitespace(parsable);
+    return procedure(parsable);
+  };
+}
+
+export const peekWhitespaceSeparatedCharacter = 
+  withEatWhitespace((p) => p.peekCharacter());
+export const eatWhitespaceSeparatedCharacter =
+  withEatWhitespace((p) => p.eatCharacter());
+export const requireWhitespaceSeparatedCharacter =
+  (p: Parsable, c: char) => withEatWhitespace((p) => p.requireCharacter(c))(p);
+export const eatWhitespaceSeparatedToken =
+  withEatWhitespace(eatIdentifier);
+export const eatWhitespaceSeparatedString =
+  (p: Parsable, options: TryParseStringOptions) => withEatWhitespace((p) => tryParseString(p, options))(p);
 
 export function eatWhitespace(parsable: Parsable) {
   while (parsable.stillParsing()) {
