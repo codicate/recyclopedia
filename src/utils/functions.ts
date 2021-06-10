@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { NodeType } from "utils/DOMIntoMarkdown";
 import { Secrets } from "secrets";
 
 //Return the current property of a ref if it is a ref
@@ -106,6 +107,27 @@ export function classListReplace(node: Element, classes: string[]) {
   for (const classItem of classes) {
     node.classList.add(classItem);
   }
+}
+
+// http://w3c.github.io/html-reference/syntax.html
+const voidElementTagNameTable = [
+  "BR", "BASE", "AREA", "COL", "COMMAND",
+  "EMBED", "HR", "IMG", "INPUT", "KEYGEN",
+  "LINK", "META", "PARAM", "SOURCE", "TRACK", "WBR"
+];
+
+export function isVoidElement(root: Node) {
+  if (root.nodeType === NodeType.Element) {
+    const elementRoot = root as Element;
+
+    for (const elementName of voidElementTagNameTable) {
+      if (elementRoot.tagName === elementName) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 // push and pop the current selection stack

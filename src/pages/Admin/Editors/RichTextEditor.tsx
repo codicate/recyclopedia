@@ -49,6 +49,7 @@ import {
   selectionStackPop,
   selectionStackPush,
   dictionaryUpdateKeyNested,
+  isVoidElement,
 } from "utils/functions";
 
 import { renderMarkdown } from "components/Article/MarkdownRender";
@@ -67,6 +68,7 @@ import bottomToolbarStyle from "./bottomToolbar.module.scss";
 import editorStyle from "./RichTextEditor.module.scss";
 import articleStyles from "components/Article/Article.module.scss";
 import Button from "components/UI/Button";
+import { isVoidExpression } from "typescript";
 
 /** Unsafe wrappers... Cause most of this has to be unsafe to be even possible... **/
 /** Well... Draft.JS is a thing, but that can't exactly do the same thing as this... Otherwise it would require way less code. **/
@@ -704,28 +706,24 @@ interface RichTextEditorProperties {
   NOTE(jerry): name is to get a nice little laugh. I promise I'm more professional than this.
 */
 function put_the_cursor_in_a_fucking_place_i_can_actually_type_in() {
-  const s = window.getSelection();
-  //@ts-ignore
-  if (s?.anchorNode.tagName === "IMG") {
-    //@ts-ignore
-    if (s?.anchorNode.nextElementSibling) {
-      //@ts-ignore
-      s?.collapse(s?.anchorNode.nextElementSibling);
-    } else {
-      if (s?.anchorNode.parentNode) {
-        //@ts-ignore
-        console.log(s?.anchorNode.parentNode.nextElementSibling);
+  const currentSelection = window.getSelection();
+  const anchorNode = currentSelection?.anchorNode;
 
-        let goodTarget = s?.anchorNode.parentNode.nextSibling;
+  if (anchorNode && isVoidElement(anchorNode)) {
+    const anchorNodeAsElement = anchorNode as Element;
+
+    if (anchorNodeAsElement.nextElementSibling) {
+      currentSelection?.collapse(anchorNodeAsElement.nextElementSibling);
+    } else {
+      if (anchorNodeAsElement.parentNode) {
+        let goodTarget = anchorNodeAsElement.parentNode.nextSibling;
         // when the hell does the browser decide to generate <BR> and not <P><BR></P>?????
-        // @ts-ignore
-        while (goodTarget && goodTarget.tagName === "BR") {
+        while (goodTarget && isVoidElement(goodTarget)) {
           goodTarget = goodTarget.nextSibling;
         }
 
-        //@ts-ignore
-        s?.collapse(goodTarget);
-        s?.collapseToEnd();
+        currentSelection?.collapse(goodTarget);
+        currentSelection?.collapseToEnd();
       }
     }
   }

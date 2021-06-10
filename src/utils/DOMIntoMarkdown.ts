@@ -50,7 +50,7 @@ This is entirely recursive, and because it's recursive it loses some information
 cleaner and probably easier rendering...
 */
 
-enum NodeType {
+export enum NodeType {
   Element = 1,
   Attribute = 2,
   Text = 3,
