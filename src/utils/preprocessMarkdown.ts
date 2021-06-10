@@ -157,7 +157,7 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
           }
 
           if (captionString !== "") {
-            image_tag += "style=\"border: 1px solid gray; display: block; margin: auto; margin-top: 1.2em; \"";
+            image_tag += `class="${styles.captionImagePreview}"`;
           }
 
           if (!error) {
@@ -171,7 +171,7 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
               case "floatRight": floatingMethodStr = styles.floatRight; break;
               }
 
-              result += `<div class="${styles.captionBox + " " + floatingMethodStr}" style="width: ${width*1.3}px;">
+              result += `<div class="${styles.captionBox + " " + floatingMethodStr}" style="width: ${width+2}px;">
                           ${image_tag}
                           <div class=${styles.captionBoxInner}>
                             <p contenteditable="false">${captionString}</p>

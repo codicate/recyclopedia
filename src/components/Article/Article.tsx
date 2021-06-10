@@ -12,20 +12,13 @@ import MarkdownRender from "components/Article/MarkdownRender";
 import Collapsible from "components/UI/Collapsible";
 import Admin from "pages/Admin/Admin";
 
-// It would be very useful to pull the Foldable part into a reusable component
-// however, the styling cannot be preserved as I may want it to look different...
-// someone may look into this later.
-
-// https://www.npmjs.com/package/markdown-it-toc-done-right ?
-
 // @ts-ignore
 function TableOfContents({ sectionHeaders }: { sectionHeaders: any[]; }) {
   return (sectionHeaders.length > 0) ? (
-    <Collapsible header='Table of Contents'>
+    <Collapsible header='Table of Contents' centered={true}>
       <nav style={{ marginLeft: "3em", }}>
         {
           sectionHeaders.map(({ level, text }) => (
-            // This scroll is unfortunately, not perfect because of the navbar...
             <a key={text} href={"#" + text}>
               <p style={{
                 marginLeft: `${(level - 1) * 2}em`

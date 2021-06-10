@@ -325,11 +325,11 @@ export function imageDOMGetCaption(rootNode: Element | null) {
 }
 
 function captionImageThumbnailStyleString(width: number, height: number) {
-  return `width: ${width}px; height: ${height}px; border: 1px solid gray; display: block; margin: auto; margin-top: 1.2em;`;
+  return `width: ${width}px; height: ${height}px;`;
 }
 
 function captionImageBlockStyleString(width: number) {
-  return `width: ${width * 1.3}px;`;
+  return `width: ${width+3}px;`;
 }
 
 function floatModeStyle(layoutFloatMode: LayoutFloatMode) {
@@ -376,6 +376,8 @@ function imageDOMUpdateCaptionWithNoChecks(rootNode: Element | null, newWidth: n
     if (parentNode.tagName === "DIV") {
       const imageNode = rootNode as HTMLImageElement;
       unsafeDOMStyleSet(imageNode, captionImageThumbnailStyleString(newWidth, newHeight));
+      imageNode.classList.toggle(articleStyles.captionImagePreview);
+
       unsafeDOMStyleSet(parentNode, captionImageBlockStyleString(newWidth));
 
       if (parentNode.classList.contains(articleStyles.captionBox)) {

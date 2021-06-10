@@ -3,12 +3,14 @@ import React, { useState } from "react";
 
 function Collapsible({
   header,
+  centered = false,
   collapsed = false,
   children,
   ...props
 }: {
   header: string | React.ReactNode;
   collapsed?: boolean;
+  centered?: boolean;
   children: React.ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>
 ) {
@@ -17,7 +19,7 @@ function Collapsible({
   return (
     <div className={styles.collapsibleContainer} {...props}>
       <div
-        className={styles.collapsibleTitle}
+        className={styles.collapsibleTitle + " " + (centered && styles.centered) || ""}
         onClick={() =>
           setIsCollapsed((isCollapsed) => !isCollapsed)
         }

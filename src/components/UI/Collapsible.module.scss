@@ -1,5 +1,5 @@
 .collapsibleContainer {
-  border-radius: 1em;
+  border-radius: 6px;
   overflow: hidden;
 
   box-shadow:
@@ -15,8 +15,7 @@
   justify-content: space-between;
   align-items: center;
 
-  padding: .75em 1.25em;
-  border-radius: 1em;
+  padding: .45em 1.25em;
 
   &:hover {
     background-color: hsl(0, 0%, 98%);
@@ -24,7 +23,7 @@
 
   p {
     margin: 0;
-    font-weight: bold;
+    font-weight: bolder;
   }
 
   div {
@@ -35,4 +34,10 @@
       transform: rotate(90deg);
     }
   }
+}
+
+.centered {
+    p {
+      margin: auto;
+    }
 }
