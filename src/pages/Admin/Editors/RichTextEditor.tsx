@@ -434,14 +434,22 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
   const imageObject = properties.imageRef?.current;
   const captionInformation = imageDOMGetCaption(imageObject);
 
+  const originalWidth = (imageObject?.width || 150);
+  const originalHeight = (imageObject?.height || 150);
+
   const [imageCaptionText, setImageCaptionText] = useState(captionInformation?.text || "");
-  console.log(imageCaptionText);
 
   const [layoutFloatMode, setLayoutFloatMode] = useState(imageDOMGetFloatStyle(imageObject));
   const [imageAllowsWrapAround, setImageAllowWrapAroundText] = useState(true);
   const [imageDimensionType, setImageDimensionType] = useState(ImageDimensionsType.Default);
-  const [imageDimensionCustomWidth, setImageDimensionCustomWidth] = useState(imageObject?.width || 150);
-  const [imageDimensionCustomHeight, setImageDimensionCustomHeight] = useState(imageObject?.height || 150);
+  const [imageDimensionCustomWidth, setImageDimensionCustomWidth] = useState(originalWidth);
+  const [imageDimensionCustomHeight, setImageDimensionCustomHeight] = useState(originalHeight);
+
+  function scaleByGivenRatio(ratio: number) {
+    setImageDimensionCustomWidth(Math.floor(originalWidth * ratio));
+    setImageDimensionCustomHeight(Math.floor(originalHeight * ratio));
+  }
+
 
   function applyChanges() {
     if (imageObject) {
@@ -547,12 +555,12 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
             <h2>Resolution Selection</h2>
             <input
               value={imageDimensionCustomWidth}
-              onChange={(e) => setImageDimensionCustomWidth(Number.parseInt(e.target.value))}
+              onChange={(e) => scaleByGivenRatio(Number.parseInt(e.target.value) / originalWidth) }
               type="number"></input>
             <span>x</span>
             <input
               value={imageDimensionCustomHeight}
-              onChange={(e) => setImageDimensionCustomHeight(Number.parseInt(e.target.value))}
+              onChange={(e) => scaleByGivenRatio(Number.parseInt(e.target.value) / originalHeight) }
               type="number"></input>
           </div>
           {/*Caption Text*/}
