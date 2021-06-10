@@ -140,7 +140,6 @@
     right: 3em;
 }
 
-
 #blotOut {
     display: flex;
     justify-content: center;
@@ -171,35 +170,84 @@
     } 
 }
 
-@keyframes image-context-menu-open-up {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+.contextGroupedRadio {
+    display: flex;
 
-.contextMenuButton {
-    margin: 0.2em;
-    padding: 0.3em;
-    border-radius: 2px;
-    background-color: royalblue;
-    color: white;
+    margin-top: 0.3em;
+    width: 100%;
 
-    transition: color 0.2s;
-    transition: background-color 0.2s;
+    a {
+        display: inline-block;
 
-    &:hover {
-        background-color: yellow;
-        color: black;
+        padding: 0.8em;
+        flex-grow: 2;
+        text-align: center;
+
+        user-select: none;
+        &:before {
+            /*
+                I would like material icons for this one.
+            */
+        }
+
+        &:hover {
+            background-color: yellow;
+            color: black;
+        }
+
+        &:active {
+            background: green;
+            color: white;
+            transform: scale(95%);
+        }
+
+        cursor: pointer;
+
+        background-color: royalblue;
+        color: white;
+        border: 1px solid white;
+
+        transition: transform 0.2s;
+        transition: color 0.2s;
+        transition: background-color 0.2s;
+
+        &.currentlySelected {
+            background-color: gray;
+            font-weight: bolder;
+            color: white;
+            transform: scale(110%);
+        }
     }
 }
 
+.contextMenu {
+    @keyframes open-up {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
 
-.imageContextMenu {
+    button {
+        margin: 0.2em;
+        padding: 0.3em;
+        border-radius: 2px;
+        background-color: royalblue;
+        color: white;
+
+        transition: color 0.2s;
+        transition: background-color 0.2s;
+
+        &:hover {
+            background-color: yellow;
+            color: black;
+        }
+    }
+
     display: inline;
     overflow: hidden;
 
     animation-duration: 0.2s;
     animation-timing-function: ease-in-out;
-    animation-name: image-context-menu-open-up;
+    animation-name: open-up;
 
     background-color: white;
     padding: 0.4em;

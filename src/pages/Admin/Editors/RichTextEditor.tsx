@@ -340,7 +340,22 @@ function floatModeStyle(layoutFloatMode: LayoutFloatMode) {
   }
 }
 
+function imageDOMGetFloatStyle(rootNode: Element | null) : LayoutFloatMode {
+  if (rootNode) {
+    if (rootNode.classList.contains(articleStyles.floatLeft)) {
+      return LayoutFloatMode.Left;
+    } else if (rootNode.classList.contains(articleStyles.floatCenter)) {
+      return LayoutFloatMode.Center;
+    } else if (rootNode.classList.contains(articleStyles.floatRight)) {
+      return LayoutFloatMode.Right;
+    }
+  }
+
+  return LayoutFloatMode.Left;
+}
+
 // You are calling this only if you know you can do this safely.
+// Hahah no checks eh??? What's that first line then?
 function imageDOMUpdateCaptionWithNoChecks(rootNode: Element | null, newWidth: number, newHeight: number, layoutFloatMode: LayoutFloatMode, textContent: string) {
   if (rootNode) {
     const parentNode = (rootNode.parentNode as HTMLElement);
@@ -405,7 +420,7 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
   const [imageCaptionText, setImageCaptionText] = useState(captionInformation?.text || "");
   console.log(imageCaptionText);
 
-  const [layoutFloatMode, setLayoutFloatMode] = useState(LayoutFloatMode.Left);
+  const [layoutFloatMode, setLayoutFloatMode] = useState(imageDOMGetFloatStyle(imageObject));
   const [imageAllowsWrapAround, setImageAllowWrapAroundText] = useState(true);
   const [imageDimensionType, setImageDimensionType] = useState(ImageDimensionsType.Default);
   const [imageDimensionCustomWidth, setImageDimensionCustomWidth] = useState(imageObject?.width || 150);
@@ -480,29 +495,36 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
               }()
           }} />
           {/* Float Type */}
-          <div>
-            <a onClick={
-              (e) => { setLayoutFloatMode(LayoutFloatMode.Left); }
-            }>Left</a>
-            <br></br>
-            <a onClick={
-              (e) => { setLayoutFloatMode(LayoutFloatMode.Center); }
-            }>Center</a>
-            <br></br>
-            <a onClick={
-              (e) => { setLayoutFloatMode(LayoutFloatMode.Right); }
-            }>Right</a>
+          <div className={editorStyle.contextGroupedRadio}>
+            {
+
+              [
+                { text: "Left", type: LayoutFloatMode.Left },
+                { text: "Center", type: LayoutFloatMode.Center },
+                { text: "Right", type: LayoutFloatMode.Right },
+              ].map((({ text, type }) => (
+                <a className={((type === layoutFloatMode) ? editorStyle.currentlySelected : "")}
+                  key={type}
+                  onClick={(e) => setLayoutFloatMode(type)}>
+                  {text}
+                </a>)))
+            }
           </div>
           <hr></hr>
           {/* Dimension Type */}
-          <div>
-            <a onClick={
-              (e) => { setImageDimensionType(ImageDimensionsType.Default); }
-            }>Default</a>
-            <br></br>
-            <a onClick={
-              (e) => { setImageDimensionType(ImageDimensionsType.Custom); }
-            }>Custom</a>
+          <div className={editorStyle.contextGroupedRadio}>
+            {
+
+              [
+                { text: "Default", type: ImageDimensionsType.Default },
+                { text: "Custom", type: ImageDimensionsType.Custom },
+              ].map((({ text, type }) => (
+                <a className={((type === imageDimensionType) ? editorStyle.currentlySelected : "")}
+                  key={type}
+                  onClick={(e) => setImageDimensionType(type)}>
+                  {text}
+                </a>)))
+            }
           </div>
           {
             (imageDimensionType === ImageDimensionsType.Custom) ?
@@ -626,21 +648,24 @@ interface ImageContextMenuProperties {
   close: () => void,
 }
 
+function absolutePositionAt(x: number, y: number): CSSProperties {
+  return {
+    position: "absolute",
+    left: `${x}px`,
+    top: `${y}px`,
+  };
+}
+
 function ImageContextMenu(properties: ImageContextMenuProperties) {
   const {position, image, openEdit, close} = properties;
   if (!image) return <></>;
 
-  const positioningStyle: CSSProperties = {
-    position: "absolute",
-    left: `${position.x}px`,
-    top: `${position.y}px`,
-  };
   return (
-    <div className={editorStyle.imageContextMenu} style={positioningStyle}>
+    <div className={editorStyle.contextMenu} style={absolutePositionAt(position.x, position.y)}>
       <i style={{margin: "2em"}}>{image.src || "No image selected?"}</i>
       <br></br>
       <br></br>
-      <button onClick={openEdit} className={editorStyle.contextMenuButton}>Edit</button>
+      <button onClick={openEdit}>Edit</button>
       <button onClick={
         function() {
           const hasCaption = imageDOMHasCaption(image);
@@ -650,8 +675,7 @@ function ImageContextMenu(properties: ImageContextMenuProperties) {
             image.remove();
           }
           close();
-        }
-      } className={editorStyle.contextMenuButton}>Remove Image</button>
+        }}>Remove Image</button>
     </div>
   );
 }
@@ -667,24 +691,18 @@ function HyperlinkContextMenu(properties: HyperlinkContextMenuProperties) {
   const {position, link, openEdit, close} = properties;
   if (!link) return <></>;
 
-  const positioningStyle: CSSProperties = {
-    position: "absolute",
-    left: `${position.x}px`,
-    top: `calc(${position.y}px + 1.2em)`,
-  };
-
   return (
-    <div className={editorStyle.imageContextMenu} style={positioningStyle}>
+    <div className={editorStyle.contextMenu} style={absolutePositionAt(position.x, position.y)}>
       <i style={{margin: "2em"}}>{link.href || "No href selected?"}</i>
       <br></br>
       <br></br>
-      <button onClick={openEdit} className={editorStyle.contextMenuButton}>Edit</button>
+      <button onClick={openEdit}>Edit</button>
       <button onClick={
         function() {
           link.remove();
           close();
         }
-      } className={editorStyle.contextMenuButton}>Remove Hyperlink</button>
+      }>Remove Hyperlink</button>
     </div>
   );
 }
