@@ -52,7 +52,7 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
     if (input.requireCharacter("\\")) {
       const nextCharacter = input.eatCharacter();
       if (nextCharacter === "\n") {
-        result += "<br/>\n";
+        result += "<p><br/></p>\n";
       } else {
         result += nextCharacter;
       }
@@ -207,15 +207,12 @@ export function preprocessMarkdown(stringInput: string): MarkdownParsedMetaInfor
         const textContents = input.consumeUntil(() => input.peekCharacter() === "\n");
 
         actualResult.headers.push({
-          // @ts-ignore
           level: headerCount,
-          // @ts-ignore
           text: textContents
         });
+
         const generatedHeader = `\n<h${headerCount} id="${textContents}">${textContents}</h${headerCount}>`;
         result += generatedHeader;
-      } else if (peeked === "\n") {
-        // result += "<br/>";
       }
 
       result += input.eatCharacter();
