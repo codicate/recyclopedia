@@ -16,6 +16,18 @@ html {
   overflow-wrap: break-word;
   line-height: 1.6em;
 
+  a {
+    color: #2222AAFF;
+
+    &:visited {
+      color: #666666FF;
+    }
+
+    &:hover {
+      color: purple;
+    }
+  }
+
   h1,h2,h3,h4,h5,h6 {
     font-weight: $general-header-weight;
     padding-top: 2em;
@@ -74,6 +86,7 @@ img {
   width: auto;
   display: grid;
   border: 1px solid gray;
+  margin: 0.3em;
 }
 
 .captionImagePreview {
