@@ -9,6 +9,8 @@ import { selectLoginType, LoginType } from "app/adminSlice";
 import { Secrets } from "secrets";
 import { validPageLink } from "utils/functions";
 
+import Spinner from "components/UI/Spinner";
+
 import Header from "pages/Header/Header";
 import Homepage from "pages/Homepage/Homepage";
 
@@ -80,12 +82,22 @@ function InitializingApp() {
   const status = useAppSelector(selectStatus);
 
   if (status === "failed")
-    return <p>MongoDB is probably offline. Crap.</p>;
+    return (
+      <div id={styles.errorScreen} >
+        <div className={styles.errorImg} />
+        <p>MongoDB is probably offline. Crap...</p>
+      </div>
+    );
 
   if (status === "succeed")
     return <App />;
 
-  return <p>Please wait! Loading Recyclopedia...</p>;
+  return (
+    <div id={styles.loadingScreen} >
+      <Spinner color="black" />
+      <p>Please wait! Loading Recyclopedia...</p>
+    </div>
+  );
 }
 
 export default InitializingApp;

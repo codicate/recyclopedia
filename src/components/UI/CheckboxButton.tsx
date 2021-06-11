@@ -10,7 +10,7 @@ function CheckedBoxButton({
   checked?: boolean;
   onCheck?: (checked: boolean) => void,
   children: string;
-  styledAs?: "";
+  styledAs?: "oval";
 } & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLDivElement>, HTMLDivElement>
 ) {
   return (
