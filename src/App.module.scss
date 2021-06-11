@@ -1,5 +1,14 @@
 @import "/src/styles/variables";
 
+.screen {
+  height: 100%;
+  
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+}
+
 #main {
   padding: 1em 2em;
   margin: 0 auto;

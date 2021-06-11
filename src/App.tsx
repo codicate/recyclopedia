@@ -9,6 +9,8 @@ import { selectLoginType, LoginType } from "app/adminSlice";
 import { Secrets } from "secrets";
 import { validPageLink } from "utils/functions";
 
+import Spinner from "components/UI/Spinner";
+
 import Header from "pages/Header/Header";
 import Homepage from "pages/Homepage/Homepage";
 
@@ -85,7 +87,12 @@ function InitializingApp() {
   if (status === "succeed")
     return <App />;
 
-  return <p>Please wait! Loading Recyclopedia...</p>;
+  return (
+    <div className={styles.screen} >
+      <Spinner color="black" />
+      <p>Please wait! Loading Recyclopedia...</p>
+    </div>
+  );
 }
 
 export default InitializingApp;
