@@ -7,12 +7,16 @@ function Button({
   ...props
 }: {
   children: string;
-  styledAs?: "";
+  styledAs?: "oval";
 } & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
 ) {
   return (
     <button
-      className={`${styles.button} ${styledAs ? styles[styledAs] : ""} ${props.className || ""}`}
+      className={`
+        ${styles.button} 
+        ${styledAs ? styles[styledAs] : styles.default} 
+        ${props.className || ""}
+      `}
       type={type}
       {...props}
     >

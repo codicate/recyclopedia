@@ -10,6 +10,7 @@ import { preprocessMarkdown } from "utils/preprocessMarkdown";
 
 import MarkdownRender from "components/Article/MarkdownRender";
 import Collapsible from "components/UI/Collapsible";
+import Button from "components/UI/Button";
 import Admin from "pages/Admin/Admin";
 
 // @ts-ignore
@@ -68,21 +69,27 @@ function ArticleComponent({
     <>
       {
         (isAdmin) && (
-          <>
-            <button
-              onClick={() => {
-                dispatch(deleteArticle(name));
-                history.push("/");
-              }}
-            >
-              Delete Page
-            </button>
-            <button
+          <div id={styles.articleControls}>
+            <Button
+              styledAs="oval"
               onClick={() => updateAdminEditView(!adminEditView)}
             >
               Edit This Page
-            </button>
-          </>
+            </Button>
+
+            <Button
+              id={styles.deleteBtn}
+              styledAs="oval"
+              onClick={() => {
+                if (confirm("Delete this article?")) {
+                  dispatch(deleteArticle(name));
+                  history.push("/");
+                }
+              }}
+            >
+              Delete Page
+            </Button>
+          </div>
         )
       }
       {(isAdmin && adminEditView) ? (
