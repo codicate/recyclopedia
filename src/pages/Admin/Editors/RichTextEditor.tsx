@@ -897,6 +897,7 @@ export function RichTextEditor({
         <div
           contentEditable={true}
           className={articleStyles.article}
+          style={{ minHeight: "50%" }}
           onSelect={synchronizeCommandStateToWidgetBar}
           onKeyDown={editorHandleKeybindings({
             saveDocument: saveDocument,
