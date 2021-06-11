@@ -1,4 +1,5 @@
 import styles from "components/Searchbar/Searchbar.module.scss";
+import useEventListener from "hooks/useEventListener";
 import { useState, useRef } from "react";
 
 

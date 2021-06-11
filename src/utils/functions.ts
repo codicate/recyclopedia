@@ -1,13 +1,6 @@
-import React, { useDebugValue, useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { NodeType } from "utils/DOMIntoMarkdown";
 import { Secrets } from "secrets";
-
-//Return the current property of a ref if it is a ref
-export const getRefCurrent = (ref: React.MutableRefObject<any>) => {
-  return Object.prototype.hasOwnProperty.call(ref, "current")
-    ? ref.current
-    : ref;
-};
 
 export const validPageLink = (originalName: string) => `/${originalName.toLowerCase().trim().replace(/ +/g, "_")}`;
 
@@ -61,7 +54,7 @@ export async function retrieveImageData(
  */
 
 export function dictionaryUpdateKey(
-  dictionary: {[key: string]: any}, 
+  dictionary: { [key: string]: any; },
   key: any,
   updateFunction: (f: unknown) => unknown
 ) {
@@ -71,7 +64,7 @@ export function dictionaryUpdateKey(
 }
 
 export function dictionaryUpdateKeyNested(
-  dictionary: {[key: string]: any}, 
+  dictionary: { [key: string]: any; },
   keys: any[],
   updateFunction: (f: unknown) => unknown
 ) {
