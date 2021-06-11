@@ -82,13 +82,18 @@ function InitializingApp() {
   const status = useAppSelector(selectStatus);
 
   if (status === "failed")
-    return <p>MongoDB is probably offline. Crap.</p>;
+    return (
+      <div id={styles.errorScreen} >
+        <div className={styles.errorImg} />
+        <p>MongoDB is probably offline. Crap...</p>
+      </div>
+    );
 
   if (status === "succeed")
     return <App />;
 
   return (
-    <div className={styles.screen} >
+    <div id={styles.loadingScreen} >
       <Spinner color="black" />
       <p>Please wait! Loading Recyclopedia...</p>
     </div>

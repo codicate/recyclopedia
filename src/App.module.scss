@@ -1,12 +1,26 @@
 @import "/src/styles/variables";
 
-.screen {
+@mixin screen {
   height: 100%;
-  
+
   display: flex;
   flex-flow: column;
   align-items: center;
   justify-content: center;
+}
+
+#loadingScreen {
+  @include screen();
+}
+
+#errorScreen {
+  @include screen();
+
+  .errorImg {
+    height: 300px;
+    width: 300px;
+    background: center/contain no-repeat url(/assets/caution-tape.png);
+  }
 }
 
 #main {
