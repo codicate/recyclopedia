@@ -1,5 +1,15 @@
 @import '/src/styles/variables';
 
+#homepage {
+  &>*:not(:first-child) {
+    margin-bottom: 2rem;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+}
+
 .articleDisplay {
   border: 1px solid black;
   padding: 0.5em;
