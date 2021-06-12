@@ -95,7 +95,14 @@ function ArticleComponent({article, inRecycling}: ArticleProperties) {
             Edit This Page
       </Button>
       <Button
-        onClick={() => updateViewType(PageViewType.Migration)}
+        onClick={() => {
+          if (viewType !== PageViewType.Migration) {
+            updateViewType(PageViewType.Migration);
+            updateLastViewType(viewType);
+          } else {
+            updateViewType(lastViewType);
+          }
+        }}
         styledAs="oval">
             Migrate Page
       </Button>
