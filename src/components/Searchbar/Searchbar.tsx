@@ -57,9 +57,7 @@ export default function Searchbar({
           setInput(e.target.value);
           changeHandler(e.target.value);
         }}
-        onBlur={(() => {
-          setInput("");
-        })}
+        onBlur={() => setInput("")}
       />
       {(input) && (
         <div id={styles.searchbarControl}>

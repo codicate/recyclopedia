@@ -31,7 +31,10 @@ export function renderSearchLink(searchResults: Article[]) {
   ));
 }
 
-export function renderHoverboxSearch(searchResults: Article[]) {
+export function renderHoverboxSearch(
+  searchResults: Article[],
+) {
+
   return (searchResults.length > 0) ? (
     <div className={searchbarStyle.searchResults}>
       {
@@ -39,6 +42,7 @@ export function renderHoverboxSearch(searchResults: Article[]) {
           <Link
             key={name}
             to={validPageLink(name)}
+            onClick={() => console.log("hell")}
           >
             {name}
           </Link>))
@@ -51,13 +55,15 @@ function Search({
   searchFunction, renderFunction
 }: {
   searchFunction: (articles: Article[], input: string) => Article[];
-  renderFunction: (article: Article[]) => JSX.Element | null;
+  renderFunction: (
+    article: Article[],
+  ) => JSX.Element | null;
 }) {
   const articlesData = useAppSelector(selectArticlesData);
-  const [searchResult, setSearchResult] = useState<Article[]>([]);
+  const [searchResults, setSearchResults] = useState<Article[]>([]);
 
   function returnInputCallback(input: string) {
-    setSearchResult(
+    setSearchResults(
       input ? searchFunction(
         articlesData.articles.map((article) => article),
         input
@@ -70,18 +76,19 @@ function Search({
   return (
     <div className={styles.searchbar}
       ref={searchbarContainerRef}
-      onBlurCapture={() => {
+      onBlur={() => {
         // This is necessary because, afaik, react and javascript doesn't have a way to check focus-within is lost or not, something like onBlurWithin : (
+        // ISSUE: when you click on a link, the search results box does not auto close
         if (!searchbarContainerRef.current?.matches(":focus-within")) {
-          setSearchResult([]);
+          setSearchResults([]);
         }
       }}
     >
       <Searchbar
-        isSearchResultsOpened={(searchResult.length !== 0)}
+        isSearchResultsOpened={(searchResults.length !== 0)}
         returnInput={returnInputCallback}
       />
-      {renderFunction(searchResult)}
+      {renderFunction(searchResults)}
     </div>
   );
 }
