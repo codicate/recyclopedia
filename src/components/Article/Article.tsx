@@ -3,14 +3,18 @@ import { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { useAppSelector, useAppDispatch } from "app/hooks";
-import { deleteArticle, Article } from "app/articlesSlice";
+import { migrateArticle, deleteArticle, Article } from "app/articlesSlice";
 import { LoginType, selectLoginType } from "app/adminSlice";
 
+import { validPageLink } from "utils/functions";
 import { preprocessMarkdown, HeaderInformation } from "utils/preprocessMarkdown";
 
 import MarkdownRender from "components/Article/MarkdownRender";
 import Collapsible from "components/UI/Collapsible";
+
+import Input from "components/Form/Input";
 import Button from "components/UI/Button";
+
 import Admin from "pages/Admin/Admin";
 
 function TableOfContents({ sectionHeaders }: { sectionHeaders: HeaderInformation[]; }) {
@@ -23,7 +27,7 @@ function TableOfContents({ sectionHeaders }: { sectionHeaders: HeaderInformation
               <p style={{
                 marginLeft: `${(level - 1) * 2}em`
               }}>
-                &bull; {text}
+                        &bull; {text}
               </p>
             </a>
           ))
@@ -50,6 +54,12 @@ function TagViews({ tags }: { tags?: string[]; }) {
   );
 }
 
+enum PageViewType {
+    Reading,
+    Editting,
+    Migration,
+}
+
 function ArticleComponent({
   article
 }: {
@@ -61,7 +71,8 @@ function ArticleComponent({
   const isAdmin = currentLoginType === LoginType.Admin;
 
   const { name, content } = article;
-  const [adminEditView, updateAdminEditView] = useState(false);
+  const [migrationTitleName, updateMigrationTitleName] = useState(name);
+  const [viewType, updateViewType] = useState(PageViewType.Reading);
 
   const processedMarkdown = preprocessMarkdown(content);
   return (
@@ -71,9 +82,14 @@ function ArticleComponent({
           <div id={styles.articleControls}>
             <Button
               styledAs="oval"
-              onClick={() => updateAdminEditView(!adminEditView)}
+              onClick={() => updateViewType(PageViewType.Editting)}
             >
               Edit This Page
+            </Button>
+            <Button
+              onClick={() => updateViewType(PageViewType.Migration)}
+              styledAs="oval">
+              Migrate Page
             </Button>
 
             <Button
@@ -91,20 +107,50 @@ function ArticleComponent({
           </div>
         )
       }
-      {(isAdmin && adminEditView) ? (
-        <Admin
-          currentArticle={article}
-        />
-      ) : (
-        <>
-          <h1 className={styles.title}> {name} </h1>
-          <TableOfContents sectionHeaders={processedMarkdown.headers} />
-          <MarkdownRender className={styles.article}>
-            {processedMarkdown.processed}
-          </MarkdownRender>
-          <TagViews tags={article.tags} />
-        </>
-      )}
+      {
+        function() {
+          switch (viewType) {
+          case PageViewType.Reading:
+            return (
+              <>
+                <h1 className={styles.title}> {name} </h1>
+                <TableOfContents sectionHeaders={processedMarkdown.headers} />
+                <MarkdownRender className={styles.article}>
+                  {processedMarkdown.processed}
+                </MarkdownRender>
+                <TagViews tags={article.tags} />
+              </>
+            );
+          case PageViewType.Editting:
+            return isAdmin && <Admin currentArticle={article}/>;
+          case PageViewType.Migration:
+            return (
+              <>
+                <h1>Page Migration</h1>
+                <Input
+                  label="Migration Title"
+                  changeHandler={(e) => updateMigrationTitleName(e.target.value)}
+                  defaultValue={migrationTitleName}
+                  value={migrationTitleName} />
+                <Button
+                  onClick={
+                    async function () {
+                      console.log(migrationTitleName, name);
+                      if (migrationTitleName === name) {
+                        alert("You cannot migrate a page unto itself!");
+                      } else {
+                        const dispatchResult = await dispatch(migrateArticle({name, newName: migrationTitleName}));
+                        if (dispatchResult.payload) {
+                          history.push(validPageLink(migrationTitleName));
+                        }
+                      }
+                    }
+                  }>Migrate Page</Button>
+              </>
+            );
+          }
+        }()
+      }
     </>
   );
 }

@@ -95,6 +95,22 @@ export const queryForAllTags = createAsyncThunk(
   )
 );
 
+interface MigrationParameters {
+    name: string,
+    newName: string,
+}
+
+export const migrateArticle = createAsyncThunk(
+  "articles/migrateArticle",
+  tryToCallWithUser(
+    // @ts-ignore
+    async function(user: Realm.User, migrationParams: MigrationParameters, {dispatch}) {
+      await user.functions.migrateArticle(migrationParams.name, migrationParams.newName);
+      dispatch(queryForArticles(undefined));
+    }
+  )
+);
+
 export const deleteArticle = createAsyncThunk(
   "articles/deleteArticle",
   tryToCallWithUser(
