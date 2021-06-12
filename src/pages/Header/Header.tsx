@@ -44,7 +44,7 @@ const Header = () => {
                     dispatch(logout());
                   }}
                 >
-                Logout
+                  Logout
                 </button>
               </>
             ) : (
