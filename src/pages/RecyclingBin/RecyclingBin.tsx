@@ -1,9 +1,10 @@
 import styles from "pages/RecyclingBin/RecyclingBinPage.module.scss";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import Button from "components/UI/Button";
 
-import { useAppSelector } from "app/hooks";
-import { selectArticlesData } from "app/articlesSlice";
+import { useAppSelector, useAppDispatch } from "app/hooks";
+import { selectArticlesData, deleteArticle } from "app/articlesSlice";
 import { LoginType, selectLoginType } from "app/adminSlice";
 
 import { validPageLink, dictionaryUpdateKey } from "utils/functions";
@@ -21,14 +22,17 @@ function DaysLeft({value} : DaysLeft) {
       } else if (value <= 15) {
         return "yellow";
       }
-      return "black";
+      return "transparent";
     }(),
     marginLeft: "1em",
     fontSize: "1.2em",
+    display: "inline-block",
+    minWidth: "3em",
   };
+
   return (
     <>
-      <span style={inlineStyle}>{value}</span>
+      <span style={inlineStyle}>{value} Days Left</span>
     </>);
 }
 
@@ -38,6 +42,7 @@ function DaysLeft({value} : DaysLeft) {
 function RecyclingBin() {
   const articlesData = useAppSelector(selectArticlesData);
   const currentLoginType = useAppSelector(selectLoginType);
+  const dispatch = useAppDispatch();
 
   return (
     <div className={styles.index}>
@@ -48,12 +53,22 @@ function RecyclingBin() {
       {
         articlesData.articles
           .map(({ name, draftStatus }) => (
-            <p key={name} >
-              <Link to={"/admin/recycling_bin/" + validPageLink(name)}>
-                {name}
-                <DaysLeft value={4}/>
-              </Link>
-            </p>
+            <>
+              <p key={name} >
+                <Button
+                  styledAs="oval"
+                  onClick={
+                    function() {
+                      dispatch(deleteArticle(name));
+                    }
+                  }
+                >Delete</Button>
+                <Link to={"/admin/recycling_bin/" + validPageLink(name)}>
+                  {name}
+                  <DaysLeft value={15}/>
+                </Link>
+              </p>
+            </>
           ))
       }
     </div>);
