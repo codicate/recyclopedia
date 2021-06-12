@@ -79,30 +79,25 @@ function ArticleComponent({article, inRecycling}: ArticleProperties) {
 
   const processedMarkdown = preprocessMarkdown(content);
 
+  function toggleView(target: PageViewType) {
+    if (viewType !== target) {
+      updateViewType(target);
+      updateLastViewType(viewType);
+    } else {
+      updateViewType(lastViewType);
+    }
+  }
+
   const standardAdminControls = (
     <>
       <Button
         styledAs="oval"
-        onClick={() => {
-          if (viewType !== PageViewType.Editting) {
-            updateViewType(PageViewType.Editting);
-            updateLastViewType(viewType);
-          } else {
-            updateViewType(lastViewType);
-          }
-        }}
+        onClick={() => toggleView(PageViewType.Editting)}
       >
             Edit This Page
       </Button>
       <Button
-        onClick={() => {
-          if (viewType !== PageViewType.Migration) {
-            updateViewType(PageViewType.Migration);
-            updateLastViewType(viewType);
-          } else {
-            updateViewType(lastViewType);
-          }
-        }}
+        onClick={() => toggleView(PageViewType.Migration)}
         styledAs="oval">
             Migrate Page
       </Button>
