@@ -1,6 +1,6 @@
 import styles from "pages/Header/Search.module.scss";
 import searchbarStyle from "components/Searchbar/Searchbar.module.scss";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import { useAppSelector } from "app/hooks";
@@ -39,7 +39,6 @@ export function renderHoverboxSearch(searchResults: Article[]) {
           <Link
             key={name}
             to={validPageLink(name)}
-            onClick={() => console.log("hello")}
           >
             {name}
           </Link>))
@@ -58,7 +57,6 @@ function Search({
   const [searchResult, setSearchResult] = useState<Article[]>([]);
 
   function returnInputCallback(input: string) {
-    console.log(input);
     setSearchResult(
       input ? searchFunction(
         articlesData.articles.map((article) => article),
@@ -67,10 +65,16 @@ function Search({
     );
   }
 
+  const searchbarContainerRef = useRef<HTMLDivElement>(null);
+
   return (
     <div className={styles.searchbar}
+      ref={searchbarContainerRef}
       onBlurCapture={() => {
-        setSearchResult([]);
+        // This is necessary because, afaik, react and javascript doesn't have a way to check focus-within is lost or not, something like onBlurWithin : (
+        if (!searchbarContainerRef.current?.matches(":focus-within")) {
+          setSearchResult([]);
+        }
       }}
     >
       <Searchbar
