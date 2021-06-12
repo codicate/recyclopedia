@@ -36,17 +36,23 @@ export default function Searchbar({
           }, 500);
         }}
       />
-      <div id={styles.clearDiv}>
-        <span
+      <div id={styles.searchbarControl}>
+        <div
           id={styles.clear}
-          className='material-icons btn'
+          className='material-icons'
           onClick={() => {
             setInput("");
             searchbar.current && searchbar.current.focus();
           }}
         >
           clear
-        </span>
+        </div>
+        {/* <div
+          id={styles.search}
+          className='material-icons'
+        >
+          search
+        </div> */}
       </div>
     </div>
   );

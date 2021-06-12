@@ -17,12 +17,17 @@ $emp: transparent;
     font-weight: 500;
 
     outline: none;
-    border-radius: 0.25em;
-    border: 1px solid $border;
+    border-radius: 999rem;
     background-color: $emp;
+    box-shadow: 0 2px 5px 1px hsl(218, 23%, 25%, .16);
+
+    &:hover,
+    &:focus-within {
+      box-shadow: 0 2px 5px 1px hsl(218, 23%, 25%, .24);
+    }
   }
 
-  #clearDiv {
+  #searchbarControl {
     position: absolute;
     top: 0;
     right: 0;
@@ -32,5 +37,22 @@ $emp: transparent;
 
     display: flex;
     align-items: center;
+
+    &>* {
+      padding-left: .5em;
+    }
+
+    &>:not(:last-child) {
+      padding-right: .5em;
+      box-shadow: 1px 0 hsl(210, 4%, 85%);
+    }
+  }
+
+  #clear {
+    color: hsl(210, 4%, 46%);
+  }
+
+  #search {
+    color: hsl(217, 89%, 61%)
   }
 }
