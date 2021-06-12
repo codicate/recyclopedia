@@ -16,6 +16,7 @@ import Homepage from "pages/Homepage/Homepage";
 
 const Article = lazy(() => import("components/Article/Article"));
 const IndexPage = lazy(() => import("pages/Index/IndexPage"));
+const RecyclingBin = lazy(() => import("pages/RecyclingBin/RecyclingBin"));
 const Admin = lazy(() => import("pages/Admin/Admin"));
 const Register = lazy(() => import("pages/Admin/Register"));
 const Login = lazy(() => import("pages/Admin/Login"));
@@ -54,13 +55,25 @@ function App() {
                   : <Redirect to='/' />
               }
             </Route>
+            <Route exact path='/admin/recycling_bin/'>
+              <RecyclingBin />
+            </Route>
+
+            {
+              (currentLoginType === LoginType.Admin)
+                ? articlesData.articles.map((article) =>
+                  <Route key={article.name} exact path={"/admin/recycling_bin/"+validPageLink(article.name)}>
+                    <Article inRecycling={true} article={article} />
+                  </Route>)
+                : <Redirect to='/' />
+            }
 
             {((currentLoginType === LoginType.Admin)
               ? articlesData.articles
               : articlesData.articles.filter((article) => !article.draftStatus)
             ).map((article) =>
               <Route key={article.name} exact path={validPageLink(article.name)}>
-                <Article article={article} />
+                <Article inRecycling={false} article={article} />
               </Route>
             )}
           </Suspense>

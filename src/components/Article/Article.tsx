@@ -60,11 +60,12 @@ enum PageViewType {
     Migration,
 }
 
-function ArticleComponent({
-  article
-}: {
-  article: Article;
-}) {
+interface ArticleProperties {
+    inRecycling: boolean,
+    article: Article,
+}
+
+function ArticleComponent({article, inRecycling}: ArticleProperties) {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const currentLoginType = useAppSelector(selectLoginType);

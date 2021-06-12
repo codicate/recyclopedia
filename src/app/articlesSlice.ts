@@ -123,6 +123,17 @@ export const deleteArticle = createAsyncThunk(
   )
 );
 
+export const restoreArticle = createAsyncThunk(
+  "articles/restoreArticle",
+  tryToCallWithUser(
+    // @ts-ignore
+    async function(user: Realm.User, name: string, {dispatch}) {
+      await user.functions.restoreArticle(name);
+      dispatch(queryForArticles(undefined));
+    }
+  )
+);
+
 export const insertArticle = createAsyncThunk(
   "articles/insertArticle",
   tryToCallWithUser(
