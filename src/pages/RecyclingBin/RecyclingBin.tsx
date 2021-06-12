@@ -55,45 +55,55 @@ function RecyclingBin() {
       an article. You can recover them here! Or you can dispose of them permenantly here!</p>
 
       {
-        articlesData.recycledArticles
-          .map(({ name, pendingDaysUntilDeletion }) => (
-            <>
-              {
-              /*
-                I may install material-icons since I kind of want to replace these with
-                icons... Although technically I should ask for permission first.
-               */
-              }
-              <p key={name} >
-                <Button
-                  styledAs="oval"
-                  onClick={async () => {
-                    if (confirm("Do you want to restore this article?")) {
-                      await dispatch(restoreArticle(name));
-                      history.push(validPageLink(name));
-                    }
-                  }}
-                >
-                  Restore
-                </Button>
-                <Button
-                  styledAs="oval"
-                  onClick={() => {
-                    if (confirm("Permenantly delete this article?")) {
-                      dispatch(deleteArticle(name));
-                      history.push("/");
-                    }
-                  }}
-                >
-                  Delete
-                </Button>
-                <Link to={"/admin/recycling_bin/" + validPageLink(name)}>
-                  {name}
-                  <DaysLeft value={pendingDaysUntilDeletion}/>
-                </Link>
-              </p>
-            </>
-          ))
+        (articlesData.recycledArticles.length === 0) ?
+          <>
+            <p style={{
+              marginTop: "3em",
+              textAlign: "center",
+              fontSize: "2em",
+            }}>
+              <b>The Recycling Bin is Empty!</b>
+            </p>
+          </>
+          : articlesData.recycledArticles
+            .map(({ name, pendingDaysUntilDeletion }) => (
+              <>
+                {
+                  /*
+                          I may install material-icons since I kind of want to replace these with
+                          icons... Although technically I should ask for permission first.
+                        */
+                }
+                <p key={name} >
+                  <Button
+                    styledAs="oval"
+                    onClick={async () => {
+                      if (confirm("Do you want to restore this article?")) {
+                        await dispatch(restoreArticle(name));
+                        history.push(validPageLink(name));
+                      }
+                    }}
+                  >
+                        Restore
+                  </Button>
+                  <Button
+                    styledAs="oval"
+                    onClick={() => {
+                      if (confirm("Permenantly delete this article?")) {
+                        dispatch(deleteArticle(name));
+                        history.push("/");
+                      }
+                    }}
+                  >
+                        Delete
+                  </Button>
+                  <Link to={"/admin/recycling_bin/" + validPageLink(name)}>
+                    {name}
+                    <DaysLeft value={pendingDaysUntilDeletion}/>
+                  </Link>
+                </p>
+              </>
+            ))
       }
     </div>);
 }
