@@ -21,7 +21,7 @@ export default function Searchbar({
 
   const changeHandler = (input: string) => {
     lastTimeTyping.current = new Date().getTime();
-    
+
     setTimeout(() => {
       if (new Date().getTime() - lastTimeTyping.current >= 500)
         returnInput(input);
@@ -40,6 +40,8 @@ export default function Searchbar({
           setInput(e.target.value);
           changeHandler(e.target.value);
         }}
+        onFocus={(e) => returnInput(e.target.value)}
+        onBlur={() => returnInput("")}
       />
       <div id={styles.searchbarControl}>
         <div
