@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { useAppSelector, useAppDispatch } from "app/hooks";
-import { migrateArticle, deleteArticle, Article } from "app/articlesSlice";
+import { migrateArticle, deleteArticle, restoreArticle, Article } from "app/articlesSlice";
 import { LoginType, selectLoginType } from "app/adminSlice";
 
 import { validPageLink } from "utils/functions";
@@ -76,28 +76,50 @@ function ArticleComponent({article, inRecycling}: ArticleProperties) {
   const [viewType, updateViewType] = useState(PageViewType.Reading);
 
   const processedMarkdown = preprocessMarkdown(content);
+
+  const standardAdminControls = (
+    <>
+      <Button
+        styledAs="oval"
+        onClick={() => updateViewType(PageViewType.Editting)}
+      >
+            Edit This Page
+      </Button>
+      <Button
+        onClick={() => updateViewType(PageViewType.Migration)}
+        styledAs="oval">
+            Migrate Page
+      </Button>
+    </>
+  );
+
+  const recyclingAdminControls = (
+    <>
+      <Button
+        styledAs="oval"
+        onClick={async () => {
+          if (confirm("Do you want to restore this article?")) {
+            await dispatch(restoreArticle(name));
+            history.push(validPageLink(name));
+          }
+        }}
+      >
+            Restore Article
+      </Button>
+    </>
+  );
+
   return (
     <>
       {
         (isAdmin) && (
           <div id={styles.articleControls}>
-            <Button
-              styledAs="oval"
-              onClick={() => updateViewType(PageViewType.Editting)}
-            >
-              Edit This Page
-            </Button>
-            <Button
-              onClick={() => updateViewType(PageViewType.Migration)}
-              styledAs="oval">
-              Migrate Page
-            </Button>
-
+            {(!inRecycling) ? standardAdminControls : recyclingAdminControls}
             <Button
               id={styles.deleteBtn}
               styledAs="oval"
               onClick={() => {
-                if (confirm("Delete this article?")) {
+                if (confirm((inRecycling) ? "Permenantly delete this article?" : "Recycle this article?")) {
                   dispatch(deleteArticle(name));
                   history.push("/");
                 }
