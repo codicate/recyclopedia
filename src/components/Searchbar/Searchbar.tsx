@@ -12,6 +12,13 @@ export default function Searchbar({
   const lastTimeTyping = useRef(new Date().getTime());
   const searchbar = useRef<null | HTMLInputElement>(null);
 
+  useEventListener(document.body, "keydown", (e) => {
+    if (e.key === "/") {
+      e.preventDefault();
+      searchbar.current?.focus();
+    }
+  });
+
   return (
     <div id={styles.searchbar}>
       <input
