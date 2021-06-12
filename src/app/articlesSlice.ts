@@ -18,6 +18,7 @@ export interface RecycledArticle extends Article {
 
 export interface ArticlesData {
   articles: Article[];
+  recycledArticles: RecycledArticle[];
 }
 
 export type ArticlesDataProperties = {
@@ -39,7 +40,8 @@ const initialState: {
 } = {
   status: "idle",
   articlesData: {
-    articles: []
+    articles: [],
+    recycledArticles: [],
   },
   allTags: []
 };
@@ -198,6 +200,7 @@ export const selectArticlesData = createDraftSafeSelector(
   selectSelf,
   (articles) => articles.articlesData
 );
+
 
 export const selectAllTags = createDraftSafeSelector(
   selectSelf,

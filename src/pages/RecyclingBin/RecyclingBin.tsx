@@ -55,8 +55,8 @@ function RecyclingBin() {
       an article. You can recover them here! Or you can dispose of them permenantly here!</p>
 
       {
-        articlesData.articles
-          .map(({ name }) => (
+        articlesData.recycledArticles
+          .map(({ name, pendingDaysUntilDeletion }) => (
             <>
               {
               /*
@@ -89,7 +89,7 @@ function RecyclingBin() {
                 </Button>
                 <Link to={"/admin/recycling_bin/" + validPageLink(name)}>
                   {name}
-                  <DaysLeft value={15}/>
+                  <DaysLeft value={pendingDaysUntilDeletion}/>
                 </Link>
               </p>
             </>
