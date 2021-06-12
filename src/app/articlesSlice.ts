@@ -106,6 +106,9 @@ interface MigrationParameters {
     newName: string,
 }
 
+/*
+  It annoys me that these single thunks require so much boiler plate...
+*/
 export const migrateArticle = createAsyncThunk(
   "articles/migrateArticle",
   tryToCallWithUser(
