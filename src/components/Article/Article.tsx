@@ -140,6 +140,8 @@ function ArticleComponent({
                         alert("You cannot migrate a page unto itself!");
                       } else {
                         const dispatchResult = await dispatch(migrateArticle({name, newName: migrationTitleName}));
+                        console.log(dispatchResult);
+                        console.log(dispatchResult.payload);
                         if (dispatchResult.payload) {
                           history.push(validPageLink(migrationTitleName));
                         }

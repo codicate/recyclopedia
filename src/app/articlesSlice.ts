@@ -105,8 +105,9 @@ export const migrateArticle = createAsyncThunk(
   tryToCallWithUser(
     // @ts-ignore
     async function(user: Realm.User, migrationParams: MigrationParameters, {dispatch}) {
-      await user.functions.migrateArticle(migrationParams.name, migrationParams.newName);
+      const result = await user.functions.migrateArticle(migrationParams.name, migrationParams.newName);
       dispatch(queryForArticles(undefined));
+      return result;
     }
   )
 );
