@@ -9,6 +9,29 @@ import { LoginType, selectLoginType } from "app/adminSlice";
 import { validPageLink, dictionaryUpdateKey } from "utils/functions";
 import CheckboxButton from "components/UI/CheckboxButton";
 
+// little filler component as to not complict the RecyclingBin
+type DaysLeft = {
+  value: number,
+};
+function DaysLeft({value} : DaysLeft) {
+  const inlineStyle = {
+    backgroundColor: function() {
+      if (value <= 5) {
+        return "red";
+      } else if (value <= 15) {
+        return "yellow";
+      }
+      return "black";
+    }(),
+    marginLeft: "1em",
+    fontSize: "1.2em",
+  };
+  return (
+    <>
+      <span style={inlineStyle}>{value}</span>
+    </>);
+}
+
 /*
     No admin check required. Things will already die here.
 */
@@ -28,6 +51,7 @@ function RecyclingBin() {
             <p key={name} >
               <Link to={"/admin/recycling_bin/" + validPageLink(name)}>
                 {name}
+                <DaysLeft value={4}/>
               </Link>
             </p>
           ))

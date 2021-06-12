@@ -12,6 +12,10 @@ export interface Article {
   tags?: string[];
 }
 
+export interface RecycledArticle extends Article {
+  pendingDaysUntilDeletion: number;
+}
+
 export interface ArticlesData {
   articles: Article[];
 }
