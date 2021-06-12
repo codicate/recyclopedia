@@ -34,9 +34,15 @@ const Header = () => {
               <>
                 {
                   (currentLoginType === LoginType.Admin) ?
-                    (<Link to="/admin">
+                    (
+                      <>
+                        <Link to="/admin/recycling_bin">
+                      Recycling Bin
+                        </Link>
+                        <Link to="/admin">
                       Create New Article
-                    </Link>) :
+                        </Link>
+                      </>) :
                     <></>
                 }
                 <button
