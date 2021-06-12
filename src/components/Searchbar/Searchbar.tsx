@@ -19,6 +19,15 @@ export default function Searchbar({
     }
   });
 
+  const changeHandler = (input: string) => {
+    lastTimeTyping.current = new Date().getTime();
+    
+    setTimeout(() => {
+      if (new Date().getTime() - lastTimeTyping.current >= 500)
+        returnInput(input);
+    }, 500);
+  };
+
   return (
     <div id={styles.searchbar}>
       <input
@@ -29,11 +38,7 @@ export default function Searchbar({
         value={input}
         onChange={(e) => {
           setInput(e.target.value);
-          lastTimeTyping.current = new Date().getTime();
-          setTimeout(() => {
-            if (new Date().getTime() - lastTimeTyping.current >= 500)
-              returnInput(e.target.value);
-          }, 500);
+          changeHandler(e.target.value);
         }}
       />
       <div id={styles.searchbarControl}>
@@ -42,6 +47,7 @@ export default function Searchbar({
           className='material-icons'
           onClick={() => {
             setInput("");
+            changeHandler("");
             searchbar.current && searchbar.current.focus();
           }}
         >
