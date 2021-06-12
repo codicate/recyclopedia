@@ -1,4 +1,5 @@
 import styles from "pages/Header/Search.module.scss";
+import searchbarStyle from "components/Searchbar/Searchbar.module.scss";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -32,14 +33,14 @@ export function renderSearchLink(searchResults: Article[]) {
 
 export function renderHoverboxSearch(searchResults: Article[]) {
   return (searchResults.length > 0) ? (
-    <div className={styles.hoverBox}>
+    <div className={searchbarStyle.searchResults}>
       {
         searchResults.slice(0, 5).map(({ name }) => (
           <Link
             key={name}
             to={validPageLink(name)}
           >
-            <p>{name}</p>
+            {name}
           </Link>))
       }
     </div>
@@ -67,6 +68,7 @@ function Search({
   return (
     <div className={styles.searchbar}>
       <Searchbar
+        isSearchResultsOpened={(searchResult.length !== 0)}
         returnInput={returnInputCallback}
       />
       {renderFunction(searchResult)}

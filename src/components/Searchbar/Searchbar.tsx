@@ -1,16 +1,20 @@
-import styles from "components/Searchbar/Searchbar.module.scss";
+import styles from "./Searchbar.module.scss";
 import useEventListener from "hooks/useEventListener";
 import { useState, useRef } from "react";
 
 
 export default function Searchbar({
+  isSearchResultsOpened,
   returnInput
 }: {
+  isSearchResultsOpened: boolean;
   returnInput: (input: string) => void;
 }) {
   const [input, setInput] = useState("");
-  const lastTimeTyping = useRef(new Date().getTime());
   const searchbar = useRef<null | HTMLInputElement>(null);
+
+  const openSearchResultsDelay = 500;
+  const lastTimeTyped = useRef(new Date().getTime());
 
   useEventListener(document.body, "keydown", (e) => {
     if (e.key === "/") {
@@ -20,16 +24,21 @@ export default function Searchbar({
   });
 
   const changeHandler = (input: string) => {
-    lastTimeTyping.current = new Date().getTime();
+    lastTimeTyped.current = new Date().getTime();
 
     setTimeout(() => {
-      if (new Date().getTime() - lastTimeTyping.current >= 500)
+      if (new Date().getTime() - lastTimeTyped.current >= openSearchResultsDelay) {
         returnInput(input);
-    }, 500);
+      }
+    }, openSearchResultsDelay);
   };
 
   return (
-    <div id={styles.searchbar}>
+    <div className={`
+      ${styles.searchbar}
+      ${(searchbar && isSearchResultsOpened) ? styles.focused : ""}
+    `}
+    >
       <input
         autoFocus
         type='text'
@@ -40,28 +49,34 @@ export default function Searchbar({
           setInput(e.target.value);
           changeHandler(e.target.value);
         }}
-        onFocus={(e) => returnInput(e.target.value)}
-        onBlur={() => returnInput("")}
+        onFocus={(e) => {
+          returnInput(e.target.value);
+        }}
+        onBlur={() => {
+          // returnInput("");
+        }}
       />
-      <div id={styles.searchbarControl}>
-        <div
-          id={styles.clear}
-          className='material-icons'
-          onClick={() => {
-            setInput("");
-            changeHandler("");
-            searchbar.current && searchbar.current.focus();
-          }}
-        >
-          clear
+      {(input) && (
+        <div id={styles.searchbarControl}>
+          <div
+            id={styles.clear}
+            className='material-icons'
+            onClick={() => {
+              setInput("");
+              changeHandler("");
+              searchbar.current && searchbar.current.focus();
+            }}
+          >
+            clear
+          </div>
+          {/* <div
+        id={styles.search}
+        className='material-icons'
+      >
+        search
+      </div> */}
         </div>
-        {/* <div
-          id={styles.search}
-          className='material-icons'
-        >
-          search
-        </div> */}
-      </div>
+      )}
     </div>
   );
 }

@@ -79,7 +79,7 @@ export function dictionaryUpdateKeyNested(
   return dictionaryUpdateKey(dictionary, keys[0], updateFunction);
 }
 
-export const useTimeout = (callback: (f: void) => void, delay: number) => {
+export const useTimeout = (callback: () => void, delay: number) => {
   useEffect(() => {
     const timer = setTimeout(() => callback(), delay);
     return () => clearTimeout(timer);
