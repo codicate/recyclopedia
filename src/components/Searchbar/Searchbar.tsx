@@ -34,10 +34,18 @@ export default function Searchbar({
   };
 
   return (
-    <div className={`
-      ${styles.searchbar}
-      ${(searchbar && isSearchResultsOpened) ? styles.focused : ""}
-    `}
+    <div
+      className={`
+        ${styles.searchbar}
+        ${(searchbar && isSearchResultsOpened) ? styles.focused : ""}
+      `}
+      onFocus={() => {
+        // The callback is necessary because when focus happens, input is yet to update
+        setInput(input => {
+          returnInput(input);
+          return input;
+        });
+      }}
     >
       <input
         autoFocus
@@ -49,12 +57,6 @@ export default function Searchbar({
           setInput(e.target.value);
           changeHandler(e.target.value);
         }}
-        onFocus={(e) => {
-          returnInput(e.target.value);
-        }}
-        onBlur={() => {
-          // returnInput("");
-        }}
       />
       {(input) && (
         <div id={styles.searchbarControl}>
@@ -63,18 +65,17 @@ export default function Searchbar({
             className='material-icons'
             onClick={() => {
               setInput("");
-              changeHandler("");
               searchbar.current && searchbar.current.focus();
             }}
           >
             clear
           </div>
           {/* <div
-        id={styles.search}
-        className='material-icons'
-      >
-        search
-      </div> */}
+            id={styles.search}
+            className='material-icons'
+          >
+            search
+          </div> */}
         </div>
       )}
     </div>

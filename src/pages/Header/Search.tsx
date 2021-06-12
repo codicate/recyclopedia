@@ -39,6 +39,7 @@ export function renderHoverboxSearch(searchResults: Article[]) {
           <Link
             key={name}
             to={validPageLink(name)}
+            onClick={() => console.log("hello")}
           >
             {name}
           </Link>))
@@ -57,6 +58,7 @@ function Search({
   const [searchResult, setSearchResult] = useState<Article[]>([]);
 
   function returnInputCallback(input: string) {
+    console.log(input);
     setSearchResult(
       input ? searchFunction(
         articlesData.articles.map((article) => article),
@@ -66,7 +68,11 @@ function Search({
   }
 
   return (
-    <div className={styles.searchbar}>
+    <div className={styles.searchbar}
+      onBlurCapture={() => {
+        setSearchResult([]);
+      }}
+    >
       <Searchbar
         isSearchResultsOpened={(searchResult.length !== 0)}
         returnInput={returnInputCallback}
