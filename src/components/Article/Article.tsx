@@ -73,6 +73,8 @@ function ArticleComponent({article, inRecycling}: ArticleProperties) {
 
   const { name, content } = article;
   const [migrationTitleName, updateMigrationTitleName] = useState(name);
+
+  const [lastViewType, updateLastViewType] = useState(PageViewType.Reading);
   const [viewType, updateViewType] = useState(PageViewType.Reading);
 
   const processedMarkdown = preprocessMarkdown(content);
@@ -81,7 +83,14 @@ function ArticleComponent({article, inRecycling}: ArticleProperties) {
     <>
       <Button
         styledAs="oval"
-        onClick={() => updateViewType(PageViewType.Editting)}
+        onClick={() => {
+          if (viewType !== PageViewType.Editting) {
+            updateViewType(PageViewType.Editting);
+            updateLastViewType(viewType);
+          } else {
+            updateViewType(lastViewType);
+          }
+        }}
       >
             Edit This Page
       </Button>
