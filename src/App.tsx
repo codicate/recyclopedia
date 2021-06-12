@@ -61,8 +61,8 @@ function App() {
 
             {
               (currentLoginType === LoginType.Admin)
-                ? articlesData.articles.map((article) =>
-                  <Route key={article.name} exact path={"/admin/recycling_bin/"+validPageLink(article.name)}>
+                ? articlesData.recycledArticles.map((article) =>
+                  <Route key={article.name} exact path={"/admin/recycling_bin"+validPageLink(article.name)}>
                     <Article inRecycling={true} article={article} />
                   </Route>)
                 : <Redirect to='/' />

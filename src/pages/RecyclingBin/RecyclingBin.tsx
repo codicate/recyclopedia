@@ -66,7 +66,7 @@ function RecyclingBin() {
             </p>
           </>
           : articlesData.recycledArticles
-            .map(({ name, pendingDaysUntilDeletion }) => (
+            .map(({ name, content, pendingDaysUntilDeletion }) => (
               <>
                 {
                   /*
@@ -97,7 +97,7 @@ function RecyclingBin() {
                   >
                         Delete
                   </Button>
-                  <Link to={"/admin/recycling_bin/" + validPageLink(name)}>
+                  <Link to={"/admin/recycling_bin" + validPageLink(name)}>
                     {name}
                     <DaysLeft value={pendingDaysUntilDeletion}/>
                   </Link>
