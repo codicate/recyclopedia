@@ -65,7 +65,7 @@ function App() {
                   <Route key={article.name} exact path={"/admin/recycling_bin"+validPageLink(article.name)}>
                     <Article inRecycling={true} article={article} />
                   </Route>)
-                : <Redirect to='/' />
+                : <></>
             }
 
             {((currentLoginType === LoginType.Admin)
@@ -117,28 +117,28 @@ export default InitializingApp;
 
 
 /*
-For obvious reasons getting ALL the articles is kind of dumb. I believe it
-would be better if we fetched articles on the 404 path.
+   For obvious reasons getting ALL the articles is kind of dumb. I believe it
+   would be better if we fetched articles on the 404 path.
 
-Basically we don't generate the routes here. Rather we kind of hook them up on demand.
+   Basically we don't generate the routes here. Rather we kind of hook them up on demand.
 
-So the index is still generated with links, and only as much as we need to display a page.
+   So the index is still generated with links, and only as much as we need to display a page.
 
-Basically that means I have to do something like:
+   Basically that means I have to do something like:
 
-bucketSize  = the amount of things we consider to be on a "page"
-bucketIndex = the "page"
-getArticleInformationPageful(bucketSize: number, bucketIndex: number);
+   bucketSize  = the amount of things we consider to be on a "page"
+   bucketIndex = the "page"
+   getArticleInformationPageful(bucketSize: number, bucketIndex: number);
 
-IE:
-It's like:
-getAllArticles().slice(bucketIndex * bucketSize, (bucketIndex+1) * bucketSize);
-but since it's on the server side, it reduces the load to send all of them.
+   IE:
+   It's like:
+   getAllArticles().slice(bucketIndex * bucketSize, (bucketIndex+1) * bucketSize);
+   but since it's on the server side, it reduces the load to send all of them.
 
-Then in the wildcard route we simply try to make the article component request the article
-in the URL. If it can't do it, then we just display normal 404.
+   Then in the wildcard route we simply try to make the article component request the article
+   in the URL. If it can't do it, then we just display normal 404.
 
-We only have 1 million free api requests from MongoDB so this might ironically be worse since
-each article will take a request from the API (even though it uses less storage space on the
-client side).
-*/
+   We only have 1 million free api requests from MongoDB so this might ironically be worse since
+   each article will take a request from the API (even though it uses less storage space on the
+   client side).
+ */
