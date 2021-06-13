@@ -11,30 +11,12 @@ import MarkdownRender from "components/Article/MarkdownRender";
 
 import Searchbar from "components/Searchbar/Searchbar";
 
-export function renderAsParagraphs(searchResults: Article[]) {
-  return searchResults.map(({ name }) =>
-    <p key={name}>{name}</p>
-  );
-}
+type SearchFunction = 
+  (inputArticles: Article[], input: string) => Article[];
+type RenderSearchResultFunction =
+  (searchResults: Article[], updateSearchResults: (x: typeof searchResults) => void) => JSX.Element | null;
 
-export function renderSearchLink(searchResults: Article[]) {
-  return searchResults.map(({ name, content }) => (
-    <Link
-      key={name}
-      to={validPageLink(name)}
-    >
-      <p>{name}</p>
-      <MarkdownRender className={styles.searchResult}>
-        {`${content.substr(0, 320).replaceAll(/(@@.*)|(@@.*@@)/g, "")}...`}
-      </MarkdownRender>
-    </Link>
-  ));
-}
-
-export function renderHoverboxSearch(
-  searchResults: Article[],
-) {
-
+export function renderHoverboxSearch(searchResults: Article[], updateSearchResults: (x: typeof searchResults) => void) {
   return (searchResults.length > 0) ? (
     <div className={searchbarStyle.searchResults}>
       {
@@ -42,7 +24,7 @@ export function renderHoverboxSearch(
           <Link
             key={name}
             to={validPageLink(name)}
-            onClick={() => console.log("hell")}
+            onClick={() => updateSearchResults([])}
           >
             {name}
           </Link>))
@@ -51,14 +33,12 @@ export function renderHoverboxSearch(
   ) : null;
 }
 
-function Search({
-  searchFunction, renderFunction
-}: {
-  searchFunction: (articles: Article[], input: string) => Article[];
-  renderFunction: (
-    article: Article[],
-  ) => JSX.Element | null;
-}) {
+interface SearchProperties {
+  searchFunction: SearchFunction,
+  renderFunction: RenderSearchResultFunction,
+}
+
+function Search({searchFunction, renderFunction}: SearchProperties) {
   const articlesData = useAppSelector(selectArticlesData);
   const [searchResults, setSearchResults] = useState<Article[]>([]);
 
@@ -88,7 +68,7 @@ function Search({
         isSearchResultsOpened={(searchResults.length !== 0)}
         returnInput={returnInputCallback}
       />
-      {renderFunction(searchResults)}
+      {renderFunction(searchResults, setSearchResults)}
     </div>
   );
 }
