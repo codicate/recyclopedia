@@ -2,6 +2,9 @@ import { createSlice, createAsyncThunk, createDraftSafeSelector } from "@reduxjs
 import { RootState } from "app/store";
 import { loginWithEmailAndPassword } from "app/adminSlice";
 
+import { useAppSelector } from "./hooks";
+import { selectLoginType, LoginType } from "app/adminSlice";
+
 import { App, User, Credentials } from "realm-web";
 import { MessageLogType, logMessage } from "utils/functions";
 
@@ -195,15 +198,28 @@ const selectSelf = (state: RootState) => state.articles;
 // shouldn't it be possible to programmatically generate these instead
 // of copy and paste? Like building the export dictionary manually?
 export const selectStatus = createDraftSafeSelector(
-  selectSelf,
-  (articles) => articles.status
+  selectSelf, (articles) => articles.status
 );
 
 export const selectArticlesData = createDraftSafeSelector(
-  selectSelf,
-  (articles) => articles.articlesData
+  selectSelf, (articles) => articles.articlesData 
 );
 
+export function readArticlesFromLoginType() : ArticlesData {
+  const loginType = useAppSelector(selectLoginType);
+  const articlesData = useAppSelector(selectArticlesData);
+
+  if (loginType === LoginType.Admin) {
+    return articlesData;
+  } else {
+    const newArticleSet =
+      articlesData.articles.filter((article) => !article.draftStatus);
+    return {
+      ... articlesData,
+      articles: newArticleSet,
+    };
+  }
+}
 
 export const selectAllTags = createDraftSafeSelector(
   selectSelf,

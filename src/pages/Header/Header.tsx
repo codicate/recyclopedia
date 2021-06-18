@@ -27,38 +27,43 @@ const Header = () => {
         </button>
         <button className={styles.links}>
           <Link to='/index'>Index</Link>
-          {(
-            currentLoginType != LoginType.Anonymous &&
-            currentLoginType != LoginType.NotLoggedIn
-          ) ? (
-              <>
-                {
-                  (currentLoginType === LoginType.Admin) ?
-                    (
-                      <>
-                        <Link to="/admin/recycling_bin">
-                      Recycling Bin
-                        </Link>
-                        <Link to="/admin">
-                      Create New Article
-                        </Link>
-                      </>) :
-                    <></>
-                }
-                <button
-                  onClick={() => {
-                    dispatch(logout());
-                  }}
-                >
+          {
+            (
+              currentLoginType !== null &&
+              currentLoginType !== LoginType.Anonymous &&
+              currentLoginType !== LoginType.NotLoggedIn
+            ) ? (
+              // This is for logged users
+                <>
+                  {
+                    (currentLoginType === LoginType.Admin) ?
+                      (
+                        <>
+                          <Link to="/admin/recycling_bin">
+                          Recycling Bin
+                          </Link>
+                          <Link to="/admin">
+                          Create New Article
+                          </Link>
+                        </>
+                      ) :
+                      <></>
+                  }
+                  <button
+                    onClick={() => {
+                      dispatch(logout());
+                    }}
+                  >
                   Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/register">Register</Link>
-                <Link to="/login">Login</Link>
-              </>
-            )}
+                  </button>
+                </>
+              ) : (
+                // not logged in
+                <>
+                  <Link to="/register">Register</Link>
+                  <Link to="/login">Login</Link>
+                </>
+              )}
         </button>
       </nav>
     </header >

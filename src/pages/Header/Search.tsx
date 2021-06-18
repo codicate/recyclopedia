@@ -3,8 +3,7 @@ import searchbarStyle from "components/Searchbar/Searchbar.module.scss";
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 
-import { useAppSelector } from "app/hooks";
-import { selectArticlesData, Article } from "app/articlesSlice";
+import { Article, readArticlesFromLoginType } from "app/articlesSlice";
 
 import { validPageLink } from "utils/functions";
 import MarkdownRender from "components/Article/MarkdownRender";
@@ -39,15 +38,14 @@ interface SearchProperties {
 }
 
 function Search({searchFunction, renderFunction}: SearchProperties) {
-  const articlesData = useAppSelector(selectArticlesData);
+  const articlesData = readArticlesFromLoginType();
   const [searchResults, setSearchResults] = useState<Article[]>([]);
 
   function returnInputCallback(input: string) {
     setSearchResults(
-      input ? searchFunction(
-        articlesData.articles.map((article) => article),
-        input
-      ) : []
+      input ?
+        searchFunction(articlesData.articles, input) :
+        []
     );
   }
 

@@ -3,7 +3,7 @@ import { lazy, Suspense, useEffect } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "app/hooks";
-import { initApi, selectStatus, selectArticlesData } from "app/articlesSlice";
+import { initApi, selectStatus, readArticlesFromLoginType } from "app/articlesSlice";
 import { selectLoginType, LoginType } from "app/adminSlice";
 
 import { Secrets } from "secrets";
@@ -22,8 +22,8 @@ const Register = lazy(() => import("pages/Admin/Register"));
 const Login = lazy(() => import("pages/Admin/Login"));
 
 function App() {
-  const articlesData = useAppSelector(selectArticlesData);
   const currentLoginType = useAppSelector(selectLoginType);
+  const articlesData = readArticlesFromLoginType();
 
   return (
     <>
@@ -62,16 +62,13 @@ function App() {
             {
               (currentLoginType === LoginType.Admin)
                 ? articlesData.recycledArticles.map((article) =>
-                  <Route key={article.name} exact path={"/admin/recycling_bin"+validPageLink(article.name)}>
+                  <Route key={article.name} exact path={"/admin/recycling_bin" + validPageLink(article.name)}>
                     <Article inRecycling={true} article={article} />
                   </Route>)
                 : <></>
             }
 
-            {((currentLoginType === LoginType.Admin)
-              ? articlesData.articles
-              : articlesData.articles.filter((article) => !article.draftStatus)
-            ).map((article) =>
+            {articlesData.articles.map((article) =>
               <Route key={article.name} exact path={validPageLink(article.name)}>
                 <Article inRecycling={false} article={article} />
               </Route>
