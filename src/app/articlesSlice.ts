@@ -20,6 +20,7 @@ export interface RecycledArticle extends Article {
 }
 
 export interface ArticlesData {
+  featuredArticle: string | null,
   articles: Article[];
   recycledArticles: RecycledArticle[];
 }
@@ -43,6 +44,7 @@ const initialState: {
 } = {
   status: "idle",
   articlesData: {
+    featuredArticle: null,
     articles: [],
     recycledArticles: [],
   },
@@ -157,6 +159,17 @@ export const insertArticle = createAsyncThunk(
   )
 );
 
+export const setFeaturedArticle = createAsyncThunk(
+  "articles/setFeaturedArticle",
+  tryToCallWithUser(
+    // @ts-ignore
+    async function(user: Realm.User, articleTitle: string, {dispatch}) {
+      await user.functions.featureArticleByName(articleTitle);
+      dispatch(queryForArticles(undefined));
+    }
+  )
+);
+
 const articlesSlice = createSlice({
   name: "api",
   initialState,
@@ -203,6 +216,10 @@ export const selectStatus = createDraftSafeSelector(
 
 export const selectArticlesData = createDraftSafeSelector(
   selectSelf, (articles) => articles.articlesData 
+);
+
+export const selectNameOfFeaturedArticle = createDraftSafeSelector(
+  selectSelf, (articles) => articles.articlesData.featuredArticle
 );
 
 export function readArticlesFromLoginType() : ArticlesData {
