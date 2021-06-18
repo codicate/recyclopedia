@@ -19,15 +19,19 @@ import Admin from "pages/Admin/Admin";
 
 function TableOfContents({ sectionHeaders }: { sectionHeaders: HeaderInformation[]; }) {
   return (sectionHeaders.length > 0) ? (
-    <Collapsible header='Table of Contents' centered={true}>
-      <nav style={{ marginLeft: "3em", }}>
+    <Collapsible
+      className={styles.tableOfContents}
+      header="Table of Contents"
+      centered={true}
+    >
+      <nav>
         {
           sectionHeaders.map(({ level, text }) => (
             <a key={text} href={"#" + text}>
               <p style={{
                 marginLeft: `${(level - 1) * 2}em`
               }}>
-                        &bull; {text}
+                &bull; {text}
               </p>
             </a>
           ))
@@ -55,17 +59,17 @@ function TagViews({ tags }: { tags?: string[]; }) {
 }
 
 enum PageViewType {
-    Reading,
-    Editting,
-    Migration,
+  Reading,
+  Editting,
+  Migration,
 }
 
 interface ArticleProperties {
-    inRecycling: boolean,
-    article: Article,
+  inRecycling: boolean,
+  article: Article,
 }
 
-function ArticleComponent({article, inRecycling}: ArticleProperties) {
+function ArticleComponent({ article, inRecycling }: ArticleProperties) {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const currentLoginType = useAppSelector(selectLoginType);
@@ -94,12 +98,12 @@ function ArticleComponent({article, inRecycling}: ArticleProperties) {
         styledAs="oval"
         onClick={() => toggleView(PageViewType.Editting)}
       >
-            Edit This Page
+        Edit This Page
       </Button>
       <Button
         onClick={() => toggleView(PageViewType.Migration)}
         styledAs="oval">
-            Migrate Page
+        Migrate Page
       </Button>
     </>
   );
@@ -115,7 +119,7 @@ function ArticleComponent({article, inRecycling}: ArticleProperties) {
           }
         }}
       >
-            Restore Article
+        Restore Article
       </Button>
     </>
   );
@@ -142,7 +146,7 @@ function ArticleComponent({article, inRecycling}: ArticleProperties) {
         )
       }
       {
-        function() {
+        function () {
           switch (viewType) {
           case PageViewType.Reading:
             return (
@@ -156,7 +160,7 @@ function ArticleComponent({article, inRecycling}: ArticleProperties) {
               </>
             );
           case PageViewType.Editting:
-            return isAdmin && <Admin currentArticle={article}/>;
+            return isAdmin && <Admin currentArticle={article} />;
           case PageViewType.Migration:
             return (
               <>
@@ -173,7 +177,7 @@ function ArticleComponent({article, inRecycling}: ArticleProperties) {
                       if (migrationTitleName === name) {
                         alert("You cannot migrate a page unto itself!");
                       } else {
-                        const dispatchResult = await dispatch(migrateArticle({name, newName: migrationTitleName}));
+                        const dispatchResult = await dispatch(migrateArticle({ name, newName: migrationTitleName }));
                         if (dispatchResult.payload) {
                           history.push(validPageLink(migrationTitleName));
                         }

@@ -4,6 +4,7 @@ function Button({
   children,
   type = "button",
   styledAs,
+  className,
   ...props
 }: {
   children: string;
@@ -15,7 +16,7 @@ function Button({
       className={`
         ${styles.button} 
         ${styledAs ? styles[styledAs] : styles.default} 
-        ${props.className || ""}
+        ${className || ""}
       `}
       type={type}
       {...props}

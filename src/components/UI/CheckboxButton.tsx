@@ -5,6 +5,7 @@ function CheckedBoxButton({
   styledAs,
   checked,
   onCheck,
+  className,
   ...props
 }: {
   checked?: boolean;
@@ -15,7 +16,11 @@ function CheckedBoxButton({
 ) {
   return (
     <div
-      className={`${styles.button} ${styledAs ? styles[styledAs] : ""} ${props.className || ""}`}
+      className={`
+        ${styles.button} 
+        ${styledAs ? styles[styledAs] : ""} 
+        ${className || ""}
+      `}
       {...props}
     >
       <input type="checkbox"
