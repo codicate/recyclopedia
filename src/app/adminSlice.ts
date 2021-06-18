@@ -27,7 +27,7 @@ interface ApplicationState {
 }
 
 const initialState: ApplicationState = {
-  loginType: null,
+  loginType: LoginType.NotLoggedIn,
   accountDetails: {
     email: "",
     password: "",

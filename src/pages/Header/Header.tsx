@@ -29,7 +29,6 @@ const Header = () => {
           <Link to='/index'>Index</Link>
           {
             (
-              currentLoginType !== null &&
               currentLoginType !== LoginType.Anonymous &&
               currentLoginType !== LoginType.NotLoggedIn
             ) ? (
