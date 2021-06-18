@@ -23,6 +23,7 @@ function Login(_: Record<string, never>) {
           },
           password: {
             selectAllOnFocus: true,
+            type: "password",
             placeholder: "Password",
             required: true,
           }

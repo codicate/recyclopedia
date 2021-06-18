@@ -25,11 +25,13 @@ function Register(_: Record<string, never>) {
           password: {
             selectAllOnFocus: true,
             placeholder: "Password",
+            type: "password",
             required: true,
           },
           passwordConfirmation: {
             selectAllOnFocus: true,
             placeholder: "Confirm Password",
+            type: "password",
             required: true,
           }
         }}
