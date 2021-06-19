@@ -96,41 +96,43 @@ function IndexPage() {
           }
         }
       />
-      {
-        ((isAdmin) ?
-          articlesData.articles :
-          articlesData.articles.filter(({ draftStatus }) => !draftStatus)).
-          filter(function ({ tags }) {
-            let result = function () {
-              for (const tagFilter of filterSettings.tagFilters) {
-                if (tagFilter.active) return false;
-              }
-              return true;
-            }();
+      <div className={styles.articleLinks}>
+        {
+          ((isAdmin) ?
+            articlesData.articles :
+            articlesData.articles.filter(({ draftStatus }) => !draftStatus)).
+            filter(function ({ tags }) {
+              let result = function () {
+                for (const tagFilter of filterSettings.tagFilters) {
+                  if (tagFilter.active) return false;
+                }
+                return true;
+              }();
 
-            if (!result) {
-              for (const tagFilter of filterSettings.tagFilters) {
-                if (tags) {
-                  for (const tag of tags) {
-                    if (tagFilter.filterName === tag) {
-                      // babel can't do ||=????
-                      result = result || tagFilter.active;
+              if (!result) {
+                for (const tagFilter of filterSettings.tagFilters) {
+                  if (tags) {
+                    for (const tag of tags) {
+                      if (tagFilter.filterName === tag) {
+                        // babel can't do ||=????
+                        result = result || tagFilter.active;
+                      }
                     }
                   }
                 }
               }
-            }
 
-            return result;
-          }).
-          map(({ name, draftStatus }) => (
-            <p key={name} >
-              <Link to={validPageLink(name)}>
-                {(draftStatus) ? "[DRAFT*] " + name : name}
+              return result;
+            }).
+            map(({ name, draftStatus }) => (
+              <Link key={name} to={validPageLink(name)}>
+                <p >
+                  {(draftStatus) ? "[DRAFT*] " + name : name}
+                </p>
               </Link>
-            </p>
-          ))
-      }
+            ))
+        }
+      </div>
     </div>
   );
 }
