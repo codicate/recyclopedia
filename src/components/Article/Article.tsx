@@ -43,7 +43,7 @@ function TableOfContents({ sectionHeaders }: { sectionHeaders: HeaderInformation
 
 function TagViews({ tags }: { tags?: string[]; }) {
   return (
-    <div id={styles.tag_view}>
+    <div id={styles.tagView}>
       {
         (tags) ? (
           <>

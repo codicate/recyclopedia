@@ -83,20 +83,30 @@ html {
   margin-bottom: 15%;
 }
 
-#tag_view {
+#tagView {
   margin-bottom: 5%;
   opacity: 0.2;
-  transition: opacity 1s;
+  transition: opacity 0.7s;
   clear: both;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 1em;
+
+  &>* {
+    margin: 0;
+    padding: 0.5em;
+  }
+
+  :first-child {
+    flex-basis: 100%;
+  }
 
   p {
     color: #666666FF;
-    margin-left: 1em;
-    display: inline;
   }
 }
 
-#tag_view:hover {
+#tagView:hover {
   opacity: 1.0;
 }
 
