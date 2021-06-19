@@ -1,4 +1,3 @@
-import styles from "./Form.module.scss";
 import { useState, FormEvent } from "react";
 
 import Input, { InputOptions, ChangeHandler } from "components/Form/Input";
@@ -9,6 +8,7 @@ function Form<
   submitFn,
   inputItems,
   children,
+  className,
   ...props
 }: {
   submitFn?: (inputItems: Record<keyof T, string>) => void | boolean | Promise<boolean | void>;
@@ -46,7 +46,7 @@ function Form<
 
   return (
     <form
-      className={`${styles.form} ${props.className || ""}`}
+      className={`${className || ""}`}
       onSubmit={submitHandler}
     >
       {

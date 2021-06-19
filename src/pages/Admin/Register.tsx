@@ -14,7 +14,7 @@ function Register(_: Record<string, never>) {
 
   return (
     <>
-      <h1>Register a New Account</h1>
+      <h1>Register a New Account!</h1>
       <Form
         inputItems={{
           email: {

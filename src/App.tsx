@@ -18,8 +18,7 @@ const Article = lazy(() => import("components/Article/Article"));
 const IndexPage = lazy(() => import("pages/Index/IndexPage"));
 const RecyclingBin = lazy(() => import("pages/RecyclingBin/RecyclingBin"));
 const Admin = lazy(() => import("pages/Admin/Admin"));
-const Register = lazy(() => import("pages/Admin/Register"));
-const Login = lazy(() => import("pages/Admin/Login"));
+const Account = lazy(() => import("pages/Admin/Account"));
 
 function App() {
   const currentLoginType = useAppSelector(selectLoginType);
@@ -41,11 +40,8 @@ function App() {
             <Route exact path='/index'>
               <IndexPage />
             </Route>
-            <Route path="/login">
-              <Login />
-            </Route>
-            <Route path="/register">
-              <Register />
+            <Route path="/account">
+              <Account />
             </Route>
 
             <Route exact path='/admin'>

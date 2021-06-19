@@ -1,4 +1,3 @@
-import styles from "pages/Admin/Login.module.scss";
 import { useHistory } from "react-router-dom";
 
 import { useAppDispatch } from "app/hooks";
