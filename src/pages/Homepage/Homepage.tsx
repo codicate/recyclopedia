@@ -17,20 +17,24 @@ function ArticleShowcase({
 
   return (
     <>
-      <h2>Featured Article</h2>
       <div className={styles.articleDisplay}>
-        <p>TODO what is the best way to determine a featured article?</p>
-        <p>Honestly, that might have to be manually audited since that depends on a lot of things.</p>
+        <h2>Featured Article</h2>
+        <div>
+          <p>TODO what is the best way to determine a featured article?</p>
+          <p>Honestly, that might have to be manually audited since that depends on a lot of things.</p>
+        </div>
       </div>
 
-      <Link to={validPageLink(name)}>
-        <h2>Random Article</h2>
-      </Link>
       <div className={styles.articleDisplay}>
-        <h2>{name}</h2>
-        <MarkdownRender className={styles.searchResult}>
-          {`${content.substr(0, 800).replaceAll(/(@@.*)|(@@.*@@)/g, "")}`}
-        </MarkdownRender>
+        <Link to={validPageLink(name)}>
+          <h2>Random Article</h2>
+        </Link>
+        <div>
+          <h2>{name}</h2>
+          <MarkdownRender className={styles.searchResult}>
+            {`${content.substr(0, 800).replaceAll(/(@@.*)|(@@.*@@)/g, "")}`}
+          </MarkdownRender>
+        </div>
       </div>
     </>
   );
@@ -47,7 +51,7 @@ function Homepage({ articlesData }: ArticlesDataProperties) {
         sustaining an environmentally friendly lifestyle.
       </p>
       <p>This is developed by <a href="https://www.projectenv.org/">The Environment Project</a></p>
-      <ArticleShowcase articlesData={articlesData}></ArticleShowcase>
+      <ArticleShowcase articlesData={articlesData} />
     </div>
   );
 }
