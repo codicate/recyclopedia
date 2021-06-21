@@ -55,7 +55,7 @@ import {
   flattenWidgetStateTypes,
 } from "./RichTextEditWidgetInformation";
 
-import { Article } from "app/articlesSlice";
+import { Article, setFeaturedArticle } from "app/articlesSlice";
 import Input from "components/Form/Input";
 
 import bottomToolbarStyle from "./bottomToolbar.module.scss";
@@ -948,9 +948,20 @@ export function RichTextEditor({
               </button>
           )
         }
-        <button style={{ float: "right", marginRight: "3em" }}
+        <button 
+          style={{ float: "right", marginRight: "3em" }}
           className={editorStyle.button}
-        >Set as Featured Article</button>
+          onClick={
+            () => {
+              setFeaturedArticle(
+                (initialArticleState?.name) || 
+                (editableTitleDOMRef.current?.textContent || "")
+              );
+            }
+          }
+        >
+          Set as Featured Article
+        </button>
         {(tagEditorShown) ? <ArticleTagEditor setTagState={setTagState} tags={tags} /> : <></>}
       </div>
       <EditorToolbar isInitial={(!!initialArticleState)} saveDocument={saveDocument} toggleDraftStatus={toggleDraftStatus} />
