@@ -1,3 +1,15 @@
+/*
+  NOTE(jerry):
+    Okay, now most of the stuff we care about is done. I need to now start tightening down on security.
+    There's some holes we can't avoid (merely just because we have this code downloaded onto the browser), however
+    I do not authenticate any of the data we send over, so I'll have to work on that later.
+
+    Thankfully all of these functions are user/login authenticated with permissions, so only invalid data can brick
+    things, and you still need to be logged in properly to break stuff.
+
+    setFeaturedArticle is the only one I'm aware of with bad data.
+*/
+
 import { createSlice, createAsyncThunk, createDraftSafeSelector } from "@reduxjs/toolkit";
 import { RootState } from "app/store";
 import { loginWithEmailAndPassword } from "app/adminSlice";
@@ -163,8 +175,8 @@ export const setFeaturedArticle = createAsyncThunk(
   "articles/setFeaturedArticle",
   tryToCallWithUser(
     // @ts-ignore
-    async function(user: Realm.User, articleTitle: string, {dispatch}) {
-      await user.functions.featureArticleByName(articleTitle);
+    async function(user: Realm.User, articleTitle: string | null, {dispatch}) {
+      await user.functions.setFeaturedArticle(articleTitle);
       dispatch(queryForArticles(undefined));
     }
   )

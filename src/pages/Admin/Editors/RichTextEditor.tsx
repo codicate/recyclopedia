@@ -63,6 +63,7 @@ import editorStyle from "./RichTextEditor.module.scss";
 import articleStyles from "components/Article/Article.module.scss";
 import Button from "components/UI/Button";
 import { AssertionError } from "assert";
+import { useAppDispatch } from "app/hooks";
 
 /** Unsafe wrappers... Cause most of this has to be unsafe to be even possible... **/
 /** Well... Draft.JS is a thing, but that can't exactly do the same thing as this... Otherwise it would require way less code. **/
@@ -799,6 +800,8 @@ export function RichTextEditor({
   const currentImageRef = useRef<HTMLImageElement>(null);
   const currentHyperlinkRef = useRef<HTMLAnchorElement>(null);
 
+  const dispatch = useAppDispatch();
+
   const [imageContextMenuPosition, setImageContextMenuPosition] = useState<undefined | Position>(undefined);
   const [hyperLinkContextMenuPosition, setHyperLinkContextMenuPosition] = useState<undefined | Position>(undefined);
 
@@ -953,10 +956,10 @@ export function RichTextEditor({
           className={editorStyle.button}
           onClick={
             () => {
-              setFeaturedArticle(
-                (initialArticleState?.name) || 
+              dispatch(setFeaturedArticle(
+                (initialArticleState?.name) ||
                 (editableTitleDOMRef.current?.textContent || "")
-              );
+              ));
             }
           }
         >
