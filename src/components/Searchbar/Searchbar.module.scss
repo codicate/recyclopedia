@@ -1,10 +1,11 @@
+@import '/src/styles/variables';
+
 $font-size: 1rem;
 $padding-top: 1rem;
 $padding-left: 2rem;
 $searchbar-height: calc(#{$font-size} + #{$padding-top} * 2);
 
 $focus-box-shadow: 0 2px 5px 1px hsl(218, 23%, 25%, .24);
-$emp: hsl(210, 4%, 90%);
 
 .searchbar {
   position: relative;
@@ -47,7 +48,7 @@ $emp: hsl(210, 4%, 90%);
       height: 1px;
 
       width: calc(100% - 2rem);
-      background-color: $emp;
+      background-color: $hover;
     }
   }
 
@@ -101,7 +102,7 @@ $emp: hsl(210, 4%, 90%);
     padding: .75em $padding-left;
 
     &:hover {
-      background-color: $emp;
+      background-color: $hover;
     }
   }
 }

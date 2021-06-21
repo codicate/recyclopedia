@@ -57,11 +57,8 @@ const Header = () => {
                   </button>
                 </>
               ) : (
-                // not logged in
-                <>
-                  <Link to="/register">Register</Link>
-                  <Link to="/login">Login</Link>
-                </>
+              // not logged in
+                <Link to="/account">Login</Link>
               )}
         </button>
       </nav>

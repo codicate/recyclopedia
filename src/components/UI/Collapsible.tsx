@@ -6,6 +6,7 @@ function Collapsible({
   centered = false,
   collapsed = false,
   children,
+  className,
   ...props
 }: {
   header: string | React.ReactNode;
@@ -16,8 +17,12 @@ function Collapsible({
 ) {
   const [isCollapsed, setIsCollapsed] = useState(collapsed);
 
+
   return (
-    <div className={styles.collapsibleContainer} {...props}>
+    <div
+      className={`${styles.collapsibleContainer} ${className || ""}`}
+      {...props}
+    >
       <div
         className={styles.collapsibleTitle + " " + (centered && styles.centered) || ""}
         onClick={() =>
