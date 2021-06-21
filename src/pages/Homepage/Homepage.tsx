@@ -5,7 +5,8 @@ import { validPageLink, randomElt } from "utils/functions";
 import MarkdownRender from "components/Article/MarkdownRender";
 
 
-import { ArticlesDataProperties } from "app/articlesSlice";
+import { ArticlesDataProperties, selectNameOfFeaturedArticle } from "app/articlesSlice";
+import { useAppSelector } from "app/hooks";
 
 function ArticleShowcase({
   articlesData: { articles }
@@ -15,13 +16,25 @@ function ArticleShowcase({
     ? randomElt(articles)
     : { name: "no article name", content: "no articles" };
 
+  const featuredArticleName = useAppSelector(selectNameOfFeaturedArticle);
+  const featuredArticle = articles.find((element) => element.name === featuredArticleName);
+
   return (
     <>
-      <h2>Featured Article</h2>
-      <div className={styles.articleDisplay}>
-        <p>TODO what is the best way to determine a featured article?</p>
-        <p>Honestly, that might have to be manually audited since that depends on a lot of things.</p>
-      </div>
+      {
+        (featuredArticle) ?
+          <>
+            <h2>Featured Article</h2>
+
+            <div className={styles.articleDisplay}>
+              <h2>{featuredArticle.name}</h2>
+              <MarkdownRender className={styles.searchResult}>
+                {`${featuredArticle.content.substr(0, 800).replaceAll(/(@@.*)|(@@.*@@)/g, "")}`}
+              </MarkdownRender>
+            </div>
+          </>
+          : <> </>
+      }
 
       <Link to={validPageLink(name)}>
         <h2>Random Article</h2>
