@@ -5,14 +5,39 @@ import { validPageLink, randomElt } from "utils/functions";
 import MarkdownRender from "components/Article/MarkdownRender";
 
 
-import { ArticlesDataProperties, selectNameOfFeaturedArticle } from "app/articlesSlice";
+import { ArticlesDataProperties, selectNameOfFeaturedArticle, Article } from "app/articlesSlice";
 import { useAppSelector } from "app/hooks";
+
+interface ArticlePreviewProperties {
+  previewTitle: string,
+  article: Article | undefined | null,
+}
+function ArticlePreview({previewTitle, article}: ArticlePreviewProperties) {
+  if (article) {
+    return (
+      <>
+        <Link to={validPageLink(article.name)}>
+          <h2>{previewTitle}</h2>
+        </Link>
+
+        <div className={styles.articleDisplay}>
+          <h2>{article.name}</h2>
+          <MarkdownRender className={styles.searchResult}>
+            {`${article.content.substr(0, 800).replaceAll(/(@@.*)|(@@.*@@)/g, "")}`}
+          </MarkdownRender>
+        </div>
+      </>
+    );
+  } else {
+    return <></>;
+  }
+}
 
 function ArticleShowcase({
   articlesData: { articles }
 }: ArticlesDataProperties
 ) {
-  const { name, content } = (articles.length)
+  const randomArticle = (articles.length)
     ? randomElt(articles)
     : { name: "no article name", content: "no articles" };
 
@@ -21,32 +46,8 @@ function ArticleShowcase({
 
   return (
     <>
-      {
-        (featuredArticle) ?
-          <>
-            <h2>Featured Article</h2>
-
-            <div className={styles.articleDisplay}>
-              <h2>{featuredArticle.name}</h2>
-              <MarkdownRender className={styles.searchResult}>
-                {`${featuredArticle.content.substr(0, 800).replaceAll(/(@@.*)|(@@.*@@)/g, "")}`}
-              </MarkdownRender>
-            </div>
-          </>
-          : <> </>
-      }
-
-      <div className={styles.articleDisplay}>
-        <Link to={validPageLink(name)}>
-          <h2>Random Article</h2>
-        </Link>
-        <div>
-          <h2>{name}</h2>
-          <MarkdownRender className={styles.searchResult}>
-            {`${content.substr(0, 800).replaceAll(/(@@.*)|(@@.*@@)/g, "")}`}
-          </MarkdownRender>
-        </div>
-      </div>
+      <ArticlePreview previewTitle="Featured Article" article={featuredArticle}/>
+      <ArticlePreview previewTitle="Random Article" article={randomArticle}/>
     </>
   );
 }
