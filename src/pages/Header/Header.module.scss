@@ -75,6 +75,13 @@
   }
 }
 
+@keyframes slideIn {
+  0% {
+    left: 100%;
+    transform: translateX(100%);
+  }
+}
+
 @media (max-width: 950px) {
   #header {
     &>:nth-child(2) {
@@ -86,7 +93,6 @@
     }
 
     #navbar:focus-within {
-
       .links {
         position: fixed;
         top: 0;
@@ -103,6 +109,9 @@
         box-shadow:
           0 0 0 99999px hsla(0, 0%, 50%, 0.5),
           0 0 6px hsl(0, 0%, 20%);
+
+        transition: 1s;
+        animation: slideIn .5s forwards;
 
         &>* {
           padding: 1.25em 5em;
