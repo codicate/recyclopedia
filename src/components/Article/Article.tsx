@@ -112,7 +112,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
         return (
           <>
             <h1 className={styles.title}> {name} </h1>
-            <MediaShareBtns />
+            <MediaShareBtns title={name} />
             <TableOfContents sectionHeaders={processedMarkdown.headers} />
             <MarkdownRender className={styles.article}>
               {processedMarkdown.processed}
