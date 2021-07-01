@@ -1,4 +1,4 @@
-import styles from "./MediaSharesBtns.module.scss";
+import styles from "./MediaShareBtns.module.scss";
 
 import {
   FacebookShareButton,
@@ -8,6 +8,7 @@ import {
   RedditShareButton,
   RedditIcon,
 } from "react-share";
+import Button from "components/UI/Button";
 
 
 function MediaShareBtns({
@@ -21,7 +22,7 @@ function MediaShareBtns({
   const hashtags = ["projectenv", "climatechange", "environment", "recycling"];
 
   return (
-    <div>
+    <div className={styles.shareBtns}>
       {/* WARN: facebook share is broken, could be my account */}
       < FacebookShareButton
         url={articleUrl}
@@ -43,6 +44,24 @@ function MediaShareBtns({
       >
         <RedditIcon />
       </RedditShareButton>
+      <Button
+        styledAs='oval'
+        className={styles.copyLinkBtn + " material-icons"}
+        onClick={async (e) => {
+          await navigator.clipboard.writeText(articleUrl);
+          const btn = e.target as HTMLButtonElement;
+
+          btn.innerHTML = "done";
+          btn.classList.add(styles.clicked);
+
+          setTimeout(() => {
+            btn.innerHTML = "link";
+            btn.classList.remove(styles.clicked);
+          }, 2000);
+        }}
+      >
+        link
+      </Button>
     </div >
   );
 }
