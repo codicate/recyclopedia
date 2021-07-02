@@ -6,6 +6,7 @@ import { LoginType, logout, selectLoginType } from "app/adminSlice";
 
 import approximateSearch from "utils/search";
 import Search, { renderHoverboxSearch } from "pages/Header/Search";
+import ResponsiveNav from "components/UI/ResponsiveNav";
 
 
 const Header = () => {
@@ -21,47 +22,47 @@ const Header = () => {
         searchFunction={approximateSearch}
         renderFunction={renderHoverboxSearch}
       />
-      <nav id={styles.navbar}>
-        <button className={"material-icons " + styles.menu}>
-          menu
-        </button>
-        <button className={styles.links}>
+      <ResponsiveNav id={styles.navbar}>
+
+        <div className={styles.links}>
           <Link to='/index'>Index</Link>
-          {
+          {(
+            currentLoginType !== LoginType.Anonymous &&
+            currentLoginType !== LoginType.NotLoggedIn
+          ) ?
             (
-              currentLoginType !== LoginType.Anonymous &&
-              currentLoginType !== LoginType.NotLoggedIn
-            ) ? (
               // This is for logged users
-                <>
-                  {
-                    (currentLoginType === LoginType.Admin) ?
-                      (
-                        <>
-                          <Link to="/admin/recycling_bin">
+              <>
+                {
+                  (currentLoginType === LoginType.Admin) ?
+                    (
+                      <>
+                        <Link to="/admin/recycling_bin">
                           Recycling Bin
-                          </Link>
-                          <Link to="/admin">
+                        </Link>
+                        <Link to="/admin">
                           Create New Article
-                          </Link>
-                        </>
-                      ) :
-                      <></>
-                  }
-                  <button
-                    onClick={() => {
-                      dispatch(logout());
-                    }}
-                  >
+                        </Link>
+                      </>
+                    ) :
+                    <></>
+                }
+                <button
+                  onClick={() => {
+                    dispatch(logout());
+                  }}
+                >
                   Logout
-                  </button>
-                </>
-              ) : (
+                </button>
+              </>
+            ) :
+            (
               // not logged in
-                <Link to="/account">Login</Link>
-              )}
-        </button>
-      </nav>
+              <Link to="/account">Login</Link>
+            )
+          }
+        </div>
+      </ResponsiveNav>
     </header >
   );
 };

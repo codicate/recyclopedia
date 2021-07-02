@@ -6,9 +6,8 @@
   position: sticky;
   top: 0;
 
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template: 1fr / 1fr auto 1fr;
 
   width: 100%;
   padding: 1em;
@@ -41,6 +40,7 @@
 
 #navbar {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
 }
 

@@ -23,7 +23,19 @@ import { MessageLogType, logMessage } from "utils/functions";
 export interface Article {
   name: string;
   content: string;
+  dateCreated: Date;
+  dateModified?: Date;
   draftStatus: boolean;
+  tags?: string[];
+}
+
+// This is a partial version of the article
+// with optional fields. This is because we won't necessarily
+// be filling out all the fields.
+export interface ArticleDraft {
+  name: string;
+  content: string;
+  dateCreated?: Date;
   tags?: string[];
 }
 
@@ -103,7 +115,9 @@ export const queryForArticles = createAsyncThunk(
   tryToCallWithUser(
     // @ts-ignore
     async function(user: Realm.User, query?: any, thunkApi: any) {
-      return await user.functions.getAllArticles();
+      // TODO(jerry): dummy, until we actually add all dates for articles
+      const articles = await user.functions.getAllArticles();
+      return articles;
     }
   )
 );

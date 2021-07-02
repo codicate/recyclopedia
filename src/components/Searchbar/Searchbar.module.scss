@@ -7,10 +7,13 @@ $searchbar-height: calc(#{$font-size} + #{$padding-top} * 2);
 
 $focus-box-shadow: 0 2px 5px 1px hsl(218, 23%, 25%, .24);
 
+$width: clamp(12em, 40vw, 30em);
+
 .searchbar {
   position: relative;
   display: grid;
   place-items: center;
+  width: $width;
 
   font-size: $font-size;
   font-weight: bold;
@@ -84,6 +87,9 @@ $focus-box-shadow: 0 2px 5px 1px hsl(218, 23%, 25%, .24);
 }
 
 .searchResults {
+  position: absolute;
+  width: $width;
+  
   display: flex;
   flex-flow: column;
 

@@ -37,7 +37,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
   const currentLoginType = useAppSelector(selectLoginType);
   const isAdmin = currentLoginType === LoginType.Admin;
 
-  const { name, content } = article;
+  const { name, content, dateCreated, dateModified } = article;
   const [migrationTitleName, updateMigrationTitleName] = useState(name);
 
   const [lastViewType, updateLastViewType] = useState(PageViewType.Reading);
@@ -112,6 +112,18 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
         return (
           <>
             <h1 className={styles.title}> {name} </h1>
+            <div className="dateView">
+              {
+                /*
+                  This is a temporary format. We can always change this
+
+                  Also I know these are automatically invoked this is for security
+                  reasons!
+                 */
+              }
+              <p>{dateCreated.toString()}</p>
+              <p>{dateModified?.toString()}</p>
+            </div>
             <MediaShareBtns title={name} />
             <TableOfContents sectionHeaders={processedMarkdown.headers} />
             <MarkdownRender className={styles.article}>

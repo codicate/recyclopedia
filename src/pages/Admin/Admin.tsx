@@ -1,11 +1,10 @@
 import { useState } from "react";
 
 import { useAppDispatch } from "app/hooks";
-import { insertArticle, Article } from "app/articlesSlice";
+import { insertArticle, Article, ArticleDraft } from "app/articlesSlice";
 
 import { NoticeBanner } from "./Editors/NoticeBanner";
 import { RichTextEditor } from "./Editors/RichTextEditor";
-// import { TagEditor } from 'pages/Admin/TagEditor';
 
 export default function Admin({
   currentArticle
@@ -15,22 +14,23 @@ export default function Admin({
   const dispatch = useAppDispatch();
   const [dirtyFlag, updateDirtyFlag] = useState(false);
 
-  const [draftStatus, updateDraftStatus] = useState((currentArticle?.draftStatus));
+  const [draftStatus, updateDraftStatus] = useState((currentArticle) ? currentArticle.draftStatus : false);
 
   function submitHandler(input: Article, onFinishedCallback?: (input: Article) => void) {
     dispatch(insertArticle(input));
     onFinishedCallback?.(input);
   }
 
-  const submissionHandler = (
-    submissionData: {
-      name: string;
-      content: string;
-      tags?: string[];
-    }
-  ) => {
+  const submissionHandler = (submissionData: ArticleDraft) => {
     submitHandler(
-      { ...submissionData, draftStatus: !!draftStatus },
+      {
+        name: submissionData.name,
+        content: submissionData.content,
+        dateCreated: (submissionData.dateCreated) ? submissionData.dateCreated : new Date(),
+        dateModified: new Date(),
+        draftStatus: draftStatus,
+        tags: submissionData.tags,
+      },
       ({ name }) => {
         console.log(`Article ${name} written!`);
         updateDirtyFlag(false);
