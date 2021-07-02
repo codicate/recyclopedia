@@ -3,7 +3,7 @@ import styles from "./TagViews.module.scss";
 
 function TagViews({ tags }: { tags?: string[]; }) {
   return (
-    <div id={styles.tagView}>
+    <div className={styles.tagView}>
       {
         (tags) ? (
           <>

@@ -13,10 +13,12 @@ function MarkdownRender({
 }: {
   className: string; children: string;
 }) {
-  return (<div
-    className={className}
-    dangerouslySetInnerHTML={{ __html: renderMarkdown(children) }}>
-  </div>);
+  return (
+    <div
+      className={className}
+      dangerouslySetInnerHTML={{ __html: renderMarkdown(children) }}>
+    </div>
+  );
 }
 
 export default MarkdownRender;
