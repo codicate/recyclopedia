@@ -1,10 +1,12 @@
+@import '/src/styles/_variables';
+
 .collapsibleContainer {
   border-radius: 6px;
   overflow: hidden;
 
   box-shadow:
     0 2px 4px hsl(0, 0%, 82%),
-    0 6px 14px hsl(0, 0%, 92%),
+    0 6px 14px hsl(0, 0%, 92%);
 }
 
 .collapsibleTitle {
@@ -37,7 +39,7 @@
 }
 
 .centered {
-    p {
-      margin: auto;
-    }
+  p {
+    margin: auto;
+  }
 }

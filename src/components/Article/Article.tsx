@@ -10,9 +10,10 @@ import { LoginType, selectLoginType } from "app/adminSlice";
 import { validPageLink } from "utils/functions";
 import { preprocessMarkdown } from "utils/preprocessMarkdown";
 
-import MarkdownRender from "components/Article/MarkdownRender";
 import Input from "components/Form/Input";
 import Button from "components/UI/Button";
+import MarkdownRender from "components/Article/MarkdownRender";
+import CommentSection from "components/Comment/CommentSection";
 
 import Admin from "pages/Admin/Admin";
 import MediaShareBtns from "./MediaShareBtns";
@@ -129,6 +130,41 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
             <MarkdownRender className={styles.article}>
               {processedMarkdown.processed}
             </MarkdownRender>
+            <CommentSection comments={[
+              {
+                user: {
+                  name: "John Doe",
+                  avatar: "https://lh6.googleusercontent.com/-f9MhM40YFzc/AAAAAAAAAAI/AAAAAAABjbo/iG_SORRy0I4/photo.jpg"
+                },
+                content: "This is a comment",
+                createdAt: new Date(),
+                likeCount: 10,
+                dislikeCount: 10,
+                comments: []
+              },
+              {
+                user: {
+                  name: "Big Baby",
+                  avatar: "https://lh3.googleusercontent.com/a-/AOh14GhHbeHyfQ0PJNQ71T7_bkuBDeEmOei9ZIah60ny=s96-c"
+                },
+                content: "Recyclopedia is the best",
+                createdAt: new Date(),
+                likeCount: 1000,
+                dislikeCount: 9923,
+                comments: []
+              },
+              {
+                user: {
+                  name: "JerrySan",
+                  avatar: "https://lh3.googleusercontent.com/a-/AOh14GjhXuB1--F3KDMIkA8QJP9wcK6ohflwDfu6srioEQ=s96-c"
+                },
+                content: "C++ > C",
+                createdAt: new Date(),
+                likeCount: 0,
+                dislikeCount: 9999,
+                comments: []
+              }
+            ]} />
             <TagViews tags={article.tags} />
           </>
         );
