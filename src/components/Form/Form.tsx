@@ -1,6 +1,7 @@
-import { useState, FormEvent } from "react";
+import { useState } from "react";
 
 import Input, { InputOptions, ChangeHandler } from "components/Form/Input";
+
 
 function Form<
   T extends { [name: string]: InputOptions; }
@@ -34,7 +35,7 @@ function Form<
     });
   };
 
-  const submitHandler = async (e: FormEvent) => {
+  const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const reset = submitFn
@@ -46,8 +47,9 @@ function Form<
 
   return (
     <form
-      className={`${className || ""}`}
+      className={className}
       onSubmit={submitHandler}
+      {...props}
     >
       {
         Object.entries(inputItems).map(([name, value], idx) => (
@@ -61,7 +63,7 @@ function Form<
         ))
       }
       {children}
-    </form>
+    </ form>
   );
 }
 

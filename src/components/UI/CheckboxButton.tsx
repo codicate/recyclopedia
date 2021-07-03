@@ -1,4 +1,6 @@
 import styles from "./CheckboxButton.module.scss";
+import cn from "classnames";
+
 
 function CheckedBoxButton({
   children,
@@ -14,13 +16,14 @@ function CheckedBoxButton({
   styledAs?: "oval";
 } & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLDivElement>, HTMLDivElement>
 ) {
+
   return (
     <div
-      className={`
-        ${styles.button} 
-        ${styledAs ? styles[styledAs] : ""} 
-        ${className || ""}
-      `}
+      className={cn(
+        styles.button,
+        styledAs ? styles[styledAs] : "",
+        className
+      )}
       {...props}
     >
       <input type="checkbox"

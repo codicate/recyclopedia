@@ -1,5 +1,6 @@
 import styles from "./Collapsible.module.scss";
-import React, { useState } from "react";
+import { useState } from "react";
+import cn from "classnames";
 
 function Collapsible({
   header,
@@ -17,26 +18,31 @@ function Collapsible({
 ) {
   const [isCollapsed, setIsCollapsed] = useState(collapsed);
 
-
   return (
     <div
-      className={`${styles.collapsibleContainer} ${className || ""}`}
+      className={cn(styles.collapsibleContainer, className)}
       {...props}
     >
       <div
-        className={styles.collapsibleTitle + " " + (centered && styles.centered) || ""}
+        className={cn(styles.collapsibleTitle, {
+          [styles.centered]: centered
+        })}
         onClick={() =>
           setIsCollapsed((isCollapsed) => !isCollapsed)
         }
       >
         <p>{header}</p>
-        <div className={`material-icons + ${isCollapsed ? styles.collapsed : ""}`}>
+        <div
+          className={cn("material-icons", {
+            [styles.collapsed]: isCollapsed
+          })}
+        >
           expand_more
         </div>
       </div>
 
       {(!isCollapsed) && children}
-    </div>
+    </div >
   );
 }
 

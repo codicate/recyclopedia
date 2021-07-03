@@ -1,6 +1,8 @@
 import styles from "./Searchbar.module.scss";
-import useEventListener from "hooks/useEventListener";
 import { useState, useRef } from "react";
+import cn from "classnames";
+
+import useEventListener from "hooks/useEventListener";
 
 
 export default function Searchbar({
@@ -35,10 +37,9 @@ export default function Searchbar({
 
   return (
     <div
-      className={`
-        ${styles.searchbar}
-        ${(searchbar && isSearchResultsOpened) ? styles.focused : ""}
-      `}
+      className={cn(styles.searchbar, {
+        [styles.focused]: (searchbar && isSearchResultsOpened)
+      })}
       onFocus={() => {
         // The callback is necessary because when focus happens, input is yet to update
         setInput(input => {

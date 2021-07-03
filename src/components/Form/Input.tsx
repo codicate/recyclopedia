@@ -1,5 +1,6 @@
 import styles from "components/Form/Input.module.scss";
 import { useRef } from "react";
+import cn from "classnames";
 
 export interface InputOptions {
   type?: string,
@@ -58,7 +59,7 @@ const Input = ({
       {
         label && (
           <label
-            className={`${value ? styles.shrink : ""}`}
+            className={cn({ [styles.shrink]: value })}
           >
             {label}
           </label>

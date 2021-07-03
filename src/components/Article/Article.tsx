@@ -113,9 +113,15 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
           <>
             <h1 className={styles.title}> {name} </h1>
             <div className="dateView">
-              <p>Date Created: {format(dateCreated, "LLLL d, yyyy, h:mm a")}</p>
+              <p>
+                <b>Date Created:</b>
+                {format(dateCreated, "LLLL d, yyyy, h:mm a")}
+              </p>
               {(dateModified) && (
-                <p>Last Modified: {format(dateModified, "LLLL d, yyyy, h:mm a")}</p>
+                <p>
+                  <b>Last Modified:</b>
+                  {format(dateModified, "LLLL d, yyyy, h:mm a")}
+                </p>
               )}
             </div>
             <MediaShareBtns title={name} />
@@ -126,8 +132,10 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
             <TagViews tags={article.tags} />
           </>
         );
+
       case PageViewType.Editting:
         return isAdmin && <Admin currentArticle={article} />;
+
       case PageViewType.Migration:
         return (
           <>
