@@ -1,6 +1,7 @@
 import styles from "components/Article/Article.module.scss";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { format } from "date-fns";
 
 import { useAppSelector, useAppDispatch } from "app/hooks";
 import { migrateArticle, deleteArticle, restoreArticle, Article } from "app/articlesSlice";
@@ -10,7 +11,6 @@ import { validPageLink } from "utils/functions";
 import { preprocessMarkdown } from "utils/preprocessMarkdown";
 
 import MarkdownRender from "components/Article/MarkdownRender";
-
 import Input from "components/Form/Input";
 import Button from "components/UI/Button";
 
@@ -113,16 +113,10 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
           <>
             <h1 className={styles.title}> {name} </h1>
             <div className="dateView">
-              {
-                /*
-                  This is a temporary format. We can always change this
-
-                  Also I know these are automatically invoked this is for security
-                  reasons!
-                 */
-              }
-              <p>{dateCreated.toString()}</p>
-              <p>{dateModified?.toString()}</p>
+              <p>Date Created: {format(dateCreated, "LLLL d, yyyy, h:mm a")}</p>
+              {(dateModified) && (
+                <p>Last Modified: {format(dateModified, "LLLL d, yyyy, h:mm a")}</p>
+              )}
             </div>
             <MediaShareBtns title={name} />
             <TableOfContents sectionHeaders={processedMarkdown.headers} />
