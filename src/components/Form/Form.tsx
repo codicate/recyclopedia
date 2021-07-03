@@ -1,4 +1,6 @@
+import styles from "./Form.module.scss";
 import { useState } from "react";
+import cn from "classnames";
 
 import Input, { InputOptions, ChangeHandler } from "components/Form/Input";
 
@@ -43,7 +45,7 @@ function Form<
 
   return (
     <form
-      className={className}
+      className={cn(styles.form, className)}
       onSubmit={submitHandler}
       {...props}
     >

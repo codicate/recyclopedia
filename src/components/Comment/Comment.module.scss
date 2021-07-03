@@ -19,8 +19,20 @@
       border-radius: 999rem;
     }
 
-    &>p {
-      color: hsl(0, 0%, 75%);
+    &>div {
+      display: flex;
+      flex-flow: column;
+      gap: .25em;
+
+      font-size: .875rem;
+
+      &>p {
+        margin: 0;
+      }
+
+      &>:nth-child(2) {
+        color: hsl(0, 0%, 60%);
+      }
     }
   }
 
@@ -30,6 +42,7 @@
 
   .commentControls {
     display: flex;
+    flex-flow: row wrap;
     gap: 1em;
 
     &>button {
@@ -39,7 +52,7 @@
 
       font-size: .875rem;
 
-      &>span{
+      &>span {
         font-size: 16px;
       }
     }

@@ -13,32 +13,35 @@ function CommentSection({
 }) {
   return (
     <div className={styles.commentSection}>
-      <Form
-        className={styles.commentForm}
-        inputItems={{
-          name: {
-            placeholder: "Name",
-          },
-          comment: {
-            placeholder: "Comment",
-            option: "textarea",
-          }
-        }}
-        submitFn={(input) => {
-          console.log(input.comment);
-        }}
-      >
-        <Button styledAs='oval'>
-          Comment
-        </Button>
-      </Form>
-      <div className={styles.commentSectionHeader}>
-        <h2>Comments</h2>
+      <div className={styles.commentForm}>
+        <h2>Add a Comment</h2>
+        <Form
+          inputItems={{
+            name: {
+              placeholder: "Name",
+            },
+            comment: {
+              placeholder: "Comment",
+              option: "textarea",
+            }
+          }}
+          submitFn={(input) => {
+            console.log(input.comment);
+          }}
+        >
+          <Button styledAs='oval'>
+            Comment
+          </Button>
+        </Form>
       </div>
+
       <div className={styles.commentSectionContent}>
-        {comments.map((comment, idx) =>
-          <Comment key={idx} comment={comment} />
-        )}
+        <h2>Comments</h2>
+        <div>
+          {comments.map((comment, idx) =>
+            <Comment key={idx} comment={comment} />
+          )}
+        </div>
       </div>
     </div>
   );

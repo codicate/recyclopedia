@@ -27,10 +27,12 @@ function Comment({
     <div className={styles.comment}>
       <div className={styles.commentUser}>
         <img src={comment.user.avatar} alt={comment.user.name} />
-        <span >{comment.user.name}</span>
-        <p>
-          {formatDistance(comment.createdAt, new Date())} ago
-        </p>
+        <div>
+          <p>{comment.user.name}</p>
+          <p>
+            {formatDistance(comment.createdAt, new Date())} ago
+          </p>
+        </div>
       </div>
 
       <div className={styles.commentContent}>
