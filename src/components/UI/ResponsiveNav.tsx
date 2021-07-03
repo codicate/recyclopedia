@@ -16,7 +16,7 @@ function ResponsiveNav({
 } & React.HTMLAttributes<HTMLElement>
 ) {
   const linksRef = useRef<HTMLDivElement>(null);
-  const [shrunk, setShrunk] = useState(false);
+  const [shrunk, setShrunk] = useState(true);
   const [sidebarOpened, setSidebarOpened] = useState(false);
 
   const handleResize = () => {
@@ -70,7 +70,6 @@ function ResponsiveNav({
           {children}
         </div>
       </div>
-
     </nav >
   );
 }

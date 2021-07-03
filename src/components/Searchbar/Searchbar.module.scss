@@ -7,7 +7,7 @@ $searchbar-height: calc(#{$font-size} + #{$padding-top} * 2);
 
 $focus-box-shadow: 0 2px 5px 1px hsl(218, 23%, 25%, .24);
 
-$width: clamp(12em, 40vw, 30em);
+$width: clamp(12em, 60vw, 30em);
 
 .searchbar {
   position: relative;
