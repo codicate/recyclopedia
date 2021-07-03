@@ -15,7 +15,6 @@ $main-color: black;
     background: none;
     background-color: white;
     color: $sub-color;
-    font-size: 18px;
     padding: 10px 10px 10px 5px;
     display: block;
     width: 100%;
@@ -34,12 +33,11 @@ $main-color: black;
   }
 
   textarea {
-    font-family: 'Courier New', Courier, monospace;
+    resize: vertical;
   }
 
   label {
     color: $sub-color;
-    font-size: 16px;
     font-weight: normal;
     position: absolute;
     pointer-events: none;

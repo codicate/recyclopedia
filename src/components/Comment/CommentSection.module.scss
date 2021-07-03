@@ -3,6 +3,23 @@
 .commentSection {
   margin: 0 0 4em;
 
+  .commentForm {
+    display: flex;
+    flex-flow: column;
+
+    padding: 1em 2em;
+    margin-bottom: 4em;
+
+    border-radius: 1em;
+    box-shadow:
+      0 2px 4px hsl(0, 0%, 82%),
+      0 6px 14px hsl(0, 0%, 92%);
+
+    &>button {
+      margin-left: auto;
+    }
+  }
+
   .commentSectionContent {
     display: flex;
     flex-flow: column;
