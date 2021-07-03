@@ -23,45 +23,42 @@ const Header = () => {
         renderFunction={renderHoverboxSearch}
       />
       <ResponsiveNav id={styles.navbar}>
-
-        <div className={styles.links}>
-          <Link to='/index'>Index</Link>
-          {(
-            currentLoginType !== LoginType.Anonymous &&
-            currentLoginType !== LoginType.NotLoggedIn
-          ) ?
-            (
-              // This is for logged users
-              <>
-                {
-                  (currentLoginType === LoginType.Admin) ?
-                    (
-                      <>
-                        <Link to="/admin/recycling_bin">
-                          Recycling Bin
-                        </Link>
-                        <Link to="/admin">
-                          Create New Article
-                        </Link>
-                      </>
-                    ) :
-                    <></>
-                }
-                <button
-                  onClick={() => {
-                    dispatch(logout());
-                  }}
-                >
-                  Logout
-                </button>
-              </>
-            ) :
-            (
-              // not logged in
-              <Link to="/account">Login</Link>
-            )
-          }
-        </div>
+        <Link to='/index'>Index</Link>
+        {(
+          currentLoginType !== LoginType.Anonymous &&
+          currentLoginType !== LoginType.NotLoggedIn
+        ) ?
+          (
+            // This is for logged users
+            <>
+              {
+                (currentLoginType === LoginType.Admin) ?
+                  (
+                    <>
+                      <Link to="/admin/recycling_bin">
+                        Recycling Bin
+                      </Link>
+                      <Link to="/admin">
+                        Create New Article
+                      </Link>
+                    </>
+                  ) :
+                  <></>
+              }
+              <button
+                onClick={() => {
+                  dispatch(logout());
+                }}
+              >
+                Logout
+              </button>
+            </>
+          ) :
+          (
+            // not logged in
+            <Link to="/account">Login</Link>
+          )
+        }
       </ResponsiveNav>
     </header >
   );

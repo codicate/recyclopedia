@@ -1,5 +1,5 @@
 import styles from "./ResponsiveNav.module.scss";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import cn from "classnames";
 
 import useEventListener from "hooks/useEventListener";
@@ -15,28 +15,29 @@ function ResponsiveNav({
   children: React.ReactNode,
 } & React.HTMLAttributes<HTMLElement>
 ) {
-  const [shrink, setShrink] = useState(false);
-  const spanRef = useRef<HTMLSpanElement>(null);
+  const [shrunk, setShrunk] = useState(false);
+  const [sidebarOpened, setSidebarOpened] = useState(false);
+  const linksRef = useRef<HTMLDivElement>(null);
 
-  useEventListener(window, "resize", () => {
-    const spanEl = spanRef.current;
-    if (!spanEl) return;
-    if (!spanEl.parentElement) return;
+  const handleResize = () => {
+    const spanEl = linksRef.current;
+    if (!spanEl || !spanEl.parentElement?.parentElement) return;
 
     console.log(spanEl.getBoundingClientRect().width);
 
-    if (spanEl.getBoundingClientRect().width >= spanEl.parentElement.getBoundingClientRect().width) {
-
-      setShrink(true);
-      spanEl.style.visibility = "hidden";
-      spanEl.style.position = "fixed";
-      spanEl.style.top = "0";
-      spanEl.style.left = "0";
+    if (spanEl.getBoundingClientRect().width >= spanEl.parentElement.parentElement.getBoundingClientRect().width) {
+      setShrunk(true);
     } else {
-      setShrink(false);
-      spanEl.style.visibility = "visible";
-      spanEl.style.position = "static";
+      setShrunk(false);
     }
+  };
+
+  useEffect(() => {
+    handleResize();
+  }, []);
+
+  useEventListener(window, "resize", () => {
+    handleResize();
   });
 
   return (
@@ -44,14 +45,38 @@ function ResponsiveNav({
       className={cn(styles.nav, className)}
       {...props}
     >
-      {(shrink) && (
-        <button className={"material-icons " + styles.menu}>
-          menu
-        </button>
+      {(shrunk) && (
+        <>
+          <button
+            className={"material-icons " + styles.menu}
+            onClick={() =>
+              setSidebarOpened(true)
+            }
+          >
+            menu
+          </button>
+
+        </>
       )}
-      <span ref={spanRef}>
-        {children}
-      </span>
+      <div
+        className={cn(styles.overlay, {
+          [styles.shrunk]: shrunk,
+          [styles.opened]: sidebarOpened
+        })}
+        onClick={(e) => {
+          if (e.target !== e.currentTarget) return;
+          setSidebarOpened(false);
+        }}
+      >
+        <div
+          ref={linksRef}
+          className={cn(styles.links, {
+            [styles.opened]: sidebarOpened
+          })}
+        >
+          {children}
+        </div>
+      </div>
 
     </nav>
   );
