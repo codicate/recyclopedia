@@ -1,4 +1,3 @@
-import styles from "pages/Header/Search.module.scss";
 import searchbarStyle from "components/Searchbar/Searchbar.module.scss";
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
@@ -10,7 +9,7 @@ import MarkdownRender from "components/Article/MarkdownRender";
 
 import Searchbar from "components/Searchbar/Searchbar";
 
-type SearchFunction = 
+type SearchFunction =
   (inputArticles: Article[], input: string) => Article[];
 type RenderSearchResultFunction =
   (searchResults: Article[], updateSearchResults: (x: typeof searchResults) => void) => JSX.Element | null;
@@ -37,7 +36,7 @@ interface SearchProperties {
   renderFunction: RenderSearchResultFunction,
 }
 
-function Search({searchFunction, renderFunction}: SearchProperties) {
+function Search({ searchFunction, renderFunction }: SearchProperties) {
   const articlesData = readArticlesFromLoginType();
   const [searchResults, setSearchResults] = useState<Article[]>([]);
 
@@ -52,7 +51,7 @@ function Search({searchFunction, renderFunction}: SearchProperties) {
   const searchbarContainerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className={styles.searchbar}
+    <div
       ref={searchbarContainerRef}
       onBlur={() => {
         // This is necessary because, afaik, react and javascript doesn't have a way to check focus-within is lost or not, something like onBlurWithin : (

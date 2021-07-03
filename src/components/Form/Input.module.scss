@@ -10,7 +10,8 @@ $main-color: black;
 .group {
   position: relative;
 
-  input, textarea {
+  input,
+  textarea {
     background: none;
     background-color: white;
     color: $sub-color;
