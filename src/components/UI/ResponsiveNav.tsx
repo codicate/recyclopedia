@@ -13,15 +13,16 @@ function ResponsiveNav({
   children: React.ReactNode,
 } & React.HTMLAttributes<HTMLElement>
 ) {
-  const linksRef = useRef<HTMLDivElement>(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
   const [shrunk, setShrunk] = useState(true);
   const [sidebarOpened, setSidebarOpened] = useState(false);
 
   const handleResize = () => {
-    const spanEl = linksRef.current;
-    if (!spanEl || !spanEl.parentElement?.parentElement) return;
+    const sidebar = sidebarRef.current;
+    const navbar = sidebar?.parentElement?.parentElement;
+    if (!sidebar || !navbar) return;
 
-    if (spanEl.getBoundingClientRect().width >= spanEl.parentElement.parentElement.getBoundingClientRect().width) {
+    if (sidebar.getBoundingClientRect().width >= navbar.getBoundingClientRect().width) {
       setShrunk(true);
     } else {
       setShrunk(false);
@@ -37,6 +38,20 @@ function ResponsiveNav({
     handleResize();
   });
 
+  const closeSidebar = () => {
+    const sidebar = sidebarRef.current;
+    const overlay = sidebar?.parentElement as HTMLDivElement;
+    if (!sidebar || !overlay) return;
+
+    overlay.classList.add(styles.slideOut);
+    overlay.addEventListener("animationend", () => {
+      if (overlay.classList.contains(styles.slideOut)) {
+        overlay.classList.remove(styles.slideOut);
+        setSidebarOpened(false);
+      }
+    });
+  };
+
   return (
     <nav
       className={cn(styles.nav, className)}
@@ -44,7 +59,7 @@ function ResponsiveNav({
     >
       {(shrunk) && (
         <button
-          className={"material-icons " + styles.menu}
+          className={cn("material-icons", styles.menuBtn)}
           onClick={() =>
             setSidebarOpened(true)
           }
@@ -58,22 +73,22 @@ function ResponsiveNav({
           [styles.opened]: sidebarOpened
         })}
         onClick={(e) => {
-          const overlay = e.target as HTMLDivElement;
-          if (overlay !== e.currentTarget) return;
-
-          overlay.classList.add(styles.slideOut);
-          overlay.addEventListener("animationend", () => {
-            if (overlay.classList.contains(styles.slideOut)) {
-              overlay.classList.remove(styles.slideOut);
-              setSidebarOpened(false);
-            }
-          });
+          if (e.target !== e.currentTarget) return;
+          closeSidebar();
         }}
       >
         <div
-          ref={linksRef}
-          className={styles.links}
+          ref={sidebarRef}
+          className={styles.sidebar}
         >
+          {(sidebarOpened) && (
+            <button
+              className={cn("material-icons", styles.closeBtn)}
+              onClick={() => closeSidebar()}
+            >
+              close
+            </button>
+          )}
           {children}
         </div>
       </div>

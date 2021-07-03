@@ -1,31 +1,12 @@
 @import "/src/styles/variables";
 
-
 .nav {
   display: flex;
   justify-content: flex-end;
   align-items: center;
 }
 
-.menu {
-  cursor: pointer;
-  display: block;
-  padding: 0.5rem;
-
-  font-size: 1.75rem;
-
-  border-radius: 50%;
-
-  &:hover {
-    background-color: hsla(0, 0%, 70%, 0.25);
-  }
-
-  &:focus {
-    background-color: hsla(0, 0%, 50%, 0.25);
-  }
-}
-
-.links {
+.sidebar {
   padding-left: 2rem;
 
   &>* {
@@ -47,7 +28,7 @@ $transitionDuration: 0.5s ease-out;
 .overlay.shrunk {
   transition: $transitionDuration;
 
-  &>.links {
+  &>.sidebar {
     position: fixed;
     top: 0;
     left: 0;
@@ -61,7 +42,7 @@ $transitionDuration: 0.5s ease-out;
 
     background-color: hsla(0, 0%, 0%, .2);
 
-    &>.links {
+    &>.sidebar {
       position: fixed;
       top: 0;
       right: 0;
@@ -70,14 +51,14 @@ $transitionDuration: 0.5s ease-out;
 
       height: 100vh;
       margin: 0;
-      padding: 3em 0;
+      padding: 4em 0;
 
       display: flex;
       flex-flow: column;
 
       background-color: white;
 
-      &>* {
+      &>:not(:first-child) {
         padding: 1.25em 5em;
       }
 
@@ -87,7 +68,7 @@ $transitionDuration: 0.5s ease-out;
     &.slideOut {
       background-color: hsla(0, 0%, 0%, 0);
 
-      &>.links {
+      &>.sidebar {
         animation: slideOut $transitionDuration;
       }
     }
@@ -104,4 +85,28 @@ $transitionDuration: 0.5s ease-out;
       transform: translateX(100%);
     }
   }
+}
+
+.menuBtn, .closeBtn {
+  cursor: pointer;
+  display: block;
+  padding: 0.5rem;
+
+  font-size: 1.75rem;
+
+  border-radius: 50%;
+
+  &:hover {
+    background-color: hsla(0, 0%, 70%, 0.25);
+  }
+
+  &:focus {
+    background-color: hsla(0, 0%, 50%, 0.25);
+  }
+}
+
+.closeBtn{
+  position: absolute;
+  top: .5em;
+  right: .5em;
 }
