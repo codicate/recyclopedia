@@ -16,22 +16,9 @@
   background-color: white;
   box-shadow: 0 1px 1px hsl(0, 0%, 93%);
 
-  .menu {
-    cursor: pointer;
-    display: block;
-    padding: 0.5rem;
-
-    font-size: 1.75rem;
-
-    border-radius: 50%;
-
-    &:hover {
-      background-color: hsla(0, 0%, 70%, 0.25);
-    }
-
-    &:focus {
-      background-color: hsla(0, 0%, 50%, 0.25);
-    }
+  &>* {
+    display: flex;
+    align-items: center;
   }
 }
 
@@ -39,7 +26,7 @@
   display: flex;
   align-items: center;
 
-  padding: 0.5em 1em;
+  padding: 0 .5em;
 
   background-color: transparent;
   border: none;
@@ -68,7 +55,7 @@
 
 @media (max-width: 950px) {
   #header {
-    #logoDiv::after {
+    #logoDiv:after {
       display: none;
     }
   }

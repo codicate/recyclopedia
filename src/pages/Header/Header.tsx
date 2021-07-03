@@ -15,26 +15,14 @@ const Header = () => {
 
   return (
     <header id={styles.header}>
-      <Link to="/">
-        <div id={styles.logoDiv}></div>
-      </Link>
+      <div>
+        <Link to="/" id={styles.logoDiv} />
+      </div>
       <Search
         searchFunction={approximateSearch}
         renderFunction={renderHoverboxSearch}
       />
-      <ResponsiveNav
-        id={styles.navbar}
-        sidebarToggle={(setSidebarOpened) => (
-          <button
-            className={"material-icons " + styles.menu}
-            onClick={() =>
-              setSidebarOpened(true)
-            }
-          >
-            menu
-          </button>
-        )}
-      >
+      <ResponsiveNav id={styles.navbar}>
         <Link to='/index'>Index</Link>
         {(
           currentLoginType !== LoginType.Anonymous &&

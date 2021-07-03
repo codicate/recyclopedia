@@ -7,6 +7,24 @@
   align-items: center;
 }
 
+.menu {
+  cursor: pointer;
+  display: block;
+  padding: 0.5rem;
+
+  font-size: 1.75rem;
+
+  border-radius: 50%;
+
+  &:hover {
+    background-color: hsla(0, 0%, 70%, 0.25);
+  }
+
+  &:focus {
+    background-color: hsla(0, 0%, 50%, 0.25);
+  }
+}
+
 .links {
   padding-left: 2rem;
 
@@ -66,8 +84,12 @@ $transitionDuration: 0.5s ease-out;
       animation: slideIn $transitionDuration;
     }
 
-    &.slideOut>.links {
-      animation: slideOut $transitionDuration;
+    &.slideOut {
+      background-color: hsla(0, 0%, 0%, 0);
+
+      &>.links {
+        animation: slideOut $transitionDuration;
+      }
     }
   }
 

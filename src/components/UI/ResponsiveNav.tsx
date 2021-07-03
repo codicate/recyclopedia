@@ -6,12 +6,10 @@ import useEventListener from "hooks/useEventListener";
 
 
 function ResponsiveNav({
-  sidebarToggle,
   children,
   className,
   ...props
 }: {
-  sidebarToggle: (setSidebarOpened: React.Dispatch<React.SetStateAction<boolean>>) => React.ReactNode,
   children: React.ReactNode,
 } & React.HTMLAttributes<HTMLElement>
 ) {
@@ -44,7 +42,16 @@ function ResponsiveNav({
       className={cn(styles.nav, className)}
       {...props}
     >
-      {(shrunk) && (sidebarToggle(setSidebarOpened))}
+      {(shrunk) && (
+        <button
+          className={"material-icons " + styles.menu}
+          onClick={() =>
+            setSidebarOpened(true)
+          }
+        >
+          menu
+        </button>
+      )}
       <div
         className={cn(styles.overlay, {
           [styles.shrunk]: shrunk,
