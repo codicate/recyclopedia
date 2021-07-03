@@ -1,29 +1,27 @@
 import styles from "./ResponsiveNav.module.scss";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import cn from "classnames";
 
 import useEventListener from "hooks/useEventListener";
 
-type MediaQueries = Record<number, React.ReactNode>;
 
 function ResponsiveNav({
+  sidebarToggle,
   children,
   className,
-
   ...props
 }: {
+  sidebarToggle: (setSidebarOpened: React.Dispatch<React.SetStateAction<boolean>>) => React.ReactNode,
   children: React.ReactNode,
 } & React.HTMLAttributes<HTMLElement>
 ) {
+  const linksRef = useRef<HTMLDivElement>(null);
   const [shrunk, setShrunk] = useState(false);
   const [sidebarOpened, setSidebarOpened] = useState(false);
-  const linksRef = useRef<HTMLDivElement>(null);
 
   const handleResize = () => {
     const spanEl = linksRef.current;
     if (!spanEl || !spanEl.parentElement?.parentElement) return;
-
-    console.log(spanEl.getBoundingClientRect().width);
 
     if (spanEl.getBoundingClientRect().width >= spanEl.parentElement.parentElement.getBoundingClientRect().width) {
       setShrunk(true);
@@ -34,7 +32,8 @@ function ResponsiveNav({
 
   useEffect(() => {
     handleResize();
-  }, []);
+  }, [children]);
+  // Children is added to the dependency array so that when the user login/logout, navbar will resize in response
 
   useEventListener(window, "resize", () => {
     handleResize();
@@ -45,40 +44,34 @@ function ResponsiveNav({
       className={cn(styles.nav, className)}
       {...props}
     >
-      {(shrunk) && (
-        <>
-          <button
-            className={"material-icons " + styles.menu}
-            onClick={() =>
-              setSidebarOpened(true)
-            }
-          >
-            menu
-          </button>
-
-        </>
-      )}
+      {(shrunk) && (sidebarToggle(setSidebarOpened))}
       <div
         className={cn(styles.overlay, {
           [styles.shrunk]: shrunk,
           [styles.opened]: sidebarOpened
         })}
         onClick={(e) => {
-          if (e.target !== e.currentTarget) return;
-          setSidebarOpened(false);
+          const overlay = e.target as HTMLDivElement;
+          if (overlay !== e.currentTarget) return;
+
+          overlay.classList.add(styles.slideOut);
+          overlay.addEventListener("animationend", () => {
+            if (overlay.classList.contains(styles.slideOut)) {
+              overlay.classList.remove(styles.slideOut);
+              setSidebarOpened(false);
+            }
+          });
         }}
       >
         <div
           ref={linksRef}
-          className={cn(styles.links, {
-            [styles.opened]: sidebarOpened
-          })}
+          className={styles.links}
         >
           {children}
         </div>
       </div>
 
-    </nav>
+    </nav >
   );
 }
 

@@ -17,8 +17,21 @@
   box-shadow: 0 1px 1px hsl(0, 0%, 93%);
 
   .menu {
-    display: none;
+    cursor: pointer;
+    display: block;
+    padding: 0.5rem;
+
     font-size: 1.75rem;
+
+    border-radius: 50%;
+
+    &:hover {
+      background-color: hsla(0, 0%, 70%, 0.25);
+    }
+
+    &:focus {
+      background-color: hsla(0, 0%, 50%, 0.25);
+    }
   }
 }
 
@@ -53,19 +66,8 @@
   }
 }
 
-@keyframes slideIn {
-  0% {
-    left: 100%;
-    transform: translateX(100%);
-  }
-}
-
 @media (max-width: 950px) {
   #header {
-    &>:nth-child(2) {
-      width: clamp(12em, 60vw, 30em);
-    }
-
     #logoDiv::after {
       display: none;
     }

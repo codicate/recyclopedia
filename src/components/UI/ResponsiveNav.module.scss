@@ -10,11 +10,11 @@
 .links {
   padding-left: 2rem;
 
-  &>a,
-  &>button {
+  &>* {
     padding: 0.5em 1em;
 
     cursor: pointer;
+    text-align: left;
 
     &:hover,
     &:focus {
@@ -24,7 +24,11 @@
   }
 }
 
+$transitionDuration: 0.5s ease-out;
+
 .overlay.shrunk {
+  transition: $transitionDuration;
+
   &>.links {
     position: fixed;
     top: 0;
@@ -36,7 +40,7 @@
     z-index: 999;
     position: fixed;
     inset: 0;
-    
+
     background-color: hsla(0, 0%, 0%, .2);
 
     &>.links {
@@ -55,12 +59,27 @@
 
       background-color: white;
 
-      transition: 1s;
-      animation: slideIn .5s forwards;
-
       &>* {
         padding: 1.25em 5em;
       }
+
+      animation: slideIn $transitionDuration;
+    }
+
+    &.slideOut>.links {
+      animation: slideOut $transitionDuration;
+    }
+  }
+
+  @keyframes slideIn {
+    0% {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes slideOut {
+    100% {
+      transform: translateX(100%);
     }
   }
 }

@@ -22,7 +22,19 @@ const Header = () => {
         searchFunction={approximateSearch}
         renderFunction={renderHoverboxSearch}
       />
-      <ResponsiveNav id={styles.navbar}>
+      <ResponsiveNav
+        id={styles.navbar}
+        sidebarToggle={(setSidebarOpened) => (
+          <button
+            className={"material-icons " + styles.menu}
+            onClick={() =>
+              setSidebarOpened(true)
+            }
+          >
+            menu
+          </button>
+        )}
+      >
         <Link to='/index'>Index</Link>
         {(
           currentLoginType !== LoginType.Anonymous &&
