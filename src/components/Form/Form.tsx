@@ -4,7 +4,7 @@ import Input, { InputOptions, ChangeHandler } from "components/Form/Input";
 
 
 function Form<
-  T extends { [name: string]: InputOptions; }
+  T extends Record<string, InputOptions>
 >({
   submitFn,
   inputItems,
@@ -12,7 +12,7 @@ function Form<
   className,
   ...props
 }: {
-  submitFn?: (inputItems: Record<keyof T, string>) => void | boolean | Promise<boolean | void>;
+  submitFn?: (inputItems: Record<keyof T, string>) => void | Promise<void>;
   inputItems: T;
   children?: React.ReactNode;
 } & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLFormElement>, HTMLFormElement>
@@ -37,12 +37,8 @@ function Form<
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const reset = submitFn
-      ? await submitFn(input)
-      : true;
-
-    reset && setInput(defaultItems);
+    await submitFn?.(input);
+    setInput(defaultItems);
   };
 
   return (
