@@ -320,8 +320,35 @@ enum VoteType {
   Like,
   Dislike
 }
-export async function commentVote(articleName: string, voteType: VoteType) {
-  // shim
+
+// replies should also be GUIDed somehow.
+export interface VoteTarget {
+  id: number,
+  replyId?: number,
+}
+
+// To be as quick as possible, we will ignorantly just vote ignorantly
+// without associating votes. We can use localStorage to emulate what I'm requesting
+// but for obvious reasons localStorage is pretty easy to do vote fraud with.
+// and I'm quite a fan of democracy so let's not try to fake it, for now let's just not do it.
+export async function commentVote(articleName: string, voteType: VoteType, target: VoteTarget) {
+  let voteCommand: string;
+  switch (voteType) {
+  case VoteType.Like:
+    voteCommand = "like";
+    break;
+  case VoteType.Dislike:
+    voteCommand = "dislike";
+    break;
+  default:
+    return;
+  }
+
+  await (tryToCallWithUser(
+    async function(user: Realm.User, _: any, _1: any) {
+      await user.functions.commentVote(articleName, target, voteCommand);
+    }
+  ));
 }
 
 export async function getCommentsOfArticle(name: string) {
