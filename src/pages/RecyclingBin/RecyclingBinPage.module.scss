@@ -1,9 +1,15 @@
 @import "/src/styles/variables";
 
-#tagList {
-  display: flex;
-  flex-flow: wrap;
-  gap: 1em;
+#recyclingBin {
+  #emptyMsg {
+    margin-top: 3em;
+    text-align: center;
+    font-size: 2em;
+  }
 
-  padding: 1em;
+  .daysLeft {
+    margin-left: 1em;
+    display: inline-block;
+    min-width: 3em;
+  }
 }
