@@ -10,7 +10,7 @@
     setFeaturedArticle is the only one I'm aware of with bad data.
 */
 
-import { TopLevelCommentModel } from "components/Comment/Comment";
+import { CommentModel, TopLevelCommentModel } from "components/Comment/Comment";
 
 import { createSlice, createAsyncThunk, createDraftSafeSelector } from "@reduxjs/toolkit";
 import { RootState } from "app/store";
@@ -250,30 +250,36 @@ export const selectNameOfFeaturedArticle = createDraftSafeSelector(
   selectSelf, (articles) => articles.articlesData.featuredArticle
 );
 
-export async function addComment(articleName: string, comment: string) {
+// implicitly uses the state of the logged-in user!
+export function buildCommentDraft(comment: string) {
   const loginType = useAppSelector(selectLoginType);
   const accountDetails = useAppSelector(selectAccountDetails);
-
   const currentDate = new Date();
 
-  const commentDraft = {
+  const commentContents = {
     content: comment,
     createdAt: currentDate,
     likeCount: 0,
     dislikeCount: 0,
-    replies: []
   };
 
-  const completedComment: TopLevelCommentModel =
-    (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn) ?
-      commentDraft : {
-        ...commentDraft,
+  const commentDraft : CommentModel = 
+    (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn) 
+      ? commentContents
+      : {
+        ...commentContents,
         user: {
           name: accountDetails.email,
           // comments should not really have avatars in the future.
           avatar: "https://lh6.googleusercontent.com/-f9MhM40YFzc/AAAAAAAAAAI/AAAAAAABjbo/iG_SORRy0I4/photo.jpg",
         }
       };
+
+  return commentDraft;
+}
+
+export async function addComment(articleName: string, comment: string) {
+  const completedComment = {... buildCommentDraft(comment), replies: []};
 
   await (tryToCallWithUser(
     async function(user: Realm.User, _: any, _1: any) {
@@ -282,10 +288,26 @@ export async function addComment(articleName: string, comment: string) {
   ));
 }
 export async function deleteComment(articleName: string, commentId: number) {
-  // shim
+  /*
+    As of writing this, this function does not exist!
+
+    remove this when it does.
+  */
+  alert("This function is a shim and does not work yet!");
+  await (tryToCallWithUser(
+    async function(user: Realm.User, _: any, _1: any) {
+      await user.functions.removeComment(articleName, commentId);
+    }
+  ));
 }
-export async function replyToComment(articleName: string, parentId: number) {
-  // shim 
+export async function replyToComment(articleName: string, parentId: number, comment: string) {
+  const completedComment = buildCommentDraft(comment);
+
+  await (tryToCallWithUser(
+    async function(user: Realm.User, _: any, _1: any) {
+      await user.functions.replyToComment(articleName, parentId, completedComment);
+    }
+  ));
 }
 
 // this one will need to check based on the logged in user.
