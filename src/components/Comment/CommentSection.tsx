@@ -3,10 +3,10 @@ import React, { forwardRef } from "react";
 
 import Form from "components/Form/Form";
 import Button from "components/UI/Button";
-import Comment, { CommentModel } from "./Comment";
+import Comment, { TopLevelCommentModel } from "./Comment";
 
 type CommentSectionProps = {
-  comments: CommentModel[];
+  comments: TopLevelCommentModel[];
 } & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 const CommentSection = forwardRef<HTMLDivElement, CommentSectionProps>(
@@ -45,7 +45,7 @@ const CommentSection = forwardRef<HTMLDivElement, CommentSectionProps>(
             {/* \eslint is confused */}
             {/* eslint-disable-next-line react/prop-types */}
             {props.comments.map((comment, idx) =>
-              <Comment key={idx} comment={comment} />
+              <Comment key={idx} commentId={idx} comment={comment} />
             )}
           </div>
         </div>

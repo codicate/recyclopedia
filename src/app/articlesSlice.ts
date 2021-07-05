@@ -10,15 +10,18 @@
     setFeaturedArticle is the only one I'm aware of with bad data.
 */
 
+import { CommentModel, TopLevelCommentModel } from "components/Comment/Comment";
+
 import { createSlice, createAsyncThunk, createDraftSafeSelector } from "@reduxjs/toolkit";
 import { RootState } from "app/store";
 import { loginWithEmailAndPassword } from "app/adminSlice";
 
 import { useAppSelector } from "./hooks";
-import { selectLoginType, LoginType } from "app/adminSlice";
+import { selectAccountCustomData, selectAccountDetails, selectLoginType, LoginType } from "app/adminSlice";
 
 import { App, User, Credentials } from "realm-web";
 import { MessageLogType, logMessage } from "utils/functions";
+import userEvent from "@testing-library/user-event";
 
 export interface Article {
   name: string;
@@ -26,6 +29,9 @@ export interface Article {
   dateCreated: Date;
   dateModified?: Date;
   draftStatus: boolean;
+
+  likeCount: number;
+  dislikeCount: number;
   tags?: string[];
 }
 
@@ -247,6 +253,140 @@ export const selectArticlesData = createDraftSafeSelector(
 export const selectNameOfFeaturedArticle = createDraftSafeSelector(
   selectSelf, (articles) => articles.articlesData.featuredArticle
 );
+
+// implicitly uses the state of the logged-in user!
+export function buildCommentDraft(comment: string) {
+  const loginType = useAppSelector(selectLoginType);
+  const accountDetails = useAppSelector(selectAccountDetails);
+  const currentDate = new Date();
+
+  const commentContents = {
+    content: comment,
+    createdAt: currentDate,
+    likeCount: 0,
+    dislikeCount: 0,
+  };
+
+  const commentDraft : CommentModel = 
+    (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn) 
+      ? commentContents
+      : {
+        ...commentContents,
+        user: {
+          name: accountDetails.email,
+          // comments should not really have avatars in the future.
+          avatar: "https://lh6.googleusercontent.com/-f9MhM40YFzc/AAAAAAAAAAI/AAAAAAABjbo/iG_SORRy0I4/photo.jpg",
+        }
+      };
+
+  return commentDraft;
+}
+
+export async function addComment(articleName: string, comment: string) {
+  const completedComment = {... buildCommentDraft(comment), replies: []};
+
+  await (tryToCallWithUser(
+    async function(user: Realm.User, _: any, _1: any) {
+      await user.functions.addComment(articleName, completedComment);
+    }
+  ));
+}
+export async function deleteComment(articleName: string, commentId: number) {
+  /*
+    As of writing this, this function does not exist!
+
+    remove this when it does.
+  */
+  alert("This function is a shim and does not work yet!");
+  await (tryToCallWithUser(
+    async function(user: Realm.User, _: any, _1: any) {
+      await user.functions.removeComment(articleName, commentId);
+    }
+  ));
+}
+
+// parentId:
+// will have to be a more special type of id to prevent against weird issues
+// when deleting. This is not done yet. (some sort of GUID) basically.
+export async function replyToComment(articleName: string, parentId: number, comment: string) {
+  const completedComment = buildCommentDraft(comment);
+
+  await (tryToCallWithUser(
+    async function(user: Realm.User, _: any, _1: any) {
+      await user.functions.replyToComment(articleName, parentId, completedComment);
+    }
+  ));
+}
+
+// this one will need to check based on the logged in user.
+// to determine whether we should revote.
+enum VoteType {
+  Like,
+  Dislike
+}
+
+export type ArticleVoteTarget = string;
+export interface VoteTarget {
+  id: number,
+  // replies should also be GUIDed somehow.
+  replyId?: number,
+}
+
+// To be as quick as possible, we will ignorantly just vote ignorantly
+// without associating votes. We can use localStorage to emulate what I'm requesting
+// but for obvious reasons localStorage is pretty easy to do vote fraud with.
+// and I'm quite a fan of democracy so let's not try to fake it, for now let's just not do it.
+type VoteTypeString = "like" | "dislike" | "unknown";
+function voteTypeToString(voteType: VoteType): VoteTypeString {
+  switch (voteType) {
+  case VoteType.Like:
+    return "like";
+  case VoteType.Dislike:
+    return "dislike";
+  default:
+    return "unknown";
+  }
+}
+export async function articleVote(articleName: string, voteType: VoteType) {
+  const loginType = useAppSelector(selectLoginType);
+
+  if (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn)
+    return;
+
+  await (tryToCallWithUser(
+    async function(user: Realm.User, _: any, _1: any) {
+      await user.functions.articleVote(articleName, voteTypeToString(voteType), user.id);
+    }
+  ));
+}
+export async function commentVote(articleName: string, voteType: VoteType, target: VoteTarget) {
+  const loginType = useAppSelector(selectLoginType);
+
+  if (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn)
+    return;
+
+  await (tryToCallWithUser(
+    async function(user: Realm.User, _: any, _1: any) {
+      await user.functions.commentVote(articleName, target, voteTypeToString(voteType), user.id);
+    }
+  ));
+}
+
+export async function getCommentsOfArticle(name: string) {
+  // tryToCallWithUser was supposed to reduce the redundancy for reducers
+  // so this looks weird.
+  const fetchedComments = await tryToCallWithUser(
+    async function(user: Realm.User, _argument: any, _: any) {
+      const comments = await user.functions.getCommentsOfArticle(name);
+      return comments;
+    })(undefined, undefined);
+
+  if (fetchedComments) {
+    return fetchedComments;
+  } else {
+    return [];
+  }
+}
 
 export function readArticlesFromLoginType() : ArticlesData {
   const loginType = useAppSelector(selectLoginType);

@@ -3,32 +3,59 @@ import { formatDistance } from "date-fns";
 
 import Button from "components/UI/Button";
 
-
 export interface UserModel {
   name: string;
   avatar: string;
 }
 
 export interface CommentModel {
-  user: UserModel;
+  user?: UserModel;
   content: string;
   createdAt: Date;
   likeCount: number;
   dislikeCount: number;
-  comments: CommentModel[];
+}
+
+export type ReplyCommentModel = CommentModel;
+export interface TopLevelCommentModel extends CommentModel {
+  replies: ReplyCommentModel[];
 }
 
 function Comment({
   comment,
+  parentId, 
+  /*
+    When clicking on reply, and forming the message make a dispatch to
+    
+    replyToComment(articleName, parentId)
+
+    This is not here, so an easier method would just be to pass in a submit comment
+    function in the comment section to make things easier.
+  */
+  children
 }: {
   comment: CommentModel;
+  parentId?: number;
+  children?: React.ReactChild | React.ReactChild[];
 }) {
+  const {
+    commenterAvatar,
+    commenterUserName 
+  } = (comment.user) ? {
+    commenterAvatar: comment.user.avatar,
+    commenterUserName: comment.user.name,
+  } : {
+    // TODO find a better icon.
+    commenterAvatar: "https://lh6.googleusercontent.com/-f9MhM40YFzc/AAAAAAAAAAI/AAAAAAABjbo/iG_SORRy0I4/photo.jpg",
+    commenterUserName: "Anonymous",
+  };
+
   return (
     <div className={styles.comment}>
       <div className={styles.commentUser}>
-        <img src={comment.user.avatar} alt={comment.user.name} />
+        <img src={commenterAvatar} alt={commenterUserName} />
         <div>
-          <p>{comment.user.name}</p>
+          <p>{commenterUserName}</p>
           <p>
             {formatDistance(comment.createdAt, new Date())} ago
           </p>
@@ -59,8 +86,27 @@ function Comment({
           Reply
         </Button>
       </div>
+      {children}
     </div>
   );
 }
 
-export default Comment;
+function TopLevelComment({
+  comment,
+  commentId,
+}: {
+  comment: TopLevelCommentModel;
+  commentId: number;
+}) {
+  return (
+    <Comment comment={comment}>
+      <>
+        <br></br>
+        {comment.replies.map((reply, index) =>
+          <Comment key={index} parentId={commentId} comment={reply}></Comment>)}
+      </>
+    </Comment>
+  );
+}
+
+export default TopLevelComment;

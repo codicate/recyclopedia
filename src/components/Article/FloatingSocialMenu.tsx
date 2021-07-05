@@ -8,9 +8,13 @@ import ButtonWithInfo from "components/UI/ButtonWithInfo";
 function FloatingSocialMenu({
   title,
   commentSectionRef,
+  likeCount,
+  dislikeCount
 }: {
   title: string;
   commentSectionRef: React.RefObject<HTMLDivElement>;
+  likeCount: number,
+  dislikeCount: number,
 }) {
   const [expandShare, setExpandShare] = useState(false);
 
@@ -18,11 +22,11 @@ function FloatingSocialMenu({
     <div className={styles.floatingSocialMenu}>
       <ButtonWithInfo
         materialIcon='thumb_up'
-        info={"500"}
+        info={likeCount.toString()}
       />
       <ButtonWithInfo
         materialIcon='thumb_down'
-        info={"500"}
+        info={dislikeCount.toString()}
       />
       {(expandShare) && (
         <MediaShareBtns title={title} />
