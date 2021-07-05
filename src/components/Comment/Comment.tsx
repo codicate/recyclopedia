@@ -9,7 +9,7 @@ export interface UserModel {
 }
 
 export interface CommentModel {
-  user: UserModel;
+  user?: UserModel;
   content: string;
   createdAt: Date;
   likeCount: number;
@@ -27,12 +27,24 @@ function Comment({
   comment: CommentModel;
   children?: React.ReactChild | React.ReactChild[];
 }) {
+  const {
+    commenterAvatar,
+    commenterUserName 
+  } = (comment.user) ? {
+    commenterAvatar: comment.user.avatar,
+    commenterUserName: comment.user.name,
+  } : {
+    // TODO find a better icon.
+    commenterAvatar: "https://lh6.googleusercontent.com/-f9MhM40YFzc/AAAAAAAAAAI/AAAAAAABjbo/iG_SORRy0I4/photo.jpg",
+    commenterUserName: "Anonymous",
+  };
+
   return (
     <div className={styles.comment}>
       <div className={styles.commentUser}>
-        <img src={comment.user.avatar} alt={comment.user.name} />
+        <img src={commenterAvatar} alt={commenterUserName} />
         <div>
-          <p>{comment.user.name}</p>
+          <p>{commenterUserName}</p>
           <p>
             {formatDistance(comment.createdAt, new Date())} ago
           </p>

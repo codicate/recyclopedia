@@ -147,10 +147,6 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
                   dislikeCount: 10,
                   replies: [
                     {
-                      user: {
-                        name: "Anonymous",
-                        avatar: "https://lh6.googleusercontent.com/-f9MhM40YFzc/AAAAAAAAAAI/AAAAAAABjbo/iG_SORRy0I4/photo.jpg"
-                      },
                       content: "???? Comment",
                       createdAt: new Date(),
                       likeCount: 10,
