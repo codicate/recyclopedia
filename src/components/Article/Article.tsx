@@ -39,7 +39,14 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
   const currentLoginType = useAppSelector(selectLoginType);
   const isAdmin = currentLoginType === LoginType.Admin;
 
-  const { name, content, dateCreated, dateModified } = article;
+  const {
+    name,
+    content,
+    dateCreated,
+    dateModified ,
+    likeCount,
+    dislikeCount
+  } = article;
   const [migrationTitleName, updateMigrationTitleName] = useState(name);
 
   const [lastViewType, updateLastViewType] = useState(PageViewType.Reading);
@@ -135,8 +142,8 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
             <FloatingSocialMenu
               title={name}
               commentSectionRef={commentSectionRef}
-              likeCount={0}
-              dislikeCount={0}
+              likeCount={likeCount}
+              dislikeCount={dislikeCount}
             />
             <h1 className={styles.title}> {name} </h1>
             <div className={styles.dateView}>

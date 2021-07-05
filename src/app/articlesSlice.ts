@@ -325,9 +325,10 @@ enum VoteType {
   Dislike
 }
 
-// replies should also be GUIDed somehow.
+export type ArticleVoteTarget = string;
 export interface VoteTarget {
   id: number,
+  // replies should also be GUIDed somehow.
   replyId?: number,
 }
 
@@ -335,27 +336,38 @@ export interface VoteTarget {
 // without associating votes. We can use localStorage to emulate what I'm requesting
 // but for obvious reasons localStorage is pretty easy to do vote fraud with.
 // and I'm quite a fan of democracy so let's not try to fake it, for now let's just not do it.
+type VoteTypeString = "like" | "dislike" | "unknown";
+function voteTypeToString(voteType: VoteType): VoteTypeString {
+  switch (voteType) {
+  case VoteType.Like:
+    return "like";
+  case VoteType.Dislike:
+    return "dislike";
+  default:
+    return "unknown";
+  }
+}
+export async function articleVote(articleName: string, voteType: VoteType) {
+  const loginType = useAppSelector(selectLoginType);
+
+  if (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn)
+    return;
+
+  await (tryToCallWithUser(
+    async function(user: Realm.User, _: any, _1: any) {
+      await user.functions.articleVote(articleName, voteTypeToString(voteType), user.id);
+    }
+  ));
+}
 export async function commentVote(articleName: string, voteType: VoteType, target: VoteTarget) {
   const loginType = useAppSelector(selectLoginType);
 
   if (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn)
     return;
 
-  let voteCommand: string;
-  switch (voteType) {
-  case VoteType.Like:
-    voteCommand = "like";
-    break;
-  case VoteType.Dislike:
-    voteCommand = "dislike";
-    break;
-  default:
-    return;
-  }
-
   await (tryToCallWithUser(
     async function(user: Realm.User, _: any, _1: any) {
-      await user.functions.commentVote(articleName, target, voteCommand, user.id);
+      await user.functions.commentVote(articleName, target, voteTypeToString(voteType), user.id);
     }
   ));
 }
