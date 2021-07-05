@@ -215,7 +215,7 @@ function EditorToolbar({ toggleDraftStatus, saveDocument, isInitial }: EditorToo
   </div>);
 }
 
-function TagDisplay({ id, name, removeTag }: { id: string, name: string, removeTag: (id: string) => void }) {
+function TagDisplay({ id, name, removeTag }: { id: string, name: string, removeTag: (id: string) => void; }) {
   return (
     <div className={editorStyle.tageditor_tag}>
       <span>
@@ -321,21 +321,21 @@ function captionImageThumbnailStyleString(width: number, height: number) {
 }
 
 function captionImageBlockStyleString(width: number) {
-  return `width: ${width+3}px;`;
+  return `width: ${width + 3}px;`;
 }
 
 function floatModeStyle(layoutFloatMode: LayoutFloatMode) {
   switch (layoutFloatMode) {
   case LayoutFloatMode.Left:
-    return(articleStyles.floatLeft);
+    return (articleStyles.floatLeft);
   case LayoutFloatMode.Center:
-    return(articleStyles.floatCenter);
+    return (articleStyles.floatCenter);
   case LayoutFloatMode.Right:
-    return(articleStyles.floatRight);
+    return (articleStyles.floatRight);
   }
 }
 
-function imageDOMGetFloatStyle(rootNode: Element | null) : LayoutFloatMode {
+function imageDOMGetFloatStyle(rootNode: Element | null): LayoutFloatMode {
   function styleFromClassList(rootNode: Element) {
     if (rootNode.classList.contains(articleStyles.floatLeft)) {
       return LayoutFloatMode.Left;
@@ -395,7 +395,7 @@ export function imageDOMHasCaption(rootNode: Element | null) {
 
 interface CaptionedImageDOMInformation {
   captionNode: HTMLElement,
-  imageNode: HTMLImageElement
+  imageNode: HTMLImageElement;
 }
 function imageDOMConstructCaptionedImage(imageOriginalNode: HTMLImageElement, layoutFloatMode: LayoutFloatMode, captionText: string): CaptionedImageDOMInformation {
   const result = document.createElement("DIV");
@@ -459,7 +459,7 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
   function applyChanges() {
     if (imageObject) {
       let newWidth = imageObject.width;
-      let newHeight = imageObject.height; 
+      let newHeight = imageObject.height;
 
       if (imageDimensionType === ImageDimensionsType.Custom) {
         newWidth = imageDimensionCustomWidth || imageObject.width;
@@ -513,7 +513,7 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
       <div className={editorStyle.settingsWindow} id={editorStyle.imageContextSettingsWindow}>
         <h1>Image Settings <a onClick={(_) => properties.closeShownStatus()} className={editorStyle.xOut}>X</a></h1>
         <div style={{ margin: "2.5em" }}>
-          <p style={{textAlign: "center"}}><i>{imageObject?.src}</i></p>
+          <p style={{ textAlign: "center" }}><i>{imageObject?.src}</i></p>
           <div className={editorStyle.imagePreview} dangerouslySetInnerHTML={{
             __html:
               function () {
@@ -560,17 +560,17 @@ function ImageContextSettings(properties: ImageContextSettingsProperties) {
             <h2>Resolution Selection</h2>
             <input
               value={imageDimensionCustomWidth}
-              onChange={(e) => scaleByGivenRatio(Number.parseInt(e.target.value) / originalWidth) }
+              onChange={(e) => scaleByGivenRatio(Number.parseInt(e.target.value) / originalWidth)}
               type="number"></input>
             <span>x</span>
             <input
               value={imageDimensionCustomHeight}
-              onChange={(e) => scaleByGivenRatio(Number.parseInt(e.target.value) / originalHeight) }
+              onChange={(e) => scaleByGivenRatio(Number.parseInt(e.target.value) / originalHeight)}
               type="number"></input>
           </div>
           {/*Caption Text*/}
           <hr></hr>
-          <p style={{textAlign: "center"}}>&ldquo;{imageCaptionText}&rdquo;</p>
+          <p style={{ textAlign: "center" }}>&ldquo;{imageCaptionText}&rdquo;</p>
           <Input
             label="Image Caption"
             changeHandler={
@@ -642,7 +642,7 @@ function HyperlinkContextSettings(properties: HyperlinkContextSettingsProperties
         <h1>Hyperlink Creation <a onClick={(_) => properties.closeShownStatus()} className={editorStyle.xOut}>X</a></h1>
         <div style={{ margin: "2.5em" }}>
           <p>Hyperlink</p>
-          <Input 
+          <Input
             label="Hyperlink Contents"
             changeHandler={
               function (e) {
@@ -691,17 +691,17 @@ function absolutePositionAt(x: number, y: number): CSSProperties {
 }
 
 function ImageContextMenu(properties: ImageContextMenuProperties) {
-  const {position, image, openEdit, close} = properties;
+  const { position, image, openEdit, close } = properties;
   if (!image) return <></>;
 
   return (
     <div className={editorStyle.contextMenu} style={absolutePositionAt(position.x, position.y)}>
-      <i style={{margin: "2em"}}>{image.src || "No image selected?"}</i>
+      <i style={{ margin: "2em" }}>{image.src || "No image selected?"}</i>
       <br></br>
       <br></br>
       <button onClick={openEdit}>Edit</button>
       <button onClick={
-        function() {
+        function () {
           const hasCaption = imageDOMHasCaption(image);
           if (hasCaption) {
             ((image.parentNode) as HTMLElement).remove();
@@ -722,17 +722,17 @@ interface HyperlinkContextMenuProperties {
 }
 
 function HyperlinkContextMenu(properties: HyperlinkContextMenuProperties) {
-  const {position, link, openEdit, close} = properties;
+  const { position, link, openEdit, close } = properties;
   if (!link) return <></>;
 
   return (
     <div className={editorStyle.contextMenu} style={absolutePositionAt(position.x, position.y)}>
-      <i style={{margin: "2em"}}>{link.href || "No href selected?"}</i>
+      <i style={{ margin: "2em" }}>{link.href || "No href selected?"}</i>
       <br></br>
       <br></br>
       <button onClick={openEdit}>Edit</button>
       <button onClick={
-        function() {
+        function () {
           link.remove();
           close();
         }
@@ -915,8 +915,7 @@ export function RichTextEditor({
           ref={editableAreaDOMRef}>
         </div>
       </div>
-      <br></br>
-      <br></br>
+
       <div className={editorStyle.widgetbar}> {/*requires styling*/}
         <button style={{ float: "left", marginLeft: "3em" }}
           className={editorStyle.button}
@@ -938,9 +937,9 @@ export function RichTextEditor({
                     : editorStyle.button
                 }
                 onClick={
-                  (_) => {
+                  () => {
                     _toggleWidgetActiveState(widgetId, widget.category);
-                    ExecuteRichTextCommand(widget.command, 
+                    ExecuteRichTextCommand(widget.command,
                       widget.argument,
                       function (name: string) {
                         if (name === "@_hyperlink") {
@@ -952,7 +951,7 @@ export function RichTextEditor({
               </button>
           )
         }
-        <button 
+        <button
           style={{ float: "right", marginRight: "3em" }}
           className={editorStyle.button}
           onClick={
@@ -969,22 +968,22 @@ export function RichTextEditor({
         {(tagEditorShown) ? <ArticleTagEditor setTagState={setTagState} tags={tags} /> : <></>}
       </div>
       <EditorToolbar isInitial={(!!initialArticleState)} saveDocument={saveDocument} toggleDraftStatus={toggleDraftStatus} />
-      { (imageContextEditorShown) ?
+      {(imageContextEditorShown) ?
         <ImageContextSettings imageRef={currentImageRef} closeShownStatus={() => { setImageContextEditorVisibility(false); }} /> : <></>}
       {(hyperlinkContextEditorShown) ?
-        <HyperlinkContextSettings 
+        <HyperlinkContextSettings
           hyperlinkRef={currentHyperlinkRef}
           closeShownStatus={() => { setHyperlinkContextEditorShown(false); }} /> : <></>}
-      { (imageContextMenuPosition) ? (
-        <ImageContextMenu 
-          close={ () => setImageContextMenuPosition(undefined) }
+      {(imageContextMenuPosition) ? (
+        <ImageContextMenu
+          close={() => setImageContextMenuPosition(undefined)}
           openEdit={
-            function() {
+            function () {
               setImageContextMenuPosition(undefined);
               setImageContextEditorVisibility(true);
             }
-          } image={currentImageRef.current} position={imageContextMenuPosition}/>
-      ) : <></> }
+          } image={currentImageRef.current} position={imageContextMenuPosition} />
+      ) : <></>}
       {(hyperLinkContextMenuPosition) ? (
         <HyperlinkContextMenu
           close={() => setHyperLinkContextMenuPosition(undefined)}
