@@ -21,7 +21,8 @@
   }
 }
 
-.oval {
+.oval,
+.oval-danger {
   padding: 0.5em 1em;
   border-radius: 999rem;
 
@@ -44,6 +45,18 @@
     box-shadow:
       0 0 6px hsl(147, 20%, 80%),
       0 0 12px hsl(147, 10%, 90%);
+  }
+}
+
+.oval-danger {
+  color: white;
+  background-color: hsl(0, 69%, 53%) !important;
+
+  &:hover,
+  &:active {
+    box-shadow:
+      0 0 6px hsl(0, 50%, 80%),
+      0 0 12px hsl(0, 40%, 90%);
   }
 }
 

@@ -1,7 +1,5 @@
 @import '/src/styles/_variables';
 
-$warning-red: hsl(0, 69%, 53%);
-
 html {
   scroll-behavior: smooth;
 }
@@ -11,18 +9,6 @@ html {
   justify-content: end;
   align-items: center;
   gap: 1em;
-
-  #deleteBtn {
-    background-color: $warning-red;
-    color: white;
-
-    &:hover,
-    &:active {
-      box-shadow:
-        0 0 6px hsl(0, 50%, 80%),
-        0 0 12px hsl(0, 40%, 90%);
-    }
-  }
 }
 
 .title {

@@ -55,20 +55,18 @@ function RecyclingBin() {
 
       {
         (articlesData.recycledArticles.length === 0) ? (
-          <>
-            <p id={styles.emptyMsg}>
-              The Recycling Bin is Empty!
-            </p>
-          </>
+          <p id={styles.emptyMsg}>
+            The Recycling Bin is Empty!
+          </p>
         ) : (
-          articlesData.recycledArticles.map(({ name, content, pendingDaysUntilDeletion }) => (
-            <>
-              <div key={name} >
+          <div id={styles.recycledArticles}>
+            {articlesData.recycledArticles.map(({ name, content, pendingDaysUntilDeletion }) => (
+              <div key={name}>
                 <Link to={"/admin/recycling_bin" + validPageLink(name)}>
                   {name}
-                  <DaysLeft value={pendingDaysUntilDeletion} />
                 </Link>
                 <div>
+                  <DaysLeft value={pendingDaysUntilDeletion} />
                   <Button
                     styledAs="oval"
                     onClick={async () => {
@@ -81,7 +79,7 @@ function RecyclingBin() {
                     Restore
                   </Button>
                   <Button
-                    styledAs="oval"
+                    styledAs="oval-danger"
                     onClick={() => {
                       if (confirm("Permenantly delete this article?")) {
                         dispatch(deleteArticle(name));
@@ -93,8 +91,8 @@ function RecyclingBin() {
                   </Button>
                 </div>
               </div>
-            </>
-          ))
+            ))}
+          </div>
         )
       }
     </div>);

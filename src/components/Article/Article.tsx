@@ -43,7 +43,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
     name,
     content,
     dateCreated,
-    dateModified ,
+    dateModified,
     likeCount,
     dislikeCount
   } = article;
@@ -120,8 +120,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
         <div id={styles.articleControls}>
           {(!inRecycling) ? standardAdminControls : recyclingAdminControls}
           <Button
-            id={styles.deleteBtn}
-            styledAs="oval"
+            styledAs="oval-danger"
             onClick={() => {
               if (confirm((inRecycling) ? "Permenantly delete this article?" : "Recycle this article?")) {
                 dispatch(deleteArticle(name));
