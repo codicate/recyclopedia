@@ -21,6 +21,7 @@ import { selectAccountCustomData, selectAccountDetails, selectLoginType, LoginTy
 
 import { App, User, Credentials } from "realm-web";
 import { MessageLogType, logMessage } from "utils/functions";
+import userEvent from "@testing-library/user-event";
 
 export interface Article {
   name: string;
@@ -332,6 +333,11 @@ export interface VoteTarget {
 // but for obvious reasons localStorage is pretty easy to do vote fraud with.
 // and I'm quite a fan of democracy so let's not try to fake it, for now let's just not do it.
 export async function commentVote(articleName: string, voteType: VoteType, target: VoteTarget) {
+  const loginType = useAppSelector(selectLoginType);
+
+  if (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn)
+    return;
+
   let voteCommand: string;
   switch (voteType) {
   case VoteType.Like:
@@ -346,7 +352,7 @@ export async function commentVote(articleName: string, voteType: VoteType, targe
 
   await (tryToCallWithUser(
     async function(user: Realm.User, _: any, _1: any) {
-      await user.functions.commentVote(articleName, target, voteCommand);
+      await user.functions.commentVote(articleName, target, voteCommand, user.id);
     }
   ));
 }
