@@ -1,0 +1,50 @@
+@import "/src/styles/variables";
+
+#footer {
+  border-top: 3px solid hsl(146, 41%, 60%);
+  padding: 1em 0;
+
+  #content {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: 2rem;
+
+    margin: auto;
+
+    padding: 0 2em;
+
+
+
+    #social {
+
+      &>div {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+
+        &>* {
+          height: 32px !important;
+          width: 32px !important;
+          overflow: hidden;
+        }
+      }
+    }
+
+    #about {
+      display: flex;
+      flex-flow: column;
+      gap: 1em;
+
+      max-width: 40rem;
+
+      font-size: .75rem;
+      line-height: 1.25em;
+
+      &>p {
+        margin: 0;
+        color: hsl(0, 0%, 70%);
+      }
+    }
+  }
+}

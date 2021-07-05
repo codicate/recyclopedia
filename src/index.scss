@@ -63,6 +63,10 @@ h6 {
   height: 100%;
 
   font-size: 1rem;
+
+  &>:last-child {
+    margin-top: auto;
+  }
 }
 
 .material-icon {

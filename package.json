@@ -17,6 +17,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-share": "^4.4.0",
+    "react-social-icons": "^5.5.1",
     "realm-web": "^1.2.1",
     "redux-persist": "^6.0.0",
     "sass": "^1.33.0",
