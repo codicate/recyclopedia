@@ -22,9 +22,19 @@ export interface TopLevelCommentModel extends CommentModel {
 
 function Comment({
   comment,
+  parentId, 
+  /*
+    When clicking on reply, and forming the message make a dispatch to
+    
+    replyTo(articleName, parentId)
+
+    This is not here, so an easier method would just be to pass in a submit comment
+    function in the comment section to make things easier.
+  */
   children
 }: {
   comment: CommentModel;
+  parentId?: number;
   children?: React.ReactChild | React.ReactChild[];
 }) {
   const {
@@ -82,15 +92,17 @@ function Comment({
 
 function TopLevelComment({
   comment,
+  commentId,
 }: {
   comment: TopLevelCommentModel;
+  commentId: number;
 }) {
   return (
     <Comment comment={comment}>
       <>
         <br></br>
         {comment.replies.map((reply, index) =>
-          <Comment key={index} comment={reply}></Comment>)}
+          <Comment key={index} parentId={commentId} comment={reply}></Comment>)}
       </>
     </Comment>
   );

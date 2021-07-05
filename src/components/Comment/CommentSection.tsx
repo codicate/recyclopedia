@@ -45,7 +45,7 @@ const CommentSection = forwardRef<HTMLDivElement, CommentSectionProps>(
             {/* \eslint is confused */}
             {/* eslint-disable-next-line react/prop-types */}
             {props.comments.map((comment, idx) =>
-              <Comment key={idx} comment={comment} />
+              <Comment key={idx} commentId={idx} comment={comment} />
             )}
           </div>
         </div>

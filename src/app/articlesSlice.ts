@@ -248,6 +248,29 @@ export const selectNameOfFeaturedArticle = createDraftSafeSelector(
   selectSelf, (articles) => articles.articlesData.featuredArticle
 );
 
+export function getCommentsOfArticle(name: string) {
+  return [
+    {
+      user: {
+        name: "John Doe",
+        avatar: "https://lh6.googleusercontent.com/-f9MhM40YFzc/AAAAAAAAAAI/AAAAAAABjbo/iG_SORRy0I4/photo.jpg"
+      },
+      content: "This is a comment",
+      createdAt: new Date(),
+      likeCount: 10,
+      dislikeCount: 10,
+      replies: [
+        {
+          content: "???? Comment",
+          createdAt: new Date(),
+          likeCount: 10,
+          dislikeCount: 10,
+        }
+      ]
+    },
+  ];
+}
+
 export function readArticlesFromLoginType() : ArticlesData {
   const loginType = useAppSelector(selectLoginType);
   const articlesData = useAppSelector(selectArticlesData);
