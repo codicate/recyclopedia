@@ -2,7 +2,8 @@ import styles from "./FloatingSocialMenu.module.scss";
 import { useState } from "react";
 
 import MediaShareBtns from "./MediaShareBtns";
-import ButtonWithInfo from "components/UI/ButtonWithInfo";
+import CheckboxCounterBtn from "components/UI/CheckboxCounterBtn";
+import Button from "components/UI/Button";
 
 
 function FloatingSocialMenu({
@@ -20,23 +21,21 @@ function FloatingSocialMenu({
 
   return (
     <div className={styles.floatingSocialMenu}>
-      <ButtonWithInfo
+      <CheckboxCounterBtn
+        name='likes'
         materialIcon='thumb_up'
         info={likeCount.toString()}
       />
-      <ButtonWithInfo
+      <CheckboxCounterBtn
+        name='dislikes'
         materialIcon='thumb_down'
         info={dislikeCount.toString()}
       />
       {(expandShare) && (
         <MediaShareBtns title={title} />
       )}
-      <ButtonWithInfo
-        materialIcon={(expandShare) ? "close" : "share"}
-        onClick={() => setExpandShare(!expandShare)}
-      />
-      <ButtonWithInfo
-        materialIcon="comment"
+      <Button
+        styledAs="circle"
         onClick={() => {
           const commentSection = commentSectionRef.current;
           if (!commentSection) return;
@@ -44,7 +43,19 @@ function FloatingSocialMenu({
           const posY = commentSection.getBoundingClientRect().top + window.pageYOffset - 100;
           window.scrollTo({ top: posY, behavior: "smooth" });
         }}
-      />
+      >
+        <span className='material-icons'>
+          comment
+        </span>
+      </Button>
+      <Button
+        styledAs="circle"
+        onClick={() => setExpandShare(!expandShare)}
+      >
+        <span className='material-icons'>
+          {expandShare ? "close" : "share"}
+        </span>
+      </Button>
     </div >
   );
 }

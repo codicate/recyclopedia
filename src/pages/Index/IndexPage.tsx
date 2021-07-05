@@ -36,6 +36,7 @@ function IndexFilter({ filterSettings, updateFilters }: IndexFilterProperties) {
           filterSettings.tagFilters.map(({ filterName, active }) =>
             <CheckboxButton
               key={filterName}
+              name={filterName}
               checked={active}
               onCheck={(checked) =>
                 updateFilters.updateTagFilter(filterName, checked)

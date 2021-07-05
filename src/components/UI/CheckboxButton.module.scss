@@ -12,7 +12,11 @@
     position: absolute;
     height: 100%;
     width: 100%;
+  }
+}
 
+.default {
+  input {
     &+label {
       padding: 0.5em 1em;
       border-radius: 999rem;
@@ -42,32 +46,33 @@
 }
 
 .circle {
-  display: grid;
-  place-items: center;
+  input {
+    &+label {
+      display: grid;
+      place-items: center;
 
-  height: 2.5rem;
-  width: 2.5rem;
-  padding: 0;
+      height: 2.5rem;
+      width: 2.5rem;
+      padding: 0;
 
-  border-radius: 50%;
-  overflow: hidden;
+      border-radius: 50%;
+      overflow: hidden;
 
-  color: hsl(0, 0%, 50%);
-  border: 1px solid hsl(0, 0%, 90%);
+      color: hsl(0, 0%, 50%);
+      border: 1px solid hsl(0, 0%, 90%);
 
-  transition: .25s ease-out;
+      transition: .25s ease-out;
+    }
 
-  &:hover,
-  &:focus {
-    color: hsl(0, 0%, 35%);
-    background-color: hsl(0, 0, 95%);
-  }
+    &:hover+label,
+    &:focus+label {
+      color: hsl(0, 0%, 35%);
+      background-color: hsl(0, 0, 95%);
+    }
 
-  &:active {
-    color: hsl(0, 0%, 0%);
-  }
-
-  &:checked {
-    background-color: red;
+    &:checked+label {
+      color: white;
+      background-color: hsl(147, 59%, 30%);
+    }
   }
 }

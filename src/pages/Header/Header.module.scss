@@ -1,6 +1,7 @@
 @import "/src/styles/variables";
 
 #header {
+  // Keep the z index higher than the z index of FloatingSocialMenu so it will be hidden by the sidebar overlay
   z-index: 10;
 
   position: sticky;

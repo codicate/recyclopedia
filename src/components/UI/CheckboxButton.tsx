@@ -3,17 +3,19 @@ import cn from "classnames";
 
 
 function CheckedBoxButton({
-  children,
+  name,
   styledAs,
   checked,
   onCheck,
+  children,
   className,
   ...props
 }: {
+  name: string;
+  styledAs?: "oval" | "circle";
   checked?: boolean;
   onCheck?: (checked: boolean) => void,
-  children: string;
-  styledAs?: "oval";
+  children: React.ReactNode;
 } & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLDivElement>, HTMLDivElement>
 ) {
 
@@ -21,19 +23,21 @@ function CheckedBoxButton({
     <div
       className={cn(
         styles.button,
-        styledAs ? styles[styledAs] : "",
+        styledAs ? styles[styledAs] : styles.default,
         className
       )}
       {...props}
     >
       <input type="checkbox"
-        value={children}
+        value={name}
         checked={checked}
-        onChange={(event) =>
-          onCheck?.(event.target.checked)
+        onChange={(event) => {
+          console.log("yooooo");
+          onCheck?.(event.target.checked);
+        }
         }
       />
-      <label htmlFor={children}>{children}</label>
+      <label htmlFor={name}>{children}</label>
     </div >
   );
 }
