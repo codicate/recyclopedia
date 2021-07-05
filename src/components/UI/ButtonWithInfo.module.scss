@@ -1,0 +1,13 @@
+.buttonWithInfo {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+
+  &>p {
+    margin: 0;
+    margin-top: 4px;
+    
+    font-size: .875rem;
+    color: hsl(0, 0%, 70%);
+  }
+}

@@ -16,7 +16,7 @@ import MarkdownRender from "components/Article/MarkdownRender";
 import CommentSection from "components/Comment/CommentSection";
 
 import Admin from "pages/Admin/Admin";
-import MediaShareBtns from "./MediaShareBtns";
+import FloatingArticleControl from "./FloatingArticleControl";
 import TableOfContents from "./TableOfContents";
 import TagViews from "./TagViews";
 
@@ -112,6 +112,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
       case PageViewType.Reading:
         return (
           <>
+            <FloatingArticleControl title={name} />
             <h1 className={styles.title}> {name} </h1>
             <div className={styles.dateView}>
               <p>
@@ -123,7 +124,6 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
                 </p>
               )}
             </div>
-            <MediaShareBtns title={name} />
             <TableOfContents sectionHeaders={processedMarkdown.headers} />
             <MarkdownRender className={styles.article}>
               {processedMarkdown.processed}

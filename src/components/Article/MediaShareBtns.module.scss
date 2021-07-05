@@ -3,11 +3,11 @@
 
 .shareBtns {
   display: flex;
+  flex-flow: column;
   justify-content: center;
   gap: 1em;
 
   width: 100%;
-  padding-bottom: 2em;
 
   &>button {
     display: flex;

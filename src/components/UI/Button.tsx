@@ -10,7 +10,7 @@ function Button({
   ...props
 }: {
   children: React.ReactNode;
-  styledAs?: "oval";
+  styledAs?: "oval" | "circle";
 } & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
 ) {
   return (
