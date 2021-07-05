@@ -10,7 +10,12 @@ type CommentSectionProps = {
 } & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 const CommentSection = forwardRef<HTMLDivElement, CommentSectionProps>(
-  function CommentSection(props, ref) {
+  function CommentSection(
+    {
+      comments,
+      ...props
+    }, ref
+  ) {
     return (
       <div
         className={styles.commentSection}
@@ -42,9 +47,7 @@ const CommentSection = forwardRef<HTMLDivElement, CommentSectionProps>(
         <div className={styles.commentSectionContent}>
           <h2>Comments</h2>
           <div>
-            {/* \eslint is confused */}
-            {/* eslint-disable-next-line react/prop-types */}
-            {props.comments.map((comment, idx) =>
+            {comments.map((comment, idx) =>
               <Comment key={idx} commentId={idx} comment={comment} />
             )}
           </div>

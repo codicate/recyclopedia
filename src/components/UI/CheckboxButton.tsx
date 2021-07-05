@@ -1,45 +1,47 @@
 import styles from "./CheckboxButton.module.scss";
+import { forwardRef } from "react";
 import cn from "classnames";
 
 
-function CheckedBoxButton({
-  name,
-  styledAs,
-  checked,
-  onCheck,
-  children,
-  className,
-  ...props
-}: {
+type CheckboxProps = {
   name: string;
   styledAs?: "oval" | "circle";
   checked?: boolean;
   onCheck?: (checked: boolean) => void,
   children: React.ReactNode;
-} & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLDivElement>, HTMLDivElement>
-) {
+} & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
 
-  return (
-    <div
-      className={cn(
-        styles.button,
-        styledAs ? styles[styledAs] : styles.default,
-        className
-      )}
-      {...props}
-    >
-      <input type="checkbox"
-        value={name}
-        checked={checked}
-        onChange={(event) => {
-          console.log("yooooo");
-          onCheck?.(event.target.checked);
-        }
-        }
-      />
-      <label htmlFor={name}>{children}</label>
-    </div >
-  );
-}
+const CheckedBoxButton = forwardRef<HTMLInputElement, CheckboxProps>(
+  function CheckedBoxButton(
+    {
+      name,
+      styledAs,
+      checked,
+      children,
+      className,
+      ...props
+    },
+    ref
+  ) {
+    return (
+      <div
+        className={cn(
+          styles.button,
+          styledAs ? styles[styledAs] : styles.default,
+          className
+        )}
+      >
+        <input
+          ref={ref}
+          type="checkbox"
+          value={name}
+          checked={checked}
+          {...props}
+        />
+        <label htmlFor={name}>{children}</label>
+      </div >
+    );
+  }
+);
 
 export default CheckedBoxButton;
