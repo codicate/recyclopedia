@@ -300,6 +300,10 @@ export async function deleteComment(articleName: string, commentId: number) {
     }
   ));
 }
+
+// parentId:
+// will have to be a more special type of id to prevent against weird issues
+// when deleting. This is not done yet. (some sort of GUID) basically.
 export async function replyToComment(articleName: string, parentId: number, comment: string) {
   const completedComment = buildCommentDraft(comment);
 
