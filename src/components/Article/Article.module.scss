@@ -32,6 +32,40 @@ html {
   text-align: center;
 }
 
+.dateView {
+  color: hsl(0, 0%, 75%);
+  font-size: .875em;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 2em;
+
+  p {
+    margin: 0;
+    line-height: 100%;
+  }
+
+  @media screen and (min-width: 700px) {
+    &>:not(:last-child) {
+      display: flex;
+      align-items: center;
+
+      &::after {
+        content: '·';
+        font-size: 1.75rem;
+        padding: 0 .5rem;
+      }
+    }
+  }
+
+  @media screen and (max-width: 700px) {
+    flex-flow: column;
+    gap: 1em;
+  }
+}
+
 .article {
   width: 100%;
   overflow-wrap: break-word;

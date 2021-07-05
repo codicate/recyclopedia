@@ -40,6 +40,10 @@ textarea {
   text-decoration: none;
   background-color: white;
   border: none;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 h1,

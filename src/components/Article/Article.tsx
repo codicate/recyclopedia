@@ -113,15 +113,13 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
         return (
           <>
             <h1 className={styles.title}> {name} </h1>
-            <div className="dateView">
+            <div className={styles.dateView}>
               <p>
-                <b>Date Created: </b>
-                {format(dateCreated, "LLLL d, yyyy, h:mm a")}
+                  Created at {format(dateCreated, "LLLL d, yyyy, h:mm a")}
               </p>
               {(dateModified) && (
                 <p>
-                  <b>Last Modified: </b>
-                  {format(dateModified, "LLLL d, yyyy, h:mm a")}
+                    Last Modified at {format(dateModified, "LLLL d, yyyy, h:mm a")}
                 </p>
               )}
             </div>
