@@ -7,14 +7,14 @@
 }
 
 .default {
-  letter-spacing: 0.5px;
-  line-height: 50px;
-  padding: 0 2rem;
-  background-color: hsl(147, 60%, 30%);
-  color: white;
+  padding: 1rem 2rem;
+
   text-transform: uppercase;
   font-weight: bolder;
+
+  color: white;
   border-color: $very-green;
+  background-color: hsl(147, 60%, 30%);
 
   &:hover {
     background-color: hsl(147, 60%, 30%);

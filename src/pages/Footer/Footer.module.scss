@@ -14,8 +14,13 @@
 
     padding: 0 2em;
 
-    #social {
-      &>div {
+    #links {
+      display: flex;
+      flex-flow: column;
+      justify-content: center;
+      gap: 1em;
+
+      #socialLinks {
         display: flex;
         justify-content: center;
         gap: 8px;
@@ -24,6 +29,18 @@
           height: 32px !important;
           width: 32px !important;
           overflow: hidden;
+        }
+      }
+
+      #pageLinks {
+        display: grid;
+        grid-template: auto / 1fr 1fr;
+        gap: 1em;
+
+        button {
+          width: 100%;
+          padding: .5em 1em;
+          font-size: .875rem;
         }
       }
     }
