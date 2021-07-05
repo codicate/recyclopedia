@@ -29,6 +29,9 @@ export interface Article {
   dateCreated: Date;
   dateModified?: Date;
   draftStatus: boolean;
+
+  likeCount: number;
+  dislikeCount: number;
   tags?: string[];
 }
 

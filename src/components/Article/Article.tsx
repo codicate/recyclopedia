@@ -135,6 +135,8 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
             <FloatingSocialMenu
               title={name}
               commentSectionRef={commentSectionRef}
+              likeCount={0}
+              dislikeCount={0}
             />
             <h1 className={styles.title}> {name} </h1>
             <div className={styles.dateView}>

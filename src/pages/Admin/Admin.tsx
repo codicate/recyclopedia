@@ -27,6 +27,8 @@ export default function Admin({
         name: submissionData.name,
         content: submissionData.content,
         dateCreated: (submissionData.dateCreated) ? submissionData.dateCreated : new Date(),
+        likeCount: 0,
+        dislikeCount: 0,
         dateModified: new Date(),
         draftStatus: draftStatus,
         tags: submissionData.tags,
