@@ -10,14 +10,14 @@
     setFeaturedArticle is the only one I'm aware of with bad data.
 */
 
-import { CommentModel } from "components/Comment/Comment";
+import { TopLevelCommentModel } from "components/Comment/Comment";
 
 import { createSlice, createAsyncThunk, createDraftSafeSelector } from "@reduxjs/toolkit";
 import { RootState } from "app/store";
 import { loginWithEmailAndPassword } from "app/adminSlice";
 
 import { useAppSelector } from "./hooks";
-import { selectLoginType, LoginType } from "app/adminSlice";
+import { selectAccountCustomData, selectAccountDetails, selectLoginType, LoginType } from "app/adminSlice";
 
 import { App, User, Credentials } from "realm-web";
 import { MessageLogType, logMessage } from "utils/functions";
@@ -250,8 +250,36 @@ export const selectNameOfFeaturedArticle = createDraftSafeSelector(
   selectSelf, (articles) => articles.articlesData.featuredArticle
 );
 
-export async function addComment(articleName: string, comment: CommentModel) {
-  // shim
+export async function addComment(articleName: string, comment: string) {
+  const loginType = useAppSelector(selectLoginType);
+  const accountDetails = useAppSelector(selectAccountDetails);
+
+  const currentDate = new Date();
+
+  const commentDraft = {
+    content: comment,
+    createdAt: currentDate,
+    likeCount: 0,
+    dislikeCount: 0,
+    replies: []
+  };
+
+  const completedComment: TopLevelCommentModel =
+    (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn) ?
+      commentDraft : {
+        ...commentDraft,
+        user: {
+          name: accountDetails.email,
+          // comments should not really have avatars in the future.
+          avatar: "https://lh6.googleusercontent.com/-f9MhM40YFzc/AAAAAAAAAAI/AAAAAAABjbo/iG_SORRy0I4/photo.jpg",
+        }
+      };
+
+  await (tryToCallWithUser(
+    async function(user: Realm.User, _: any, _1: any) {
+      await user.functions.addComment(articleName, completedComment);
+    }
+  ));
 }
 export async function deleteComment(articleName: string, commentId: number) {
   // shim

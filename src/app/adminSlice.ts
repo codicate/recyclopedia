@@ -24,13 +24,21 @@ export interface LoginAttemptResult {
 interface ApplicationState {
   loginType: LoginType | null,
   accountDetails: AccountDetails,
+  // I will make this an any for now to avoid having
+  // to type it.
+  accountCustomData: any,
 }
 
 const initialState: ApplicationState = {
   loginType: LoginType.NotLoggedIn,
   accountDetails: {
     email: "",
+    // we should probably not be storing this
+    // well... actually it's clientside, so it's probably fine...
     password: "",
+  },
+  accountCustomData: {
+
   }
 };
 
@@ -66,6 +74,7 @@ export const loginWithEmailAndPassword = createAsyncThunk(
       return {
         accountDetails,
         type: possiblyAdminLoginType || type,
+        customData: user?.customData,
       };
     }
 
@@ -92,6 +101,7 @@ const adminSlice = createSlice({
         case LoginType.Admin:
           state.accountDetails = payload.accountDetails;
           state.loginType = payload.type;
+          state.accountCustomData = payload.customData;
           break;
 
         default: break;
@@ -116,4 +126,11 @@ export const selectLoginType = createDraftSafeSelector(
 export const selectAccountDetails = createDraftSafeSelector(
   selectSelf,
   (admin) => admin.accountDetails
+);
+
+// This should be more specifically typed
+// however this isn't finalized so let's not do that.
+export const selectAccountCustomData = createDraftSafeSelector(
+  selectSelf,
+  (admin) => admin.accountCustomData
 );

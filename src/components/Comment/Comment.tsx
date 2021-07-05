@@ -15,6 +15,7 @@ export interface CommentModel {
   likeCount: number;
   dislikeCount: number;
 }
+
 export type ReplyCommentModel = CommentModel;
 export interface TopLevelCommentModel extends CommentModel {
   replies: ReplyCommentModel[];
