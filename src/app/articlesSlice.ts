@@ -10,6 +10,8 @@
     setFeaturedArticle is the only one I'm aware of with bad data.
 */
 
+import { CommentModel } from "components/Comment/Comment";
+
 import { createSlice, createAsyncThunk, createDraftSafeSelector } from "@reduxjs/toolkit";
 import { RootState } from "app/store";
 import { loginWithEmailAndPassword } from "app/adminSlice";
@@ -248,7 +250,27 @@ export const selectNameOfFeaturedArticle = createDraftSafeSelector(
   selectSelf, (articles) => articles.articlesData.featuredArticle
 );
 
-export function getCommentsOfArticle(name: string) {
+export async function addComment(articleName: string, comment: CommentModel) {
+  // shim
+}
+export async function deleteComment(articleName: string, commentId: number) {
+  // shim
+}
+export async function replyToComment(articleName: string, parentId: number) {
+  // shim 
+}
+
+// this one will need to check based on the logged in user.
+// to determine whether we should revote.
+enum VoteType {
+  Like,
+  Dislike
+}
+export async function commentVote(articleName: string, voteType: VoteType) {
+  // shim
+}
+
+export async function getCommentsOfArticle(name: string) {
   return [
     {
       user: {

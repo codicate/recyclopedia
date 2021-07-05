@@ -26,7 +26,7 @@ function Comment({
   /*
     When clicking on reply, and forming the message make a dispatch to
     
-    replyTo(articleName, parentId)
+    replyToComment(articleName, parentId)
 
     This is not here, so an easier method would just be to pass in a submit comment
     function in the comment section to make things easier.
