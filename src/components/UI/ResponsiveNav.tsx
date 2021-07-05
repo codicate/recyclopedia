@@ -26,6 +26,10 @@ function ResponsiveNav({
       setShrunk(true);
     } else {
       setShrunk(false);
+      // If the sidebar is too small, there's no reason to technically have it open
+      // you could do an && on the bottom, but it's probably not expected behavior I expect
+      // since it's kind of jarring to have it suddenly open lol.
+      setSidebarOpened(false);
     }
   };
 
