@@ -273,7 +273,7 @@ export async function commentVote(articleName: string, voteType: VoteType) {
 export async function getCommentsOfArticle(name: string) {
   // tryToCallWithUser was supposed to reduce the redundancy for reducers
   // so this looks weird.
-  const fetchedComments = tryToCallWithUser(
+  const fetchedComments = await tryToCallWithUser(
     async function(user: Realm.User, _argument: any, _: any) {
       const comments = await user.functions.getCommentsOfArticle(name);
       return comments;
