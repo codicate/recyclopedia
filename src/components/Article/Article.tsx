@@ -62,6 +62,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
   useEffect(() => {
     (async function () {
       const retrievedComments = await getCommentsOfArticle(name);
+      console.log("bastardo", retrievedComments);
       updateComments(retrievedComments);
     })();
   }, [commentPinger]);

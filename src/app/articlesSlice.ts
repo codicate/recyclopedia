@@ -271,26 +271,19 @@ export async function commentVote(articleName: string, voteType: VoteType) {
 }
 
 export async function getCommentsOfArticle(name: string) {
-  return [
-    {
-      user: {
-        name: "John Doe",
-        avatar: "https://lh6.googleusercontent.com/-f9MhM40YFzc/AAAAAAAAAAI/AAAAAAABjbo/iG_SORRy0I4/photo.jpg"
-      },
-      content: "This is a comment",
-      createdAt: new Date(),
-      likeCount: 10,
-      dislikeCount: 10,
-      replies: [
-        {
-          content: "???? Comment",
-          createdAt: new Date(),
-          likeCount: 10,
-          dislikeCount: 10,
-        }
-      ]
-    },
-  ];
+  // tryToCallWithUser was supposed to reduce the redundancy for reducers
+  // so this looks weird.
+  const fetchedComments = tryToCallWithUser(
+    async function(user: Realm.User, _argument: any, _: any) {
+      const comments = await user.functions.getCommentsOfArticle(name);
+      return comments;
+    })(undefined, undefined);
+
+  if (fetchedComments) {
+    return fetchedComments;
+  } else {
+    return [];
+  }
 }
 
 export function readArticlesFromLoginType() : ArticlesData {
