@@ -3,7 +3,6 @@ import { formatDistance } from "date-fns";
 
 import Button from "components/UI/Button";
 
-
 export interface UserModel {
   name: string;
   avatar: string;
@@ -15,13 +14,18 @@ export interface CommentModel {
   createdAt: Date;
   likeCount: number;
   dislikeCount: number;
-  comments: CommentModel[];
+}
+export type ReplyCommentModel = CommentModel;
+export interface TopLevelCommentModel extends CommentModel {
+  replies: ReplyCommentModel[];
 }
 
 function Comment({
   comment,
+  children
 }: {
   comment: CommentModel;
+  children?: React.ReactChild | React.ReactChild[];
 }) {
   return (
     <div className={styles.comment}>
@@ -59,8 +63,25 @@ function Comment({
           Reply
         </Button>
       </div>
+      {children}
     </div>
   );
 }
 
-export default Comment;
+function TopLevelComment({
+  comment,
+}: {
+  comment: TopLevelCommentModel;
+}) {
+  return (
+    <Comment comment={comment}>
+      <>
+        <br></br>
+        {comment.replies.map((reply, index) =>
+          <Comment key={index} comment={reply}></Comment>)}
+      </>
+    </Comment>
+  );
+}
+
+export default TopLevelComment;

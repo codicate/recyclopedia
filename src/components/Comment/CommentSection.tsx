@@ -3,10 +3,10 @@ import React, { forwardRef } from "react";
 
 import Form from "components/Form/Form";
 import Button from "components/UI/Button";
-import Comment, { CommentModel } from "./Comment";
+import Comment, { TopLevelCommentModel } from "./Comment";
 
 type CommentSectionProps = {
-  comments: CommentModel[];
+  comments: TopLevelCommentModel[];
 } & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 const CommentSection = forwardRef<HTMLDivElement, CommentSectionProps>(

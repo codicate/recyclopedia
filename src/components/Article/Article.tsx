@@ -145,7 +145,18 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
                   createdAt: new Date(),
                   likeCount: 10,
                   dislikeCount: 10,
-                  comments: []
+                  replies: [
+                    {
+                      user: {
+                        name: "Anonymous",
+                        avatar: "https://lh6.googleusercontent.com/-f9MhM40YFzc/AAAAAAAAAAI/AAAAAAABjbo/iG_SORRy0I4/photo.jpg"
+                      },
+                      content: "???? Comment",
+                      createdAt: new Date(),
+                      likeCount: 10,
+                      dislikeCount: 10,
+                    }
+                  ]
                 },
                 {
                   user: {
@@ -156,7 +167,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
                   createdAt: new Date(),
                   likeCount: 1000,
                   dislikeCount: 9923,
-                  comments: []
+                  replies: []
                 },
                 {
                   user: {
@@ -167,7 +178,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
                   createdAt: new Date(),
                   likeCount: 0,
                   dislikeCount: 9999,
-                  comments: []
+                  replies: []
                 }
               ]}
             />
