@@ -2,7 +2,7 @@ import styles from "./Form.module.scss";
 import { useState } from "react";
 import cn from "classnames";
 
-import Input, { InputOptions, ChangeHandler } from "components/Form/Input";
+import Input, { InputOptions, ChangeHandler } from "./Input";
 
 
 function Form<
@@ -49,17 +49,19 @@ function Form<
       onSubmit={submitHandler}
       {...props}
     >
-      {
-        Object.entries(inputItems).map(([name, value], idx) => (
-          <Input
-            key={idx}
-            changeHandler={changeHandler}
-            name={name}
-            value={input[name]}
-            {...value}
-          />
-        ))
-      }
+      <div className={styles.inputs}>
+        {
+          Object.entries(inputItems).map(([name, value], idx) => (
+            <Input
+              key={idx}
+              changeHandler={changeHandler}
+              name={name}
+              value={input[name]}
+              {...value}
+            />
+          ))
+        }
+      </div>
       {children}
     </ form>
   );

@@ -1,5 +1,10 @@
 .form {
   display: flex;
   flex-flow: column;
-  gap: 2em;
+
+  .inputs {
+    display: flex;
+    flex-flow: column;
+    gap: 1em;
+  }
 }

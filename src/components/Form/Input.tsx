@@ -1,4 +1,4 @@
-import styles from "components/Form/Input.module.scss";
+import styles from "./Input.module.scss";
 import { useRef } from "react";
 import cn from "classnames";
 
@@ -21,7 +21,6 @@ const Input = ({
   label,
   value,
   option,
-  readOnly,
   selectAllOnFocus,
   ...props
 }: {
@@ -36,26 +35,6 @@ const Input = ({
 
   return (
     <div className={styles.group}>
-      <InputOrTextarea
-        ref={inputRef}
-        className={(
-          option === "textarea"
-        ) ? styles.textarea
-          : styles.input
-        }
-        onChange={changeHandler}
-        {...((
-          selectAllOnFocus
-        ) && {
-          onFocus: () => inputRef.current?.select()
-        })}
-        {...((
-          readOnly
-        ) && {
-          readOnly: true
-        })}
-        {...props}
-      />
       {
         label && (
           <label
@@ -65,6 +44,19 @@ const Input = ({
           </label>
         )
       }
+      <InputOrTextarea
+        ref={inputRef}
+        className={(
+          option === "textarea"
+        ) ? styles.textarea
+          : styles.input
+        }
+        onChange={changeHandler}
+        {...((selectAllOnFocus) && {
+          onFocus: () => inputRef.current?.select()
+        })}
+        {...props}
+      />
     </div>
   );
 };
