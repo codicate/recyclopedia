@@ -7,12 +7,12 @@ import MarkdownRender from "components/Article/MarkdownRender";
 
 import { ArticlesDataProperties, selectNameOfFeaturedArticle, Article } from "app/articlesSlice";
 import { useAppSelector } from "app/hooks";
-
+import Banner from "components/Article/Banner";
 interface ArticlePreviewProperties {
   previewTitle: string,
   article: Article | undefined | null,
 }
-function ArticlePreview({previewTitle, article}: ArticlePreviewProperties) {
+function ArticlePreview({ previewTitle, article }: ArticlePreviewProperties) {
   if (article) {
     return (
       <>
@@ -22,6 +22,9 @@ function ArticlePreview({previewTitle, article}: ArticlePreviewProperties) {
 
         <div className={styles.articleDisplay}>
           <h2>{article.name}</h2>
+          {(article?.bannerImage) && (
+            <Banner bannerImage={article.bannerImage}></Banner>
+          )}
           <MarkdownRender className={styles.searchResult}>
             {`${article.content.substr(0, 800).replaceAll(/(@@.*)|(@@.*@@)/g, "")}`}
           </MarkdownRender>
@@ -46,8 +49,8 @@ function ArticleShowcase({
 
   return (
     <>
-      <ArticlePreview previewTitle="Featured Article" article={featuredArticle}/>
-      <ArticlePreview previewTitle="Random Article" article={randomArticle}/>
+      <ArticlePreview previewTitle="Featured Article" article={featuredArticle} />
+      <ArticlePreview previewTitle="Random Article" article={randomArticle} />
     </>
   );
 }

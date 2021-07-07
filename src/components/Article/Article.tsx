@@ -19,7 +19,11 @@ import Admin from "pages/Admin/Admin";
 import FloatingSocialMenu from "./FloatingSocialMenu";
 import TableOfContents from "./TableOfContents";
 import TagViews from "./TagViews";
+
 import { CommentModel, TopLevelCommentModel } from "components/Comment/Comment";
+
+
+import Banner from "./Banner";
 
 
 enum PageViewType {
@@ -130,20 +134,30 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
           >
             Delete Page
           </Button>
+        
         </div>
       )
+      
     }
     {(() => {
       switch (viewType) {
       case PageViewType.Reading:
         return (
           <>
+
             <FloatingSocialMenu
               title={name}
               commentSectionRef={commentSectionRef}
               likeCount={likeCount}
               dislikeCount={dislikeCount}
             />
+
+            
+            {(article?.bannerImage)&&(
+              <Banner bannerImage={article.bannerImage}></Banner>
+            )}
+
+
             <h1 className={styles.title}> {name} </h1>
             <div className={styles.dateView}>
               <p>

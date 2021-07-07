@@ -24,6 +24,7 @@ import { MessageLogType, logMessage } from "utils/functions";
 import userEvent from "@testing-library/user-event";
 
 export interface Article {
+  bannerImage?:string;
   name: string;
   content: string;
   dateCreated: Date;
