@@ -1,17 +1,20 @@
 import styles from "pages/Homepage/Homepage.module.scss";
 import { Link } from "react-router-dom";
 
+import { useAppSelector } from "app/hooks";
+import { ArticlesDataProperties, selectNameOfFeaturedArticle, Article } from "app/articlesSlice";
+
 import { validPageLink, randomElt } from "utils/functions";
+
+import Banner from "components/Article/Banner";
 import MarkdownRender from "components/Article/MarkdownRender";
 
 
-import { ArticlesDataProperties, selectNameOfFeaturedArticle, Article } from "app/articlesSlice";
-import { useAppSelector } from "app/hooks";
-import Banner from "components/Article/Banner";
 interface ArticlePreviewProperties {
   previewTitle: string,
   article: Article | undefined | null,
 }
+
 function ArticlePreview({ previewTitle, article }: ArticlePreviewProperties) {
   if (article) {
     return (
@@ -65,7 +68,9 @@ function Homepage({ articlesData }: ArticlesDataProperties) {
         source of ways to recycle items appropriately. It may also contain other methods of
         sustaining an environmentally friendly lifestyle.
       </p>
-      <p>This is developed by <a href="https://www.projectenv.org/">The Environment Project</a></p>
+      <p>
+        This is developed by <a href="https://www.projectenv.org/">The Environment Project</a>
+      </p>
       <ArticleShowcase articlesData={articlesData} />
     </div>
   );

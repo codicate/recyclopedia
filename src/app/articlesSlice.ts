@@ -21,12 +21,11 @@ import { selectAccountCustomData, selectAccountDetails, selectLoginType, LoginTy
 
 import { App, User, Credentials } from "realm-web";
 import { MessageLogType, logMessage } from "utils/functions";
-import userEvent from "@testing-library/user-event";
 
 export interface Article {
-  bannerImage?:string;
   name: string;
   content: string;
+  bannerImage?: string;
   dateCreated: Date;
   dateModified?: Date;
   draftStatus: boolean;
@@ -69,9 +68,9 @@ export const databaseApi: {
 };
 
 const initialState: {
-    status: "idle" | "loading" | "succeed" | "failed";
-    articlesData: ArticlesData;
-    allTags: string[];
+  status: "idle" | "loading" | "succeed" | "failed";
+  articlesData: ArticlesData;
+  allTags: string[];
 } = {
   status: "idle",
   articlesData: {
@@ -84,8 +83,8 @@ const initialState: {
 
 // @ts-ignore
 function tryToCallWithUser(fn) {
-// @ts-ignore
-  return async function(argument, thunkApi) {
+  // @ts-ignore
+  return async function (argument, thunkApi) {
     try {
       if (databaseApi.applicationUser) {
         return await fn(databaseApi.applicationUser, argument, thunkApi);
@@ -106,7 +105,7 @@ export const initApi = createAsyncThunk(
     try {
       databaseApi.application = new App({ id: appId });
       const accountDetails = state.admin.accountDetails;
-            
+
       await dispatch(loginWithEmailAndPassword(accountDetails));
       dispatch(queryForArticles(undefined));
       dispatch(queryForAllTags(undefined));
@@ -121,7 +120,7 @@ export const queryForArticles = createAsyncThunk(
   "articles/queryForArticles",
   tryToCallWithUser(
     // @ts-ignore
-    async function(user: Realm.User, query?: any, thunkApi: any) {
+    async function (user: Realm.User, query?: any, thunkApi: any) {
       // TODO(jerry): dummy, until we actually add all dates for articles
       const articles = await user.functions.getAllArticles();
       return articles;
@@ -133,15 +132,15 @@ export const queryForAllTags = createAsyncThunk(
   "articles/queryForAllTags",
   tryToCallWithUser(
     // @ts-ignore
-    async function(user: Realm.User, _: any, thunkApi: any) {
+    async function (user: Realm.User, _: any, thunkApi: any) {
       return await user.functions.getAllTags();
     }
   )
 );
 
 interface MigrationParameters {
-    name: string,
-    newName: string,
+  name: string,
+  newName: string,
 }
 
 /*
@@ -151,7 +150,7 @@ export const migrateArticle = createAsyncThunk(
   "articles/migrateArticle",
   tryToCallWithUser(
     // @ts-ignore
-    async function(user: Realm.User, migrationParams: MigrationParameters, {dispatch}) {
+    async function (user: Realm.User, migrationParams: MigrationParameters, { dispatch }) {
       const result = await user.functions.migrateArticle(migrationParams.name, migrationParams.newName);
       dispatch(queryForArticles(undefined));
       return result;
@@ -163,7 +162,7 @@ export const deleteArticle = createAsyncThunk(
   "articles/deleteArticle",
   tryToCallWithUser(
     // @ts-ignore
-    async function(user: Realm.User, name: string, {dispatch}) {
+    async function (user: Realm.User, name: string, { dispatch }) {
       await user.functions.removeArticle(name);
       dispatch(queryForArticles(undefined));
     }
@@ -174,7 +173,7 @@ export const restoreArticle = createAsyncThunk(
   "articles/restoreArticle",
   tryToCallWithUser(
     // @ts-ignore
-    async function(user: Realm.User, name: string, {dispatch}) {
+    async function (user: Realm.User, name: string, { dispatch }) {
       await user.functions.restoreArticle(name);
       dispatch(queryForArticles(undefined));
     }
@@ -185,7 +184,7 @@ export const insertArticle = createAsyncThunk(
   "articles/insertArticle",
   tryToCallWithUser(
     // @ts-ignore
-    async function(user: Realm.User, articleContent: Article, {dispatch}) {
+    async function (user: Realm.User, articleContent: Article, { dispatch }) {
       await user.functions.createOrUpdateArticle(articleContent);
       dispatch(queryForArticles(undefined));
     }
@@ -196,7 +195,7 @@ export const setFeaturedArticle = createAsyncThunk(
   "articles/setFeaturedArticle",
   tryToCallWithUser(
     // @ts-ignore
-    async function(user: Realm.User, articleTitle: string | null, {dispatch}) {
+    async function (user: Realm.User, articleTitle: string | null, { dispatch }) {
       await user.functions.setFeaturedArticle(articleTitle);
       dispatch(queryForArticles(undefined));
     }
@@ -248,7 +247,7 @@ export const selectStatus = createDraftSafeSelector(
 );
 
 export const selectArticlesData = createDraftSafeSelector(
-  selectSelf, (articles) => articles.articlesData 
+  selectSelf, (articles) => articles.articlesData
 );
 
 export const selectNameOfFeaturedArticle = createDraftSafeSelector(
@@ -268,8 +267,8 @@ export function buildCommentDraft(comment: string) {
     dislikeCount: 0,
   };
 
-  const commentDraft : CommentModel = 
-    (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn) 
+  const commentDraft: CommentModel =
+    (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn)
       ? commentContents
       : {
         ...commentContents,
@@ -284,10 +283,10 @@ export function buildCommentDraft(comment: string) {
 }
 
 export async function addComment(articleName: string, comment: string) {
-  const completedComment = {... buildCommentDraft(comment), replies: []};
+  const completedComment = { ...buildCommentDraft(comment), replies: [] };
 
   await (tryToCallWithUser(
-    async function(user: Realm.User, _: any, _1: any) {
+    async function (user: Realm.User, _: any, _1: any) {
       await user.functions.addComment(articleName, completedComment);
     }
   ));
@@ -300,7 +299,7 @@ export async function deleteComment(articleName: string, commentId: number) {
   */
   alert("This function is a shim and does not work yet!");
   await (tryToCallWithUser(
-    async function(user: Realm.User, _: any, _1: any) {
+    async function (user: Realm.User, _: any, _1: any) {
       await user.functions.removeComment(articleName, commentId);
     }
   ));
@@ -313,7 +312,7 @@ export async function replyToComment(articleName: string, parentId: number, comm
   const completedComment = buildCommentDraft(comment);
 
   await (tryToCallWithUser(
-    async function(user: Realm.User, _: any, _1: any) {
+    async function (user: Realm.User, _: any, _1: any) {
       await user.functions.replyToComment(articleName, parentId, completedComment);
     }
   ));
@@ -340,12 +339,12 @@ export interface VoteTarget {
 type VoteTypeString = "like" | "dislike" | "unknown";
 function voteTypeToString(voteType: VoteType): VoteTypeString {
   switch (voteType) {
-  case VoteType.Like:
-    return "like";
-  case VoteType.Dislike:
-    return "dislike";
-  default:
-    return "unknown";
+    case VoteType.Like:
+      return "like";
+    case VoteType.Dislike:
+      return "dislike";
+    default:
+      return "unknown";
   }
 }
 export async function articleVote(articleName: string, voteType: VoteType) {
@@ -355,7 +354,7 @@ export async function articleVote(articleName: string, voteType: VoteType) {
     return;
 
   await (tryToCallWithUser(
-    async function(user: Realm.User, _: any, _1: any) {
+    async function (user: Realm.User, _: any, _1: any) {
       await user.functions.articleVote(articleName, voteTypeToString(voteType), user.id);
     }
   ));
@@ -367,7 +366,7 @@ export async function commentVote(articleName: string, voteType: VoteType, targe
     return;
 
   await (tryToCallWithUser(
-    async function(user: Realm.User, _: any, _1: any) {
+    async function (user: Realm.User, _: any, _1: any) {
       await user.functions.commentVote(articleName, target, voteTypeToString(voteType), user.id);
     }
   ));
@@ -377,7 +376,7 @@ export async function getCommentsOfArticle(name: string) {
   // tryToCallWithUser was supposed to reduce the redundancy for reducers
   // so this looks weird.
   const fetchedComments = await tryToCallWithUser(
-    async function(user: Realm.User, _argument: any, _: any) {
+    async function (user: Realm.User, _argument: any, _: any) {
       const comments = await user.functions.getCommentsOfArticle(name);
       return comments;
     })(undefined, undefined);
@@ -389,7 +388,7 @@ export async function getCommentsOfArticle(name: string) {
   }
 }
 
-export function readArticlesFromLoginType() : ArticlesData {
+export function readArticlesFromLoginType(): ArticlesData {
   const loginType = useAppSelector(selectLoginType);
   const articlesData = useAppSelector(selectArticlesData);
 
@@ -399,7 +398,7 @@ export function readArticlesFromLoginType() : ArticlesData {
     const newArticleSet =
       articlesData.articles.filter((article) => !article.draftStatus);
     return {
-      ... articlesData,
+      ...articlesData,
       articles: newArticleSet,
     };
   }

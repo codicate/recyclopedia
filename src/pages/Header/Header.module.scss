@@ -55,7 +55,7 @@
 
 @media (max-width: 950px) {
   #header {
-    #logoDiv:after {
+    #logoDiv>a:after {
       display: none;
     }
   }

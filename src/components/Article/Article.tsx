@@ -4,26 +4,29 @@ import { useHistory } from "react-router-dom";
 import { format } from "date-fns";
 
 import { useAppSelector, useAppDispatch } from "app/hooks";
-import { getCommentsOfArticle, migrateArticle, deleteArticle, restoreArticle, Article } from "app/articlesSlice";
 import { LoginType, selectLoginType } from "app/adminSlice";
+import {
+  getCommentsOfArticle,
+  migrateArticle,
+  deleteArticle,
+  restoreArticle,
+  Article
+} from "app/articlesSlice";
 
 import { validPageLink } from "utils/functions";
 import { preprocessMarkdown } from "utils/preprocessMarkdown";
 
-import Input from "components/Form/Input";
-import Button from "components/UI/Button";
-import MarkdownRender from "components/Article/MarkdownRender";
-import CommentSection from "components/Comment/CommentSection";
-
 import Admin from "pages/Admin/Admin";
 import FloatingSocialMenu from "./FloatingSocialMenu";
+import Banner from "./Banner";
 import TableOfContents from "./TableOfContents";
 import TagViews from "./TagViews";
 
+import Input from "components/Form/Input";
+import Button from "components/UI/Button";
+import MarkdownRender from "components/Article/MarkdownRender";
 import { CommentModel, TopLevelCommentModel } from "components/Comment/Comment";
-
-
-import Banner from "./Banner";
+import CommentSection from "components/Comment/CommentSection";
 
 
 enum PageViewType {
@@ -134,83 +137,79 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
           >
             Delete Page
           </Button>
-        
+
         </div>
       )
-      
     }
     {(() => {
       switch (viewType) {
-      case PageViewType.Reading:
-        return (
-          <>
+        case PageViewType.Reading:
+          return (
+            <>
+              <FloatingSocialMenu
+                title={name}
+                commentSectionRef={commentSectionRef}
+                likeCount={likeCount}
+                dislikeCount={dislikeCount}
+              />
 
-            <FloatingSocialMenu
-              title={name}
-              commentSectionRef={commentSectionRef}
-              likeCount={likeCount}
-              dislikeCount={dislikeCount}
-            />
-
-            
-            {(article?.bannerImage)&&(
-              <Banner bannerImage={article.bannerImage}></Banner>
-            )}
-
-
-            <h1 className={styles.title}> {name} </h1>
-            <div className={styles.dateView}>
-              <p>
-                  Created at {format(dateCreated, "LLLL d, yyyy, h:mm a")}
-              </p>
-              {(dateModified) && (
-                <p>
-                    Last Modified at {format(dateModified, "LLLL d, yyyy, h:mm a")}
-                </p>
+              {(article?.bannerImage) && (
+                <Banner bannerImage={article.bannerImage}></Banner>
               )}
-            </div>
-            <TableOfContents sectionHeaders={processedMarkdown.headers} />
-            <MarkdownRender className={styles.article}>
-              {processedMarkdown.processed}
-            </MarkdownRender>
-            <CommentSection
-              ref={commentSectionRef}
-              comments={comments}
-            />
-            <TagViews tags={article.tags} />
-          </>
-        );
 
-      case PageViewType.Editting:
-        return isAdmin && <Admin currentArticle={article} />;
+              <h1 className={styles.title}> {name} </h1>
+              <div className={styles.dateView}>
+                <p>
+                  Created at {format(dateCreated, "LLLL d, yyyy, h:mm a")}
+                </p>
+                {(dateModified) && (
+                  <p>
+                    Last Modified at {format(dateModified, "LLLL d, yyyy, h:mm a")}
+                  </p>
+                )}
+              </div>
+              <TableOfContents sectionHeaders={processedMarkdown.headers} />
+              <MarkdownRender className={styles.article}>
+                {processedMarkdown.processed}
+              </MarkdownRender>
+              <CommentSection
+                ref={commentSectionRef}
+                comments={comments}
+              />
+              <TagViews tags={article.tags} />
+            </>
+          );
 
-      case PageViewType.Migration:
-        return (
-          <>
-            <h1>Page Migration</h1>
-            <Input
-              label="Migration Title"
-              changeHandler={(e) => updateMigrationTitleName(e.target.value)}
-              defaultValue={migrationTitleName}
-              value={migrationTitleName} />
-            <Button onClick={async () => {
-              console.log(migrationTitleName, name);
-              if (migrationTitleName === name) {
-                alert("You cannot migrate a page unto itself!");
-              } else {
-                const dispatchResult = await dispatch(migrateArticle({
-                  name,
-                  newName: migrationTitleName
-                }));
-                if (dispatchResult.payload) {
-                  history.push(validPageLink(migrationTitleName));
+        case PageViewType.Editting:
+          return isAdmin && <Admin currentArticle={article} />;
+
+        case PageViewType.Migration:
+          return (
+            <>
+              <h1>Page Migration</h1>
+              <Input
+                label="Migration Title"
+                changeHandler={(e) => updateMigrationTitleName(e.target.value)}
+                defaultValue={migrationTitleName}
+                value={migrationTitleName} />
+              <Button onClick={async () => {
+                console.log(migrationTitleName, name);
+                if (migrationTitleName === name) {
+                  alert("You cannot migrate a page unto itself!");
+                } else {
+                  const dispatchResult = await dispatch(migrateArticle({
+                    name,
+                    newName: migrationTitleName
+                  }));
+                  if (dispatchResult.payload) {
+                    history.push(validPageLink(migrationTitleName));
+                  }
                 }
-              }
-            }}>
+              }}>
                 Migrate Page
-            </Button>
-          </>
-        );
+              </Button>
+            </>
+          );
       }
     })()}
   </>;
