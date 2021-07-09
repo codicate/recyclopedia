@@ -17,8 +17,10 @@ const CheckedBoxButton = forwardRef<HTMLInputElement, CheckboxProps>(
       name,
       styledAs,
       checked,
+      onCheck,
       children,
       className,
+      onChange,
       ...props
     },
     ref
@@ -36,6 +38,10 @@ const CheckedBoxButton = forwardRef<HTMLInputElement, CheckboxProps>(
           type="checkbox"
           value={name}
           checked={checked}
+          onChange={(event) => {
+            onChange?.(event);
+            onCheck?.(event.target.checked);
+          }}
           {...props}
         />
         <label htmlFor={name}>{children}</label>
