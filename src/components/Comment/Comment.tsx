@@ -3,6 +3,7 @@ import { formatDistance } from "date-fns";
 
 import Button from "components/UI/Button";
 
+
 export interface UserModel {
   name: string;
   avatar: string;
@@ -23,7 +24,7 @@ export interface TopLevelCommentModel extends CommentModel {
 
 function Comment({
   comment,
-  parentId, 
+  parentId,
   /*
     When clicking on reply, and forming the message make a dispatch to
     
@@ -40,15 +41,15 @@ function Comment({
 }) {
   const {
     commenterAvatar,
-    commenterUserName 
+    commenterUserName
   } = (comment.user) ? {
     commenterAvatar: comment.user.avatar,
     commenterUserName: comment.user.name,
   } : {
-    // TODO find a better icon.
-    commenterAvatar: "https://lh6.googleusercontent.com/-f9MhM40YFzc/AAAAAAAAAAI/AAAAAAABjbo/iG_SORRy0I4/photo.jpg",
-    commenterUserName: "Anonymous",
-  };
+      // TODO find a better icon.
+      commenterAvatar: "https://lh6.googleusercontent.com/-f9MhM40YFzc/AAAAAAAAAAI/AAAAAAABjbo/iG_SORRy0I4/photo.jpg",
+      commenterUserName: "Anonymous",
+    };
 
   return (
     <div className={styles.comment}>

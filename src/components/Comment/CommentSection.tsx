@@ -28,17 +28,22 @@ const CommentSection = forwardRef<HTMLDivElement, CommentSectionProps>(
             inputItems={{
               name: {
                 placeholder: "Name",
+                required: true
               },
               comment: {
                 placeholder: "Comment",
                 option: "textarea",
+                required: true
               }
             }}
             submitFn={(input) => {
               console.log(input.comment);
             }}
           >
-            <Button styledAs='oval'>
+            <Button
+              type='submit'
+              styledAs='oval'
+            >
               Comment
             </Button>
           </Form>
