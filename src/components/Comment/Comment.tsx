@@ -101,11 +101,14 @@ function TopLevelComment({
 }) {
   return (
     <Comment comment={comment}>
+      {/* 
+      Uncomment this for reply functionality.
+
       <>
         <br></br>
         {comment.replies.map((reply, index) =>
           <Comment key={index} parentId={commentId} comment={reply}></Comment>)}
-      </>
+      </> */}
     </Comment>
   );
 }

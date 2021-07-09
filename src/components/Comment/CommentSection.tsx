@@ -1,21 +1,32 @@
 import styles from "./CommentSection.module.scss";
 import React, { forwardRef } from "react";
+import { addComment } from "app/articlesSlice";
+import { useAppSelector } from "app/hooks";
+import { LoginType, selectLoginType, selectAccountDetails } from "app/adminSlice";
 
 import Form from "components/Form/Form";
 import Button from "components/UI/Button";
 import Comment, { TopLevelCommentModel } from "./Comment";
 
+
 type CommentSectionProps = {
   comments: TopLevelCommentModel[];
+  articleName: string;
+  refetchComments: () => void;
 } & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 const CommentSection = forwardRef<HTMLDivElement, CommentSectionProps>(
   function CommentSection(
     {
       comments,
+      articleName,
+      refetchComments,
       ...props
     }, ref
   ) {
+    const loginType = useAppSelector(selectLoginType);
+    const accountDetails = useAppSelector(selectAccountDetails);
+
     return (
       <div
         className={styles.commentSection}
@@ -26,18 +37,15 @@ const CommentSection = forwardRef<HTMLDivElement, CommentSectionProps>(
           <h2>Add a Comment</h2>
           <Form
             inputItems={{
-              name: {
-                placeholder: "Name",
-                required: true
-              },
               comment: {
                 placeholder: "Comment",
                 option: "textarea",
                 required: true
               }
             }}
-            submitFn={(input) => {
-              console.log(input.comment);
+            submitFn={async (input) => {
+              await addComment(loginType || LoginType.Anonymous, accountDetails, articleName, input.comment);
+              refetchComments();
             }}
           >
             <Button

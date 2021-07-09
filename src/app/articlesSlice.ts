@@ -14,7 +14,7 @@ import { CommentModel, TopLevelCommentModel } from "components/Comment/Comment";
 
 import { createSlice, createAsyncThunk, createDraftSafeSelector } from "@reduxjs/toolkit";
 import { RootState } from "app/store";
-import { loginWithEmailAndPassword } from "app/adminSlice";
+import { AccountDetails, loginWithEmailAndPassword } from "app/adminSlice";
 
 import { useAppSelector } from "./hooks";
 import { selectAccountCustomData, selectAccountDetails, selectLoginType, LoginType } from "app/adminSlice";
@@ -87,6 +87,7 @@ function tryToCallWithUser(fn) {
   return async function (argument, thunkApi) {
     try {
       if (databaseApi.applicationUser) {
+        console.log("ASDAIOFSIOASFOI");
         return await fn(databaseApi.applicationUser, argument, thunkApi);
       } else {
         throw new Error("No user? This is some real bad news");
@@ -255,9 +256,7 @@ export const selectNameOfFeaturedArticle = createDraftSafeSelector(
 );
 
 // implicitly uses the state of the logged-in user!
-export function buildCommentDraft(comment: string) {
-  const loginType = useAppSelector(selectLoginType);
-  const accountDetails = useAppSelector(selectAccountDetails);
+export function buildCommentDraft(loginType: LoginType, accountDetails: AccountDetails, comment: string) {
   const currentDate = new Date();
 
   const commentContents = {
@@ -282,15 +281,19 @@ export function buildCommentDraft(comment: string) {
   return commentDraft;
 }
 
-export async function addComment(articleName: string, comment: string) {
-  const completedComment = { ...buildCommentDraft(comment), replies: [] };
+export async function addComment(loginType: LoginType, accountDetails: AccountDetails, articleName: string, comment: string) {
+  console.log("inside addComment", comment)
+  const completedComment = { ...buildCommentDraft(loginType, accountDetails, comment), replies: [] };
 
-  await (tryToCallWithUser(
+  console.log("inside addComment", completedComment)
+
+  tryToCallWithUser(
     async function (user: Realm.User, _: any, _1: any) {
       await user.functions.addComment(articleName, completedComment);
     }
-  ));
+  )(undefined, {});
 }
+
 export async function deleteComment(articleName: string, commentId: number) {
   /*
     As of writing this, this function does not exist!
@@ -298,24 +301,24 @@ export async function deleteComment(articleName: string, commentId: number) {
     remove this when it does.
   */
   alert("This function is a shim and does not work yet!");
-  await (tryToCallWithUser(
+  tryToCallWithUser(
     async function (user: Realm.User, _: any, _1: any) {
       await user.functions.removeComment(articleName, commentId);
     }
-  ));
+  )(undefined, {});
 }
 
 // parentId:
 // will have to be a more special type of id to prevent against weird issues
 // when deleting. This is not done yet. (some sort of GUID) basically.
-export async function replyToComment(articleName: string, parentId: number, comment: string) {
-  const completedComment = buildCommentDraft(comment);
+export async function replyToComment(loginType: LoginType, accountDetails: AccountDetails, articleName: string, parentId: number, comment: string) {
+  const completedComment = buildCommentDraft(loginType, accountDetails, comment);
 
-  await (tryToCallWithUser(
+  tryToCallWithUser(
     async function (user: Realm.User, _: any, _1: any) {
       await user.functions.replyToComment(articleName, parentId, completedComment);
     }
-  ));
+  )(undefined, {});
 }
 
 // this one will need to check based on the logged in user.
@@ -353,11 +356,11 @@ export async function articleVote(articleName: string, voteType: VoteType) {
   if (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn)
     return;
 
-  await (tryToCallWithUser(
+  tryToCallWithUser(
     async function (user: Realm.User, _: any, _1: any) {
       await user.functions.articleVote(articleName, voteTypeToString(voteType), user.id);
     }
-  ));
+  )(undefined, {});
 }
 export async function commentVote(articleName: string, voteType: VoteType, target: VoteTarget) {
   const loginType = useAppSelector(selectLoginType);
@@ -365,11 +368,11 @@ export async function commentVote(articleName: string, voteType: VoteType, targe
   if (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn)
     return;
 
-  await (tryToCallWithUser(
+  tryToCallWithUser(
     async function (user: Realm.User, _: any, _1: any) {
       await user.functions.commentVote(articleName, target, voteTypeToString(voteType), user.id);
     }
-  ));
+  )(undefined, {});
 }
 
 export async function getCommentsOfArticle(name: string) {

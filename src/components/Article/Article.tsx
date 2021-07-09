@@ -173,8 +173,10 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
                 {processedMarkdown.processed}
               </MarkdownRender>
               <CommentSection
+                articleName={article.name}
                 ref={commentSectionRef}
                 comments={comments}
+                refetchComments={refetchComments}
               />
               <TagViews tags={article.tags} />
             </>
