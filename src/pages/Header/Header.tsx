@@ -15,8 +15,8 @@ const Header = () => {
 
   return (
     <header id={styles.header}>
-      <div>
-        <Link to="/" id={styles.logoDiv} />
+      <div id={styles.logoDiv}>
+        <Link to="/" />
       </div>
       <Search
         searchFunction={approximateSearch}

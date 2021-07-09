@@ -1,13 +1,11 @@
-import searchbarStyle from "components/Searchbar/Searchbar.module.scss";
+import styles from "components/Searchbar/Searchbar.module.scss";
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import { Article, readArticlesFromLoginType } from "app/articlesSlice";
-
 import { validPageLink } from "utils/functions";
-import MarkdownRender from "components/Article/MarkdownRender";
-
 import Searchbar from "components/Searchbar/Searchbar";
+
 
 type SearchFunction =
   (inputArticles: Article[], input: string) => Article[];
@@ -16,7 +14,7 @@ type RenderSearchResultFunction =
 
 export function renderHoverboxSearch(searchResults: Article[], updateSearchResults: (x: typeof searchResults) => void) {
   return (searchResults.length > 0) ? (
-    <div className={searchbarStyle.searchResults}>
+    <div className={styles.searchResults}>
       {
         searchResults.slice(0, 5).map(({ name }) => (
           <Link
@@ -54,8 +52,6 @@ function Search({ searchFunction, renderFunction }: SearchProperties) {
     <div
       ref={searchbarContainerRef}
       onBlur={() => {
-        // This is necessary because, afaik, react and javascript doesn't have a way to check focus-within is lost or not, something like onBlurWithin : (
-        // ISSUE: when you click on a link, the search results box does not auto close
         if (!searchbarContainerRef.current?.matches(":focus-within")) {
           setSearchResults([]);
         }

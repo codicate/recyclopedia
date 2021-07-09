@@ -16,41 +16,40 @@
   color: $very-green;
   background-color: white;
   box-shadow: 0 1px 1px hsl(0, 0%, 93%);
-
-  &>* {
-    display: flex;
-    align-items: center;
-  }
 }
 
 #logoDiv {
   display: flex;
-  align-items: center;
 
-  padding: 0 .5em;
+  a {
+    display: flex;
+    align-items: center;
 
-  background-color: transparent;
-  border: none;
+    padding: 0 .5em;
 
-  &:hover,
-  &:focus {
-    color: lighten($very-green, 12%);
-  }
+    background-color: transparent;
+    border: none;
 
-  &::before {
-    content: '';
-    height: 2rem;
-    width: 2rem;
+    &:hover,
+    &:focus {
+      color: lighten($very-green, 12%);
+    }
 
-    background: center/100% url(/assets/projectenv-logo.png);
-  }
+    &::before {
+      content: '';
+      height: 2rem;
+      width: 2rem;
 
-  &::after {
-    content: 'Recyclopedia';
-    margin-left: 0.75rem;
+      background: center/100% url(/assets/projectenv-logo.png);
+    }
 
-    font-size: large;
-    font-weight: bold;
+    &::after {
+      content: 'Recyclopedia';
+      margin-left: 0.75rem;
+
+      font-size: large;
+      font-weight: bold;
+    }
   }
 }
 
