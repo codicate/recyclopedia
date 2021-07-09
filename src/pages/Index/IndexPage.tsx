@@ -35,6 +35,7 @@ function IndexFilter({ filterSettings, updateFilters }: IndexFilterProperties) {
         {
           filterSettings.tagFilters.map(({ filterName, active }) =>
             <CheckboxButton
+              styledAs='oval'
               key={filterName}
               name={filterName}
               checked={active}

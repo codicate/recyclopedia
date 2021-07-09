@@ -29,8 +29,7 @@ const CheckedBoxButton = forwardRef<HTMLInputElement, CheckboxProps>(
       <div
         className={cn(
           styles.button,
-          styledAs ? styles[styledAs] : styles.default,
-          className
+          styledAs ? styles[styledAs] : styles.default
         )}
       >
         <input
@@ -44,7 +43,12 @@ const CheckedBoxButton = forwardRef<HTMLInputElement, CheckboxProps>(
           }}
           {...props}
         />
-        <label htmlFor={name}>{children}</label>
+        <label
+          htmlFor={name}
+          className={className}
+        >
+          {children}
+        </label>
       </div >
     );
   }

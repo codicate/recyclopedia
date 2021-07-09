@@ -8,6 +8,7 @@ import Form from "components/Form/Form";
 import Button from "components/UI/Button";
 import Comment, { TopLevelCommentModel } from "./Comment";
 
+import { commentVote, VoteType } from "app/articlesSlice";
 
 type CommentSectionProps = {
   comments: TopLevelCommentModel[];
@@ -24,7 +25,7 @@ const CommentSection = forwardRef<HTMLDivElement, CommentSectionProps>(
       ...props
     }, ref
   ) {
-    const loginType = useAppSelector(selectLoginType);
+    const loginType = useAppSelector(selectLoginType) || LoginType.Anonymous;
     const accountDetails = useAppSelector(selectAccountDetails);
 
     return (
@@ -44,7 +45,7 @@ const CommentSection = forwardRef<HTMLDivElement, CommentSectionProps>(
               }
             }}
             submitFn={async (input) => {
-              await addComment(loginType || LoginType.Anonymous, accountDetails, articleName, input.comment);
+              await addComment(loginType, accountDetails, articleName, input.comment);
               refetchComments();
             }}
           >
@@ -61,7 +62,18 @@ const CommentSection = forwardRef<HTMLDivElement, CommentSectionProps>(
           <h2>Comments</h2>
           <div>
             {comments.map((comment, idx) =>
-              <Comment key={idx} commentId={idx} comment={comment} />
+              <Comment 
+              key={idx}
+              commentId={idx}
+              comment={comment}
+              vote={
+                /*
+                */
+                async function (type: VoteType) {
+                  await commentVote(loginType, articleName, type, {id: idx});
+                  refetchComments();
+                }
+              } />
             )}
           </div>
         </div>

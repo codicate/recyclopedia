@@ -13,9 +13,14 @@
     height: 100%;
     width: 100%;
   }
+
+  label {
+    display: flex;
+    align-items: center;
+  }
 }
 
-.default {
+.oval {
   input {
     &+label {
       padding: 0.5em 1em;

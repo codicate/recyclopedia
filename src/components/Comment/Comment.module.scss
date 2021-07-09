@@ -45,11 +45,8 @@
     flex-flow: row wrap;
     gap: 1em;
 
-    &>button {
-      display: flex;
-      align-items: center;
+    .commentBtn {
       gap: .5em;
-
       font-size: .875rem;
 
       &>span {
