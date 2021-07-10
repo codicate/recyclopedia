@@ -6,10 +6,13 @@ import { format } from "date-fns";
 import { useAppSelector, useAppDispatch } from "app/hooks";
 import { LoginType, selectLoginType } from "app/adminSlice";
 import {
+  VoteType,
+  queryForArticles,
   getCommentsOfArticle,
   migrateArticle,
   deleteArticle,
   restoreArticle,
+  articleVote,
   Article
 } from "app/articlesSlice";
 
@@ -25,7 +28,7 @@ import TagViews from "./TagViews";
 import Input from "components/Form/Input";
 import Button from "components/UI/Button";
 import MarkdownRender from "components/Article/MarkdownRender";
-import { CommentModel, TopLevelCommentModel } from "components/Comment/Comment";
+import { TopLevelCommentModel } from "components/Comment/Comment";
 import CommentSection from "components/Comment/CommentSection";
 
 
@@ -43,7 +46,7 @@ interface ArticleProperties {
 function ArticleComponent({ article, inRecycling }: ArticleProperties) {
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const currentLoginType = useAppSelector(selectLoginType);
+  const currentLoginType = useAppSelector(selectLoginType) || LoginType.Anonymous;
   const isAdmin = currentLoginType === LoginType.Admin;
 
   const {
@@ -51,9 +54,9 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
     content,
     dateCreated,
     dateModified,
-    likeCount,
-    dislikeCount
+    votes
   } = article;
+
   const [migrationTitleName, updateMigrationTitleName] = useState(name);
 
   const [lastViewType, updateLastViewType] = useState(PageViewType.Reading);
@@ -75,6 +78,14 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
   // this won't be a dispatch I suppose.
   useEffect(() => {
     (async function () {
+      /*
+        The like state is part of our articles.
+
+        As we don't have a separate way of querying for article likes individually
+        (nor do I allow querying specific articles yet), the best solution that works
+        within our bounds is simply querying all the articles again wholesale.
+      */
+      dispatch(queryForArticles(undefined));
       const retrievedComments = await getCommentsOfArticle(name);
       updateComments(retrievedComments);
     })();
@@ -149,8 +160,13 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
               <FloatingSocialMenu
                 title={name}
                 commentSectionRef={commentSectionRef}
-                likeCount={likeCount}
-                dislikeCount={dislikeCount}
+                votes={article.votes}
+                vote={
+                  async function (vote: VoteType) {
+                    await articleVote(currentLoginType, name, vote);
+                    refetchComments();
+                  }
+                }
               />
 
               {(article?.bannerImage) && (

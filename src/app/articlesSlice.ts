@@ -22,6 +22,14 @@ import { useAppSelector } from "app/hooks";
 import { App, User, Credentials } from "realm-web";
 import { MessageLogType, logMessage } from "utils/functions";
 
+type MongoDBRealmUserIdType = string;
+export interface Vote {
+  userId: MongoDBRealmUserIdType;
+  // MongoDB does not know about typescript types
+  type: "like" | "dislike" | "none";
+}
+// COPIED FROM SOMEWHERE ELSE. TO BE REMOVED
+
 export interface Article {
   name: string;
   content: string;
@@ -30,8 +38,7 @@ export interface Article {
   dateModified?: Date;
   draftStatus: boolean;
 
-  likeCount: number;
-  dislikeCount: number;
+  votes: Vote[];
   tags?: string[];
 }
 
@@ -87,7 +94,6 @@ function tryToCallWithUser(fn) {
   return async function (argument, thunkApi) {
     try {
       if (databaseApi.applicationUser) {
-        console.log("ASDAIOFSIOASFOI");
         return await fn(databaseApi.applicationUser, argument, thunkApi);
       } else {
         throw new Error("No user? This is some real bad news");
@@ -348,18 +354,15 @@ function voteTypeToString(voteType: VoteType): VoteTypeString {
       return "unknown";
   }
 }
-export async function articleVote(articleName: string, voteType: VoteType) {
-  // const loginType = useAppSelector(selectLoginType);
-  // NEED FIX
+export async function articleVote(loginType: LoginType, articleName: string, voteType: VoteType) {
+  if (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn)
+    return;
 
-  // if (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn)
-  //   return;
-
-  // tryToCallWithUser(
-  //   async function (user: Realm.User, _: any, _1: any) {
-  //     await user.functions.articleVote(articleName, voteTypeToString(voteType), user.id);
-  //   }
-  // )(undefined, {});
+  await tryToCallWithUser(
+    async function (user: Realm.User, _: any, _1: any) {
+      await user.functions.articleVote(articleName, voteTypeToString(voteType), user.id);
+    }
+  )(undefined, {});
 }
 export async function commentVote(loginType: LoginType, articleName: string, voteType: VoteType, target: VoteTarget) {
   if (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn)

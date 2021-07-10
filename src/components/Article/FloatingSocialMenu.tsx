@@ -1,5 +1,8 @@
 import styles from "./FloatingSocialMenu.module.scss";
-import { useState, useRef } from "react";
+import { useState } from "react";
+
+import { Vote, VoteType } from "app/articlesSlice";
+import { currentVoteTypeOfCurrentUser, getLikeCountAndDislikeCount } from "components/Comment/Comment";
 
 import MediaShareBtns from "./MediaShareBtns";
 import CheckboxCounterBtn from "components/UI/CheckboxCounterBtn";
@@ -9,53 +12,32 @@ import Button from "components/UI/Button";
 function FloatingSocialMenu({
   title,
   commentSectionRef,
-  likeCount,
-  dislikeCount
+  votes,
+  vote,
 }: {
   title: string;
   commentSectionRef: React.RefObject<HTMLDivElement>;
-  likeCount: number,
-  dislikeCount: number,
+  votes: Vote[],
+  vote: (vote: VoteType) => Promise<void>,
 }) {
   const [expandShare, setExpandShare] = useState(false);
-  const likeBtnRef = useRef<HTMLInputElement>(null);
-  const dislikeBtnRef = useRef<HTMLInputElement>(null);
-
-  const handleVote = (
-    e: React.FormEvent<HTMLInputElement>
-  ) => {
-    const likeBtn = likeBtnRef.current;
-    const dislikeBtn = dislikeBtnRef.current;
-    if (!likeBtn || !dislikeBtn) return;
-
-    if ((e.target === likeBtn) && (likeBtn.checked)) {
-      dislikeBtn.checked = false;
-    }
-
-    if ((e.target === dislikeBtn) && (dislikeBtn.checked)) {
-      likeBtn.checked = false;
-    }
-  };
+  const { likeCount, dislikeCount } = getLikeCountAndDislikeCount(votes);
 
   return (
     <div className={styles.floatingSocialMenu}>
       <CheckboxCounterBtn
-        ref={likeBtnRef}
         name='likes'
         materialIcon='thumb_up'
         counter={likeCount}
-        onChange={(e) => {
-          handleVote(e);
-        }}
+        checked={(() => currentVoteTypeOfCurrentUser(votes) === "like")()}
+        onClick={() => (async () => { await vote(VoteType.Like); })()}
       />
       <CheckboxCounterBtn
-        ref={dislikeBtnRef}
         name='dislikes'
         materialIcon='thumb_down'
         counter={dislikeCount}
-        onChange={(e) => {
-          handleVote(e);
-        }}
+        checked={(() => currentVoteTypeOfCurrentUser(votes) === "dislike")()}
+        onClick={() => (async () => { await vote(VoteType.Dislike); })()}
       />
       {(expandShare) && (
         <MediaShareBtns title={title} />

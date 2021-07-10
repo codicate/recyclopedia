@@ -25,6 +25,22 @@ export interface CommentModel {
   createdAt: Date;
   votes: Vote[];
 }
+export function currentVoteTypeOfCurrentUser(votes: Vote[]) {
+  for (const vote of votes) {
+    if (vote.userId === databaseApi.applicationUser?.id) {
+      return vote.type;
+    }
+  }
+  return "none";
+}
+
+export function getLikeCountAndDislikeCount(votes: Vote[]) {
+  const likeCount = votes.reduce((total, { type }) =>
+    total + ((type === "like") ? 1 : 0), 0);
+  const dislikeCount = votes.reduce((total, { type }) =>
+    total + ((type === "dislike") ? 1 : 0), 0);
+  return { likeCount, dislikeCount };
+}
 
 export type ReplyCommentModel = CommentModel;
 export interface TopLevelCommentModel extends CommentModel {
@@ -80,10 +96,7 @@ function Comment({
     Careful, I'm unaware of how correct the clientside predicting is... But it looks correct
     enough.
   */
-  const likeCount = comment.votes.reduce((total, { type }) =>
-    total + ((type === "like") ? 1 : 0), 0);
-  const dislikeCount = comment.votes.reduce((total, { type }) =>
-    total + ((type === "dislike") ? 1 : 0), 0);
+  const { likeCount, dislikeCount } = getLikeCountAndDislikeCount(comment.votes);
 
   return (
     <div className={styles.comment}>
@@ -108,14 +121,7 @@ function Comment({
           className={styles.commentBtn}
           checked={
             function () {
-              let result = false;
-              for (const vote of comment.votes) {
-                if (vote.userId === databaseApi.applicationUser?.id && vote.type === "like") {
-                    result = true;
-                    break;
-                }
-              }
-              return result || (voteType === "like");
+              return currentVoteTypeOfCurrentUser(comment.votes) === "like" || voteType === "like";
             }()
           }
           onClick={() => (async () => {
@@ -154,14 +160,7 @@ function Comment({
           className={styles.commentBtn}
           checked={
             function () {
-              let result = false;
-              for (const vote of comment.votes) {
-                if (vote.userId === databaseApi.applicationUser?.id && vote.type === "dislike") {
-                    result = true;
-                    break;
-                }
-              }
-              return result || (voteType === "dislike");
+              return currentVoteTypeOfCurrentUser(comment.votes) === "dislike" || voteType === "dislike";
             }()
           }
           onClick={() => (async () => {
@@ -188,9 +187,9 @@ function Comment({
           </span>
           Reply
         </Button>
-      </div>
+      </div >
       {children}
-    </div>
+    </div >
   );
 }
 
