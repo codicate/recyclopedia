@@ -5,7 +5,6 @@ import { formatDistance } from "date-fns";
 import { databaseApi, VoteType } from "app/articlesSlice";
 
 import CheckboxButton from "components/UI/CheckboxButton";
-import Button from "components/UI/Button";
 
 export interface UserModel {
   name: string;
@@ -177,8 +176,7 @@ function Comment({
           </span>
           {dislikeCount}
         </CheckboxButton>
-
-        <Button
+        {/* <Button
           styledAs='oval'
           className={styles.commentBtn}
         >
@@ -186,7 +184,7 @@ function Comment({
             comment
           </span>
           Reply
-        </Button>
+        </Button> */}
       </div >
       {children}
     </div >
