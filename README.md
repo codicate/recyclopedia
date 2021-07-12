@@ -1,3 +1,3 @@
 # Recyclopedia
 
-[Live](https://projectenv.github.io/recyclopedia)
+[Visit website](https://recyclopedia.vercel.app/)
