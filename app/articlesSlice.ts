@@ -30,7 +30,7 @@ export interface Vote {
 }
 // COPIED FROM SOMEWHERE ELSE. TO BE REMOVED
 
-export interface Article {
+export interface ArticleModel {
   name: string;
   content: string;
   bannerImage?: string;
@@ -52,13 +52,13 @@ export interface ArticleDraft {
   tags?: string[];
 }
 
-export interface RecycledArticle extends Article {
+export interface RecycledArticle extends ArticleModel {
   pendingDaysUntilDeletion: number;
 }
 
 export interface ArticlesData {
   featuredArticle: string | null,
-  articles: Article[];
+  articles: ArticleModel[];
   recycledArticles: RecycledArticle[];
 }
 

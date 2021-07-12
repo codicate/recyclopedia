@@ -1,4 +1,5 @@
-import { useHistory } from "react-router-dom";
+import styles from "./account.module.scss";
+import { useRouter } from "next/router";
 
 import { useAppDispatch } from "app/hooks";
 import { LoginAttemptResult, loginWithEmailAndPassword, LoginType } from "app/adminSlice";
@@ -7,11 +8,22 @@ import Form from "components/Form/Form";
 import Button from "components/UI/Button";
 
 
-function Login(_: Record<string, never>) {
+function Login() {
   const dispatch = useAppDispatch();
-  const history = useHistory();
+  const router = useRouter();
+
   return (
-    <>
+    <div className={styles.account}>
+      <div className={styles.switchNewUser}>
+        New user?
+        <Button
+          styledAs="oval"
+          onClick={() => router.push("/account/register")}
+        >
+          Register
+        </Button>
+      </div>
+
       <h1>Login With Your Account!</h1>
       <Form
         inputItems={{
@@ -32,7 +44,7 @@ function Login(_: Record<string, never>) {
           console.log(loginResult);
 
           if (loginResult.type !== LoginType.Anonymous) {
-            history.push("/");
+            router.push("/");
           } else {
             alert("bad login");
           }
@@ -42,7 +54,7 @@ function Login(_: Record<string, never>) {
           Login
         </Button>
       </Form>
-    </>
+    </div>
   );
 }
 

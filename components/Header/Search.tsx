@@ -1,28 +1,36 @@
 import styles from "components/Searchbar/Searchbar.module.scss";
 import { useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import Link from 'next/Link';
 
-import { Article, readArticlesFromLoginType } from "app/articlesSlice";
+import { ArticleModel, readArticlesFromLoginType } from "app/articlesSlice";
 import { validPageLink } from "utils/functions";
 import Searchbar from "components/Searchbar/Searchbar";
 
 
-type SearchFunction =
-  (inputArticles: Article[], input: string) => Article[];
-type RenderSearchResultFunction =
-  (searchResults: Article[], updateSearchResults: (x: typeof searchResults) => void) => JSX.Element | null;
+type SearchFunction = (
+  inputArticles: ArticleModel[],
+  input: string
+) => ArticleModel[];
 
-export function renderHoverboxSearch(searchResults: Article[], updateSearchResults: (x: typeof searchResults) => void) {
+type RenderSearchResultFunction = (
+  searchResults: ArticleModel[],
+  updateSearchResults: (x: typeof searchResults) => void
+) => JSX.Element | null;
+
+export function renderHoverboxSearch(searchResults: ArticleModel[], updateSearchResults: (x: typeof searchResults) => void) {
   return (searchResults.length > 0) ? (
     <div className={styles.searchResults}>
       {
         searchResults.slice(0, 5).map(({ name }) => (
           <Link
             key={name}
-            to={validPageLink(name)}
-            onClick={() => updateSearchResults([])}
+            href={validPageLink(name)}
           >
-            {name}
+            <a onClick={() =>
+              updateSearchResults([])
+            } >
+              {name}
+            </a>
           </Link>))
       }
     </div>
@@ -36,7 +44,7 @@ interface SearchProperties {
 
 function Search({ searchFunction, renderFunction }: SearchProperties) {
   const articlesData = readArticlesFromLoginType();
-  const [searchResults, setSearchResults] = useState<Article[]>([]);
+  const [searchResults, setSearchResults] = useState<ArticleModel[]>([]);
 
   function returnInputCallback(input: string) {
     setSearchResults(

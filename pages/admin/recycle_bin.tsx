@@ -1,5 +1,6 @@
-import styles from "pages/RecyclingBin/RecyclingBinPage.module.scss";
-import { Link, useHistory } from "react-router-dom";
+import styles from "./recycle_bin.module.scss";
+import Link from "next/Link";
+import { useRouter } from "next/router";
 
 import { useAppSelector, useAppDispatch } from "app/hooks";
 import { selectArticlesData, deleteArticle, restoreArticle } from "app/articlesSlice";
@@ -44,7 +45,7 @@ function RecyclingBin() {
   const articlesData = useAppSelector(selectArticlesData);
   const currentLoginType = useAppSelector(selectLoginType);
   const dispatch = useAppDispatch();
-  const history = useHistory();
+  const router = useRouter();
 
   return (
     <div id={styles.recyclingBin}>
@@ -62,7 +63,7 @@ function RecyclingBin() {
           <div id={styles.recycledArticles}>
             {articlesData.recycledArticles.map(({ name, content, pendingDaysUntilDeletion }) => (
               <div key={name}>
-                <Link to={"/admin/recycling_bin" + validPageLink(name)}>
+                <Link href={"/admin/recycling_bin" + validPageLink(name)}>
                   {name}
                 </Link>
                 <div>
@@ -72,7 +73,7 @@ function RecyclingBin() {
                     onClick={async () => {
                       if (confirm("Do you want to restore this article?")) {
                         await dispatch(restoreArticle(name));
-                        history.push(validPageLink(name));
+                        router.push(validPageLink(name));
                       }
                     }}
                   >
@@ -83,7 +84,7 @@ function RecyclingBin() {
                     onClick={() => {
                       if (confirm("Permenantly delete this article?")) {
                         dispatch(deleteArticle(name));
-                        history.push("/");
+                        router.push("/");
                       }
                     }}
                   >

@@ -1,78 +1,116 @@
 import styles from "./index.module.scss";
-import { lazy, Suspense, useEffect } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import React, { useEffect } from "react";
+import Link from 'next/Link';
 
 import { useAppDispatch, useAppSelector } from "app/hooks";
-import { initApi, selectStatus, readArticlesFromLoginType } from "app/articlesSlice";
+import {
+  ArticleModel,
+  initApi,
+  selectStatus,
+  readArticlesFromLoginType,
+  selectNameOfFeaturedArticle,
+  ArticlesDataProperties
+} from "app/articlesSlice";
+
 import { selectLoginType, LoginType } from "app/adminSlice";
 
 import { Secrets } from "secrets";
-import { validPageLink } from "utils/functions";
+import { validPageLink, randomElt } from "utils/functions";
+
 
 import Spinner from "components/UI/Spinner";
-import Homepage from "pages/Homepage/Homepage";
-
-const Article = lazy(() => import("components/Article/Article"));
-const IndexPage = lazy(() => import("pages/Index/IndexPage"));
-const RecyclingBin = lazy(() => import("pages/RecyclingBin/RecyclingBin"));
-const Admin = lazy(() => import("pages/Admin/Admin"));
-const Account = lazy(() => import("pages/Admin/Account"));
+import Article from "components/Article/Article";
+import Banner from "components/Article/Banner";
+import MarkdownRender from "components/Article/MarkdownRender";
 
 
-function App() {
+interface ArticlePreviewProperties {
+  previewTitle: string,
+  article: ArticleModel | undefined | null,
+}
+
+function ArticlePreview({ previewTitle, article }: ArticlePreviewProperties) {
+  if (article) {
+    return (
+      <>
+        <Link href={validPageLink(article.name)}>
+          <a><h2>{previewTitle}</h2></a>
+        </Link>
+
+        <div className={styles.articleDisplay}>
+          <h2>{article.name}</h2>
+          {(article?.bannerImage) && (
+            <Banner bannerImage={article.bannerImage}></Banner>
+          )}
+          <MarkdownRender className={styles.searchResult}>
+            {`${article.content.substr(0, 800).replaceAll(/(@@.*)|(@@.*@@)/g, "")}`}
+          </MarkdownRender>
+        </div>
+      </>
+    );
+  } else {
+    return <></>;
+  }
+}
+
+function ArticleShowcase({
+  articlesData: { articles }
+}: ArticlesDataProperties
+) {
+  const randomArticle = (articles.length)
+    ? randomElt(articles)
+    : { name: "no article name", content: "no articles" };
+
+  const featuredArticleName = useAppSelector(selectNameOfFeaturedArticle);
+  const featuredArticle = articles.find((element) => element.name === featuredArticleName);
+
+  return (
+    <>
+      <ArticlePreview previewTitle="Featured Article" article={featuredArticle} />
+      <ArticlePreview previewTitle="Random Article" article={randomArticle} />
+    </>
+  );
+}
+
+function Home() {
   const currentLoginType = useAppSelector(selectLoginType);
   const articlesData = readArticlesFromLoginType();
 
   return (
     <>
-      <Switch>
-        <Route exact path='/'>
-          <Homepage articlesData={articlesData} />
+      {/* {(currentLoginType === LoginType.Admin) && (
+        articlesData.recycledArticles.map((article) =>
+          <Route key={article.name} exact path={"/admin/recycling_bin" + validPageLink(article.name)}>
+            <Article inRecycling={true} article={article} />
+          </Route>
+        )
+      )}
+
+      {articlesData.articles.map((article) =>
+        <Route key={article.name} exact path={validPageLink(article.name)}>
+          <Article inRecycling={false} article={article} />
         </Route>
-
-        <Suspense fallback={
-          <p>Please wait! Loading Recyclopedia...</p>
-        }>
-          <Route exact path='/index'>
-            <IndexPage />
-          </Route>
-          <Route path="/account">
-            <Account />
-          </Route>
-
-          <Route exact path='/admin'>
-            {
-              (currentLoginType === LoginType.Admin)
-                ? <Admin currentArticle={undefined} />
-                : <Redirect to='/' />
-            }
-          </Route>
-          <Route exact path='/admin/recycling_bin/'>
-            <RecyclingBin />
-          </Route>
-
-          {(currentLoginType === LoginType.Admin) && (
-            articlesData.recycledArticles.map((article) =>
-              <Route key={article.name} exact path={"/admin/recycling_bin" + validPageLink(article.name)}>
-                <Article inRecycling={true} article={article} />
-              </Route>
-            )
-          )}
-
-          {articlesData.articles.map((article) =>
-            <Route key={article.name} exact path={validPageLink(article.name)}>
-              <Article inRecycling={false} article={article} />
-            </Route>
-          )}
-        </Suspense>
-
-        <Route path='*'>404</Route>
-      </Switch>
+      )} */}
+      <div id={styles.homepage}>
+        <h1>Welcome to Recyclopedia</h1>
+        <p>
+          Recyclopedia is a freely accessible wiki designed to be a complete source for
+          environmentally friendly actions. While it is primarily meant to be a comprehensive
+          source of ways to recycle items appropriately. It may also contain other methods of
+          sustaining an environmentally friendly lifestyle.
+        </p>
+        <p>
+          This is developed by <a href="https://www.projectenv.org/">The Environment Project</a>
+        </p>
+        <ArticleShowcase articlesData={articlesData} />
+      </div>
     </>
   );
 }
 
-function InitializingApp() {
+const initializeApp = (
+  App: () => JSX.Element
+) => () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -98,9 +136,9 @@ function InitializingApp() {
       <p>Please wait! Loading Recyclopedia...</p>
     </div>
   );
-}
+};
 
-export default InitializingApp;
+export default initializeApp(Home);
 
 
 /*

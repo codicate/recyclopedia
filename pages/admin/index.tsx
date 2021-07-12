@@ -1,22 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from 'next/router';
 
-import { useAppDispatch } from "app/hooks";
-import { insertArticle, Article, ArticleDraft } from "app/articlesSlice";
+import { useAppSelector, useAppDispatch } from "app/hooks";
+import { selectLoginType, LoginType } from "app/adminSlice";
+import { insertArticle, ArticleModel, ArticleDraft } from "app/articlesSlice";
 
-import { NoticeBanner } from "../../components/Editors/NoticeBanner";
-import { RichTextEditor } from "../../components/Editors/RichTextEditor";
+import { NoticeBanner } from "components/Editors/NoticeBanner";
+import { RichTextEditor } from "components/Editors/RichTextEditor";
 
-export default function Admin({
+
+function Admin({
   currentArticle
 }: {
-  currentArticle?: Article;
+  currentArticle?: ArticleModel;
 }) {
   const dispatch = useAppDispatch();
   const [dirtyFlag, updateDirtyFlag] = useState(false);
 
   const [draftStatus, updateDraftStatus] = useState((currentArticle) ? currentArticle.draftStatus : false);
 
-  function submitHandler(input: Article, onFinishedCallback?: (input: Article) => void) {
+  function submitHandler(
+    input: ArticleModel,
+    onFinishedCallback?: (input: ArticleModel) => void
+  ) {
     dispatch(insertArticle(input));
     onFinishedCallback?.(input);
   }
@@ -42,7 +48,9 @@ export default function Admin({
   return (
     <>
       <h2>{(draftStatus) ? "DRAFT*" : "WILL PUBLISH ON SAVE"}</h2>
-      <NoticeBanner dirtyFlag={dirtyFlag}>You have unsaved changes!</NoticeBanner>
+      <NoticeBanner dirtyFlag={dirtyFlag}>
+        You have unsaved changes!
+      </NoticeBanner>
       <RichTextEditor
         submissionHandler={submissionHandler}
         currentArticle={currentArticle}
@@ -54,3 +62,21 @@ export default function Admin({
     </>
   );
 }
+
+const AdminRedirect = ({
+  currentArticle
+}: {
+  currentArticle?: ArticleModel;
+}) => {
+  const router = useRouter();
+  const currentLoginType = useAppSelector(selectLoginType);
+
+  useEffect(() => {
+    (currentLoginType !== LoginType.Admin)
+      && router.push(`/`);
+  }, [currentLoginType, router]);
+
+  return <Admin currentArticle={currentArticle} />;
+};
+
+export default AdminRedirect;

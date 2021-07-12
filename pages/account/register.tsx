@@ -1,19 +1,27 @@
-import styles from "pages/Admin/Register.module.scss";
-import { useHistory } from "react-router-dom";
+import styles from "./account.module.scss";
+import { useRouter } from "next/router";
 
-import { useAppDispatch } from "app/hooks";
 import { registerAccount } from "app/adminSlice";
 
 import Form from "components/Form/Form";
 import Button from "components/UI/Button";
 
 
-function Register(_: Record<string, never>) {
-  const dispatch = useAppDispatch();
-  const history = useHistory();
+function Register() {
+  const router = useRouter();
 
   return (
-    <>
+    <div className={styles.account}>
+      <div className={styles.switchNewUser}>
+        Returning user?
+        <Button
+          styledAs="oval"
+          onClick={() => router.push("/account/login")}
+        >
+          Login
+        </Button>
+      </div>
+
       <h1>Register a New Account!</h1>
       <Form
         inputItems={{
@@ -37,7 +45,12 @@ function Register(_: Record<string, never>) {
         }}
         submitFn={async (input) => {
           if (input.password === input.passwordConfirmation) {
-            await registerAccount({ email: input.email, password: input.password });
+            await registerAccount({
+              email: input.email,
+              password: input.password
+            });
+
+            router.push('/');
           } else {
             alert("Passwords do not match!");
           }
@@ -45,7 +58,7 @@ function Register(_: Record<string, never>) {
       >
         <Button type='submit'>Register Account</Button>
       </Form>
-    </>
+    </div>
   );
 }
 

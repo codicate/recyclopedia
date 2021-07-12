@@ -1,5 +1,5 @@
-import styles from "pages/Index/IndexPage.module.scss";
-import { Link } from "react-router-dom";
+import styles from "./content_index.module.scss";
+import Link from 'next/Link';
 import { useState, useEffect } from "react";
 
 import { useAppSelector } from "app/hooks";
@@ -125,12 +125,11 @@ function IndexPage() {
               }
 
               return result;
-            }).
-            map(({ name, draftStatus }) => (
-              <Link key={name} to={validPageLink(name)}>
-                <p >
+            }).map(({ name, draftStatus }) => (
+              <Link key={name} href={validPageLink(name)}>
+                <a>
                   {(draftStatus) ? "[DRAFT*] " + name : name}
-                </p>
+                </a>
               </Link>
             ))
         }

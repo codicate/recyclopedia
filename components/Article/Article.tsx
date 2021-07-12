@@ -1,6 +1,6 @@
 import styles from "components/Article/Article.module.scss";
 import { useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useRouter } from "next/router";
 import { format } from "date-fns";
 
 import { useAppSelector, useAppDispatch } from "app/hooks";
@@ -13,13 +13,13 @@ import {
   deleteArticle,
   restoreArticle,
   articleVote,
-  Article
+  ArticleModel
 } from "app/articlesSlice";
 
 import { validPageLink } from "utils/functions";
 import { preprocessMarkdown } from "utils/preprocessMarkdown";
 
-import Admin from "pages/Admin/Admin";
+import Admin from "pages/admin";
 import FloatingSocialMenu from "./FloatingSocialMenu";
 import Banner from "./Banner";
 import TableOfContents from "./TableOfContents";
@@ -40,11 +40,11 @@ enum PageViewType {
 
 interface ArticleProperties {
   inRecycling: boolean,
-  article: Article,
+  article: ArticleModel,
 }
 
 function ArticleComponent({ article, inRecycling }: ArticleProperties) {
-  const history = useHistory();
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const currentLoginType = useAppSelector(selectLoginType) || LoginType.Anonymous;
   const isAdmin = currentLoginType === LoginType.Admin;
@@ -123,7 +123,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
         onClick={async () => {
           if (confirm("Do you want to restore this article?")) {
             await dispatch(restoreArticle(name));
-            history.push(validPageLink(name));
+            router.push(validPageLink(name));
           }
         }}
       >
@@ -142,7 +142,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
             onClick={() => {
               if (confirm((inRecycling) ? "Permenantly delete this article?" : "Recycle this article?")) {
                 dispatch(deleteArticle(name));
-                history.push("/");
+                router.push("/");
               }
             }}
           >
@@ -220,7 +220,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
                     newName: migrationTitleName
                   }));
                   if (dispatchResult.payload) {
-                    history.push(validPageLink(migrationTitleName));
+                    router.push(validPageLink(migrationTitleName));
                   }
                 }
               }}>

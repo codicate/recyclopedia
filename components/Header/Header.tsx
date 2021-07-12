@@ -1,11 +1,11 @@
-import styles from "pages/Header/Header.module.scss";
-import { Link } from "react-router-dom";
+import styles from "./Header.module.scss";
+import Link from 'next/Link';
 
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import { LoginType, logout, selectLoginType } from "app/adminSlice";
 
 import approximateSearch from "utils/search";
-import Search, { renderHoverboxSearch } from "pages/Header/Search";
+import Search, { renderHoverboxSearch } from "components/Header/Search";
 import ResponsiveNav from "components/UI/ResponsiveNav";
 
 
@@ -16,14 +16,16 @@ const Header = () => {
   return (
     <header id={styles.header}>
       <div id={styles.logoDiv}>
-        <Link to="/" />
+        <Link href="/" >
+          <a />
+        </Link>
       </div>
       <Search
         searchFunction={approximateSearch}
         renderFunction={renderHoverboxSearch}
       />
       <ResponsiveNav id={styles.navbar}>
-        <Link to='/index'>Index</Link>
+        <Link href='/content_index'>Index</Link>
         {(
           currentLoginType !== LoginType.Anonymous &&
           currentLoginType !== LoginType.NotLoggedIn
@@ -35,10 +37,10 @@ const Header = () => {
                 (currentLoginType === LoginType.Admin) ?
                   (
                     <>
-                      <Link to="/admin/recycling_bin">
+                      <Link href="/admin/recycle_bin">
                         Recycling Bin
                       </Link>
-                      <Link to="/admin">
+                      <Link href="/admin">
                         Create New Article
                       </Link>
                     </>
@@ -56,7 +58,7 @@ const Header = () => {
           ) :
           (
             // not logged in
-            <Link to="/account">Login</Link>
+            <Link href='/account/login'>Login</Link>
           )
         }
       </ResponsiveNav>

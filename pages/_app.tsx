@@ -2,13 +2,12 @@ import 'styles/globals.scss';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 
-import { BrowserRouter } from "react-router-dom";
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from 'app/store';
 
-import Header from "pages/Header/Header";
-import Footer from "pages/Footer/Footer";
+import Header from "components/Header/Header";
+import Footer from "components/Footer/Footer";
 
 
 const withRedux = <
@@ -27,6 +26,13 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
+        <meta charSet="utf-8" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta
+          name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
+        />
+
         <title>Recyclopedia</title>
         <meta
           name="description"
@@ -37,13 +43,11 @@ function MyApp({ Component, pageProps }: AppProps) {
           content="The Environment Project, Project Environment, projectenv, environment, recycling, green, RRR"
         />
       </Head>
-      <BrowserRouter>
-        <Header />
-        <main id='main'>
-          <Component {...pageProps} />
-        </main>
-        <Footer />
-      </BrowserRouter>
+      <Header />
+      <main id='main'>
+        <Component {...pageProps} />
+      </main>
+      <Footer />
     </>
   );
 }
