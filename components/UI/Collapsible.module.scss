@@ -1,0 +1,45 @@
+@import '/styles/variables';
+
+.collapsibleContainer {
+  border-radius: 6px;
+  overflow: hidden;
+
+  box-shadow:
+    0 2px 4px hsl(0, 0%, 82%),
+    0 6px 14px hsl(0, 0%, 92%);
+}
+
+.collapsibleTitle {
+  user-select: none;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: .45em 1.25em;
+
+  &:hover {
+    background-color: hsl(0, 0%, 98%);
+  }
+
+  p {
+    margin: 0;
+    font-weight: bolder;
+  }
+
+  div {
+    font-size: 2rem;
+    transition: .3s ease-in-out;
+
+    &.collapsed {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.centered {
+  p {
+    margin: auto;
+  }
+}

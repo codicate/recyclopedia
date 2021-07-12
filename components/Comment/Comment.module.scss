@@ -1,0 +1,55 @@
+@import '/styles/variables';
+
+.comment {
+  padding: 1em;
+
+  border-radius: 1em;
+  box-shadow:
+    0 2px 4px hsl(0, 0%, 82%),
+    0 6px 14px hsl(0, 0%, 92%);
+
+  .commentUser {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+
+    .avatar {
+      border-radius: 999rem;
+    }
+
+    &>div {
+      display: flex;
+      flex-flow: column;
+      gap: .25em;
+
+      font-size: .875rem;
+
+      &>p {
+        margin: 0;
+      }
+
+      &>:nth-child(2) {
+        color: hsl(0, 0%, 60%);
+      }
+    }
+  }
+
+  .commentContent {
+    padding: 2em 1em;
+  }
+
+  .commentControls {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 1em;
+
+    .commentBtn {
+      gap: .5em;
+      font-size: .875rem;
+
+      &>span {
+        font-size: 16px;
+      }
+    }
+  }
+}

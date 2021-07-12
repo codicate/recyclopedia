@@ -1,0 +1,19 @@
+.floatingSocialMenu {
+  z-index: 1;
+  position: fixed;
+  top: 50vh;
+  right: 2rem;
+  transform: translateY(-50%);
+
+  display: flex;
+  flex-flow: column;
+  gap: 1em;
+
+  padding: .5em;
+
+  border-radius: 999rem;
+  background-color: white;
+  box-shadow:
+    0 0 6px hsl(147, 20%, 80%),
+    0 0 12px hsl(147, 10%, 90%);
+}

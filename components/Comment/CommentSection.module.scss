@@ -1,0 +1,30 @@
+@import '/styles/variables';
+
+.commentSection {
+  margin: 0 0 4em;
+
+  .commentForm {
+    margin: 0 auto 4em;
+
+    &>form {
+      padding: 1.5em 2.5em;
+
+      border-radius: 1em;
+      box-shadow:
+        0 2px 4px hsl(0, 0%, 82%),
+        0 6px 14px hsl(0, 0%, 92%);
+
+      &>button {
+        margin-left: auto;
+      }
+    }
+  }
+
+  .commentSectionContent {
+    &>div {
+      display: flex;
+      flex-flow: column;
+      gap: 2em;
+    }
+  }
+}

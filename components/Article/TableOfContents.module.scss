@@ -1,0 +1,16 @@
+@import '/styles/variables';
+
+.tableOfContents {
+  nav {
+    padding: 1em 2em;
+
+    p {
+      margin: 0;
+      padding: .5em 1em;
+
+      &:hover {
+        background-color: $hover;
+      }
+    }
+  }
+}

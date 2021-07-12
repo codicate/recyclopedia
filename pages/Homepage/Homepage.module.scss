@@ -1,0 +1,33 @@
+@import '/styles/variables';
+
+#homepage {
+  &>h1 {
+    color: $very-green
+  }
+
+  p {
+    line-height: 1.75em;
+  }
+
+  &>:not(:first-child) {
+    margin-bottom: 2rem;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+}
+
+.articleDisplay {
+  @include headings {
+    margin: .5em;
+    margin-top: 1.5em;
+  }
+
+  div {
+    background-color: hsl(147, 40%, 96%);
+    border-radius: 1em;
+    padding: 1em;
+    max-height: 30%;
+  }
+}

@@ -1,0 +1,19 @@
+.checkboxCounterBtn {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+
+  pointer-events: none;
+
+  &>* {
+    pointer-events: auto;
+  }
+
+  &>p {
+    margin: 0;
+    margin-top: 4px;
+
+    font-size: .875rem;
+    color: hsl(0, 0%, 70%);
+  }
+}

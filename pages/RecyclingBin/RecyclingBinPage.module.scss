@@ -1,0 +1,42 @@
+@import '/styles/variables';
+
+#recyclingBin {
+  #emptyMsg {
+    margin-top: 3em;
+    text-align: center;
+    font-size: 2em;
+  }
+
+  .daysLeft {
+    padding: .5em 1em;
+    border-radius: 999rem;
+    border: 1px solid black;
+  }
+
+  #recycledArticles {
+    display: flex;
+    flex-flow: column;
+    gap: 1em;
+
+    margin-top: 2em;
+
+    &>* {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      padding: .5em 1.25em;
+
+      border-radius: .5em;
+      box-shadow:
+        0 2px 4px hsl(0, 0%, 82%),
+        0 6px 14px hsl(0, 0%, 92%);
+
+      &>div {
+        display: flex;
+        align-items: center;
+        gap: 1em;
+      }
+    }
+  }
+}

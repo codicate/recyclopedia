@@ -1,0 +1,64 @@
+$main: hsl(0, 0%, 1%);
+$hover: hsl(210, 4%, 90%);
+$emp: hsl(0, 0%, 13%);
+$alternative: hsl(0, 0%, 56%);
+$border: hsl(0, 0%, 20%);
+
+$text-main: white;
+$very-green: hsl(147, 68%, 16%);
+
+$article-header-weight: 350;
+$general-header-weight: 400;
+
+/*
+    These are Media Query thresholds shamelessly stolen from 
+    https://getbootstrap.com/docs/3.4/css/
+
+    Might make the whole mobile thing way easier to do.
+
+    NOTE(?): React Native does not use stylesheets... What do we do if this ever happens?
+
+    Here's some helpers for making media queries easier. Thanks preprocessor, I love you too.
+*/
+
+$screen-xs-max: 768px;
+$screen-sm-min: 768px;
+$screen-md-min: 992px;
+$screen-lg-min: 1200px;
+
+// Okay these aren't so great. TODO fix queries to be better.
+@mixin for-extra-small-screens() {
+  @media only screen and (max-width: $screen-xs-max) {
+    @content;
+  }
+}
+
+@mixin for-small-screens() {
+  @media only screen and (min-width: $screen-sm-min) {
+    @content;
+  }
+}
+
+@mixin for-medium-screens() {
+  @media only screen and (min-width: $screen-md-min) {
+    @content;
+  }
+}
+
+@mixin for-large-screens() {
+  @media only screen and (min-width: $screen-lg-min) {
+    @content;
+  }
+}
+
+@mixin headings {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @content;
+  }
+}

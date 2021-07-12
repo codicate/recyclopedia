@@ -1,0 +1,114 @@
+@import '/styles/variables';
+
+$font-size: 1rem;
+$padding-top: 1rem;
+$padding-left: 2rem;
+$searchbar-height: calc(#{$font-size} + #{$padding-top} * 2);
+
+$focus-box-shadow: 0 2px 5px 1px hsl(218, 23%, 25%, .24);
+
+$width: clamp(12em, 60vw, 30em);
+
+.searchbar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: $width;
+
+  font-size: $font-size;
+  font-weight: bold;
+
+  overflow: hidden;
+  background-color: transparent;
+
+  border-radius: calc(#{$searchbar-height} / 2);
+  box-shadow: 0 2px 5px 1px hsl(218, 23%, 25%, .16);
+
+  &:hover,
+  &:focus-within {
+    box-shadow: $focus-box-shadow;
+  }
+
+  input {
+    width: 100%;
+    height: $searchbar-height;
+    padding: $padding-top $padding-left;
+
+    outline: none;
+  }
+
+  &.focused {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    clip-path: inset(-999rem -999rem 0 -999rem);
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      height: 1px;
+
+      width: calc(100% - 2rem);
+      background-color: $hover;
+    }
+  }
+
+  #searchbarControl {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    padding: 0 1em;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+
+    &>* {
+      padding-left: .5em;
+    }
+
+    &>:not(:last-child) {
+      padding-right: .5em;
+      box-shadow: 1px 0 $emp;
+    }
+
+    #clear {
+      color: hsl(210, 4%, 46%);
+    }
+
+    #search {
+      color: hsl(217, 89%, 61%)
+    }
+  }
+}
+
+.searchResults {
+  position: absolute;
+  width: $width;
+
+  display: flex;
+  flex-flow: column;
+
+  padding: .5rem 0 $padding-top 0;
+
+  background-color: white;
+  box-shadow: $focus-box-shadow;
+
+  border-radius: calc(#{$searchbar-height} / 2);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  clip-path: inset(0 -999rem -999rem -999rem);
+
+  &>* {
+    margin: 0;
+    padding: .75em $padding-left;
+
+    &:hover {
+      background-color: $hover;
+    }
+  }
+}
