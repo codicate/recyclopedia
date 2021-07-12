@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
     "start": "next start",
+    "build": "next build",
+    "deploy": "vc",
+    "deploy:prod": "vc --prod",
     "lint": "eslint . --ext .js --ext .jsx --ext .ts --ext .tsx",
     "lint:fix": "eslint . --ext .js --ext .jsx --ext .ts --ext .tsx --fix"
   },

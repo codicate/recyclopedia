@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useAppDispatch } from "app/hooks";
 import { insertArticle, Article, ArticleDraft } from "app/articlesSlice";
 
-import { NoticeBanner } from "./Editors/NoticeBanner";
-import { RichTextEditor } from "./Editors/RichTextEditor";
+import { NoticeBanner } from "../../components/Editors/NoticeBanner";
+import { RichTextEditor } from "../../components/Editors/RichTextEditor";
 
 export default function Admin({
   currentArticle

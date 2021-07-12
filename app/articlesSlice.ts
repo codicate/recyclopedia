@@ -392,7 +392,9 @@ export async function getCommentsOfArticle(name: string) {
 }
 
 export function readArticlesFromLoginType(): ArticlesData {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const loginType = useAppSelector(selectLoginType);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const articlesData = useAppSelector(selectArticlesData);
 
   if (loginType === LoginType.Admin) {

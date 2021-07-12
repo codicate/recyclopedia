@@ -65,6 +65,7 @@ export async function loginWith(information?: AccountDetails) {
 
 export const loginWithEmailAndPassword = createAsyncThunk(
   "admin/loginWithEmailAndPassword",
+  //@ts-ignore
   async (accountDetails: AccountDetails) => {
     const { type, user } = await loginWith(accountDetails);
 
