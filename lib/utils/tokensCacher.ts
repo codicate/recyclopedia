@@ -1,5 +1,5 @@
 import path from "path";
-import fs from "fs/promises";
+import fse from "fs-extra";
 
 
 // https://github.com/vercel/next.js/discussions/11272#discussioncomment-853781
@@ -7,7 +7,7 @@ export default class TokensCasher<T extends { id: string; }> {
   private tokensFilePath: string;
 
   constructor(tokenName: string) {
-    this.tokensFilePath = path.join(process.cwd(), `${tokenName}.json`);
+    this.tokensFilePath = path.join(process.cwd(), `cache/tokens/${tokenName}.json`);
   }
 
   cacheTokens(tokens: T[]) {
@@ -16,11 +16,15 @@ export default class TokensCasher<T extends { id: string; }> {
       [token.id]: token
     }), {});
 
-    return fs.writeFile(this.tokensFilePath, JSON.stringify(tokenObj));
+    console.log(this.tokensFilePath);
+
+    return fse.outputJSONSync(this.tokensFilePath, JSON.stringify(tokenObj));
   };
 
   async retrieveToken(id: string) {
-    const tokensFile = await fs.readFile(this.tokensFilePath);
+    console.log(this.tokensFilePath);
+
+    const tokensFile = await fse.readJsonSync(this.tokensFilePath);
     const tokenObj = JSON.parse(tokensFile.toString()) as Record<string, T>;
     return tokenObj[id];
   };
