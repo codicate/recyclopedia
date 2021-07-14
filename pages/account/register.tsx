@@ -1,7 +1,7 @@
 import styles from "./account.module.scss";
 import { useRouter } from "next/router";
 
-import { registerAccount } from "app/adminSlice";
+import { registerAccount } from "lib/global/adminSlice";
 
 import Form from "components/Form/Form";
 import Button from "components/UI/Button";

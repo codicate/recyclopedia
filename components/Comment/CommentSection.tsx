@@ -1,14 +1,14 @@
 import styles from "./CommentSection.module.scss";
 import React, { forwardRef } from "react";
-import { addComment } from "app/articlesSlice";
-import { useAppSelector } from "app/hooks";
-import { LoginType, selectLoginType, selectAccountDetails } from "app/adminSlice";
+import { addComment } from "lib/global/articlesSlice";
+import { useAppSelector } from "lib/global/hooks";
+import { LoginType, selectLoginType, selectAccountDetails } from "lib/global/adminSlice";
 
 import Form from "components/Form/Form";
 import Button from "components/UI/Button";
 import Comment, { TopLevelCommentModel } from "./Comment";
 
-import { commentVote, VoteType } from "app/articlesSlice";
+import { commentVote, VoteType } from "lib/global/articlesSlice";
 
 type CommentSectionProps = {
   comments: TopLevelCommentModel[];

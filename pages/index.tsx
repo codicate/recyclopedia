@@ -2,24 +2,22 @@ import styles from "./index.module.scss";
 import React, { useEffect } from "react";
 import Link from 'next/Link';
 
-import { useAppDispatch, useAppSelector } from "app/hooks";
+import { useAppDispatch, useAppSelector } from "lib/global/hooks";
+import { ArticleModel } from 'lib/models';
 import {
-  ArticleModel,
   initApi,
   selectStatus,
   readArticlesFromLoginType,
   selectNameOfFeaturedArticle,
   ArticlesDataProperties
-} from "app/articlesSlice";
+} from "lib/global/articlesSlice";
 
-import { selectLoginType, LoginType } from "app/adminSlice";
+import { selectLoginType, LoginType } from "lib/global/adminSlice";
 
 import { Secrets } from "secrets";
-import { validPageLink, randomElt } from "utils/functions";
-
+import { validPageLink, randomElt } from "lib/functions";
 
 import Spinner from "components/UI/Spinner";
-import Article from "components/Article/Article";
 import Banner from "components/Article/Banner";
 import MarkdownRender from "components/Article/MarkdownRender";
 
@@ -78,19 +76,6 @@ function Home() {
 
   return (
     <>
-      {/* {(currentLoginType === LoginType.Admin) && (
-        articlesData.recycledArticles.map((article) =>
-          <Route key={article.name} exact path={"/admin/recycling_bin" + validPageLink(article.name)}>
-            <Article inRecycling={true} article={article} />
-          </Route>
-        )
-      )}
-
-      {articlesData.articles.map((article) =>
-        <Route key={article.name} exact path={validPageLink(article.name)}>
-          <Article inRecycling={false} article={article} />
-        </Route>
-      )} */}
       <div id={styles.homepage}>
         <h1>Welcome to Recyclopedia</h1>
         <p>

@@ -5,8 +5,8 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-import articlesReducer from "app/articlesSlice";
-import adminReducer from "app/adminSlice";
+import articlesReducer from "./articlesSlice";
+import adminReducer from "./adminSlice";
 
 
 const persistConfig = {

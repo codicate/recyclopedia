@@ -1,10 +1,11 @@
 import 'styles/globals.scss';
+import { useState } from "react";
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { store, persistor } from 'app/store';
+import { store, persistor } from 'lib/global/store';
 
 import Header from "components/Header/Header";
 import Footer from "components/Footer/Footer";
@@ -13,16 +14,16 @@ import Footer from "components/Footer/Footer";
 const withRedux = <
   T extends Record<string, unknown>
 >(
-  Component: React.ComponentType<T>
+  App: (props: T) => JSX.Element
 ) => (props: T) => (
   <Provider store={store}>
     <PersistGate persistor={persistor}>
-      <Component {...props} />
+      <App {...props} />
     </PersistGate>
   </Provider>
 );
 
-function MyApp({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
@@ -52,4 +53,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default withRedux(MyApp);
+export default withRedux(App);

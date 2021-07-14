@@ -1,8 +1,8 @@
 import { createSlice, createDraftSafeSelector, createAsyncThunk } from "@reduxjs/toolkit";
-import { RootState } from "app/store";
+import { RootState } from "lib/global/store";
 
 import { Credentials } from "realm-web";
-import { databaseApi } from "app/articlesSlice";
+import { databaseApi } from "lib/global/articlesSlice";
 
 export enum LoginType {
   NotLoggedIn,

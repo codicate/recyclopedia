@@ -1,7 +1,7 @@
 import styles from "./FloatingSocialMenu.module.scss";
 import { useState } from "react";
 
-import { Vote, VoteType } from "app/articlesSlice";
+import { Vote, VoteType } from "lib/global/articlesSlice";
 import { currentVoteTypeOfCurrentUser, getLikeCountAndDislikeCount } from "components/Comment/Comment";
 
 import MediaShareBtns from "./MediaShareBtns";

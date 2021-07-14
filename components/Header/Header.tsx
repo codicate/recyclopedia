@@ -1,10 +1,10 @@
 import styles from "./Header.module.scss";
 import Link from 'next/Link';
 
-import { useAppDispatch, useAppSelector } from "app/hooks";
-import { LoginType, logout, selectLoginType } from "app/adminSlice";
+import { useAppDispatch, useAppSelector } from "lib/global/hooks";
+import { LoginType, logout, selectLoginType } from "lib/global/adminSlice";
 
-import approximateSearch from "utils/search";
+import approximateSearch from "lib/utils/search";
 import Search, { renderHoverboxSearch } from "components/Header/Search";
 import ResponsiveNav from "components/UI/ResponsiveNav";
 

@@ -2,11 +2,11 @@ import styles from "./content_index.module.scss";
 import Link from 'next/Link';
 import { useState, useEffect } from "react";
 
-import { useAppSelector } from "app/hooks";
-import { selectArticlesData, selectAllTags } from "app/articlesSlice";
-import { LoginType, selectLoginType } from "app/adminSlice";
+import { useAppSelector } from "lib/global/hooks";
+import { selectArticlesData, selectAllTags } from "lib/global/articlesSlice";
+import { LoginType, selectLoginType } from "lib/global/adminSlice";
 
-import { validPageLink, dictionaryUpdateKey } from "utils/functions";
+import { validPageLink, dictionaryUpdateKey } from "lib/functions";
 
 import Collapsible from "components/UI/Collapsible";
 import CheckboxButton from "components/UI/CheckboxButton";
@@ -57,16 +57,12 @@ function IndexPage() {
   const allTags = useAppSelector(selectAllTags);
   const [filterSettings, updateFilterSettings] = useState({ draftStatus: false, tagFilters: [] as TagFilter[] });
 
-  useEffect(
-    function () {
-      updateFilterSettings(
-        {
-          draftStatus: false,
-          tagFilters: allTags.map((tag) => { return { filterName: tag, active: false }; })
-        }
-      );
-    },
-    [allTags]);
+  useEffect(() => {
+    updateFilterSettings({
+      draftStatus: false,
+      tagFilters: allTags.map((tag) => { return { filterName: tag, active: false }; })
+    });
+  }, [allTags]);
 
   const currentLoginType = useAppSelector(selectLoginType);
   const isAdmin = currentLoginType === LoginType.Admin;
@@ -126,7 +122,7 @@ function IndexPage() {
 
               return result;
             }).map(({ name, draftStatus }) => (
-              <Link key={name} href={validPageLink(name)}>
+              <Link key={name} href={`/article/${validPageLink(name)}`}>
                 <a>
                   {(draftStatus) ? "[DRAFT*] " + name : name}
                 </a>

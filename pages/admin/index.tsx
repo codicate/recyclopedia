@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/router';
 
-import { useAppSelector, useAppDispatch } from "app/hooks";
-import { selectLoginType, LoginType } from "app/adminSlice";
-import { insertArticle, ArticleModel, ArticleDraft } from "app/articlesSlice";
+import { useAppSelector, useAppDispatch } from "lib/global/hooks";
+import { selectLoginType, LoginType } from "lib/global/adminSlice";
+import { ArticleModel } from "lib/models";
+import { insertArticle, ArticleDraft } from "lib/global/articlesSlice";
 
 import { NoticeBanner } from "components/Editors/NoticeBanner";
 import { RichTextEditor } from "components/Editors/RichTextEditor";
@@ -32,9 +33,9 @@ function Admin({
       {
         name: submissionData.name,
         content: submissionData.content,
-        dateCreated: (submissionData.dateCreated) ? submissionData.dateCreated : new Date(),
+        dateCreated: (submissionData.dateCreated) ? submissionData.dateCreated : new Date().getTime(),
         votes: [],
-        dateModified: new Date(),
+        dateModified: new Date().getTime(),
         draftStatus: draftStatus,
         tags: submissionData.tags,
       },

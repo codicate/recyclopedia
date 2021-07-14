@@ -1,4 +1,4 @@
-import { Article } from "app/articlesSlice";
+import { Article } from "lib/global/articlesSlice";
 
 interface StringMatchResult {
   matchScore: number,

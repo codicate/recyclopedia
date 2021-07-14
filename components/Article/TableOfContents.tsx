@@ -1,5 +1,5 @@
 import styles from "./TableOfContents.module.scss";
-import { HeaderInformation } from "utils/preprocessMarkdown";
+import { HeaderInformation } from "lib/utils/preprocessMarkdown";
 import Collapsible from "components/UI/Collapsible";
 
 

@@ -2,11 +2,11 @@ import styles from "./recycle_bin.module.scss";
 import Link from "next/Link";
 import { useRouter } from "next/router";
 
-import { useAppSelector, useAppDispatch } from "app/hooks";
-import { selectArticlesData, deleteArticle, restoreArticle } from "app/articlesSlice";
-import { LoginType, selectLoginType } from "app/adminSlice";
+import { useAppSelector, useAppDispatch } from "lib/global/hooks";
+import { selectArticlesData, deleteArticle, restoreArticle } from "lib/global/articlesSlice";
+import { LoginType, selectLoginType } from "lib/global/adminSlice";
 
-import { validPageLink, dictionaryUpdateKey } from "utils/functions";
+import { validPageLink, dictionaryUpdateKey } from "lib/functions";
 import Button from "components/UI/Button";
 
 
@@ -63,7 +63,7 @@ function RecyclingBin() {
           <div id={styles.recycledArticles}>
             {articlesData.recycledArticles.map(({ name, content, pendingDaysUntilDeletion }) => (
               <div key={name}>
-                <Link href={"/admin/recycling_bin" + validPageLink(name)}>
+                <Link href={"/admin/recycle_bin" + validPageLink(name)}>
                   {name}
                 </Link>
                 <div>

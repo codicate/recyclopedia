@@ -2,7 +2,7 @@ import styles from "./Searchbar.module.scss";
 import { useState, useRef } from "react";
 import cn from "classnames";
 
-import useEventListener from "hooks/useEventListener";
+import useEventListener from "lib/hooks/useEventListener";
 
 
 export default function Searchbar({

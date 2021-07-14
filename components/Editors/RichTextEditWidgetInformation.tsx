@@ -1,6 +1,6 @@
 import React from "react";
 
-import { dictionaryUpdateKey, dictionaryUpdateKeyNested } from "utils/functions";
+import { dictionaryUpdateKey, dictionaryUpdateKeyNested } from "lib/functions";
 
 export type WidgetCategoryDic = Record<string,WidgetCategory>;
 export type WidgetInformationDic = Record<string, WidgetInformation>;

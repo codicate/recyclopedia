@@ -34,7 +34,7 @@ import React, {
   CSSProperties,
 } from "react";
 
-import { preprocessMarkdown } from "utils/preprocessMarkdown";
+import { preprocessMarkdown } from "lib/utils/preprocessMarkdown";
 import {
   uploadImage,
   retrieveImageData,
@@ -44,10 +44,10 @@ import {
   selectionStackPush,
   dictionaryUpdateKeyNested,
   isVoidElement,
-} from "utils/functions";
+} from "lib/functions";
 
 import { renderMarkdown } from "components/Article/MarkdownRender";
-import { renderDomAsMarkdown } from "utils/DOMIntoMarkdown";
+import { renderDomAsMarkdown } from "lib/utils/DOMIntoMarkdown";
 
 import {
   widgets,
@@ -55,7 +55,7 @@ import {
   flattenWidgetStateTypes,
 } from "./RichTextEditWidgetInformation";
 
-import { Article, ArticleDraft, setFeaturedArticle } from "app/articlesSlice";
+import { Article, ArticleDraft, setFeaturedArticle } from "lib/global/articlesSlice";
 import Input from "components/Form/Input";
 
 import bottomToolbarStyle from "./bottomToolbar.module.scss";
@@ -63,7 +63,7 @@ import editorStyle from "./RichTextEditor.module.scss";
 import articleStyles from "components/Article/Article.module.scss";
 import Button from "components/UI/Button";
 import { AssertionError } from "assert";
-import { useAppDispatch } from "app/hooks";
+import { useAppDispatch } from "lib/global/hooks";
 
 /** Unsafe wrappers... Cause most of this has to be unsafe to be even possible... **/
 /** Well... Draft.JS is a thing, but that can't exactly do the same thing as this... Otherwise it would require way less code. **/

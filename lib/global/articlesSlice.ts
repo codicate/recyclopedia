@@ -13,34 +13,18 @@
 import { CommentModel, TopLevelCommentModel } from "components/Comment/Comment";
 
 import { createSlice, createAsyncThunk, createDraftSafeSelector } from "@reduxjs/toolkit";
-import { RootState } from "app/store";
-import { AccountDetails, loginWithEmailAndPassword } from "app/adminSlice";
+import { RootState } from "lib/global/store";
+import { AccountDetails, loginWithEmailAndPassword } from "lib/global/adminSlice";
 
-import { selectAccountCustomData, selectAccountDetails, selectLoginType, LoginType } from "app/adminSlice";
-import { useAppSelector } from "app/hooks";
+import { selectAccountCustomData, selectAccountDetails, selectLoginType, LoginType } from "lib/global/adminSlice";
+import { useAppSelector } from "lib/global/hooks";
 
 import { App, User, Credentials } from "realm-web";
-import { MessageLogType, logMessage } from "utils/functions";
+import { MessageLogType, logMessage } from "lib/functions";
 
-type MongoDBRealmUserIdType = string;
-export interface Vote {
-  userId: MongoDBRealmUserIdType;
-  // MongoDB does not know about typescript types
-  type: "like" | "dislike" | "none";
-}
-// COPIED FROM SOMEWHERE ELSE. TO BE REMOVED
+import { VoteModel, ArticleModel } from 'lib/models';
 
-export interface ArticleModel {
-  name: string;
-  content: string;
-  bannerImage?: string;
-  dateCreated: Date;
-  dateModified?: Date;
-  draftStatus: boolean;
 
-  votes: Vote[];
-  tags?: string[];
-}
 
 // This is a partial version of the article
 // with optional fields. This is because we won't necessarily
@@ -48,7 +32,7 @@ export interface ArticleModel {
 export interface ArticleDraft {
   name: string;
   content: string;
-  dateCreated?: Date;
+  dateCreated?: number;
   tags?: string[];
 }
 

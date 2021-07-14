@@ -3,8 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
 
-import { useAppSelector, useAppDispatch } from "app/hooks";
-import { LoginType, selectLoginType } from "app/adminSlice";
+import { useAppSelector, useAppDispatch } from "lib/global/hooks";
+import { LoginType, selectLoginType } from "lib/global/adminSlice";
+import { ArticleModel } from 'lib/models';
 import {
   VoteType,
   queryForArticles,
@@ -13,11 +14,10 @@ import {
   deleteArticle,
   restoreArticle,
   articleVote,
-  ArticleModel
-} from "app/articlesSlice";
+} from "lib/global/articlesSlice";
 
-import { validPageLink } from "utils/functions";
-import { preprocessMarkdown } from "utils/preprocessMarkdown";
+import { validPageLink } from "lib/functions";
+import { preprocessMarkdown } from "lib/utils/preprocessMarkdown";
 
 import Admin from "pages/admin";
 import FloatingSocialMenu from "./FloatingSocialMenu";
@@ -76,20 +76,20 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
     _ucp(commentPinger + 1);
   }
   // this won't be a dispatch I suppose.
-  useEffect(() => {
-    (async function () {
-      /*
-        The like state is part of our articles.
+  // useEffect(() => {
+  //   (async () => {
+  //     /*
+  //       The like state is part of our articles.
 
-        As we don't have a separate way of querying for article likes individually
-        (nor do I allow querying specific articles yet), the best solution that works
-        within our bounds is simply querying all the articles again wholesale.
-      */
-      dispatch(queryForArticles(undefined));
-      const retrievedComments = await getCommentsOfArticle(name);
-      updateComments(retrievedComments);
-    })();
-  }, [commentPinger]);
+  //       As we don't have a separate way of querying for article likes individually
+  //       (nor do I allow querying specific articles yet), the best solution that works
+  //       within our bounds is simply querying all the articles again wholesale.
+  //     */
+  //     dispatch(queryForArticles(undefined));
+  //     const retrievedComments = await getCommentsOfArticle(name);
+  //     updateComments(retrievedComments);
+  //   })();
+  // }, [commentPinger]);
 
   function toggleView(target: PageViewType) {
     if (viewType !== target) {
@@ -176,11 +176,11 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
               <h1 className={styles.title}> {name} </h1>
               <div className={styles.dateView}>
                 <p>
-                  Created at {format(dateCreated, "LLLL d, yyyy, h:mm a")}
+                  Created at {format(new Date(dateCreated), "LLLL d, yyyy, h:mm a")}
                 </p>
                 {(dateModified) && (
                   <p>
-                    Last Modified at {format(dateModified, "LLLL d, yyyy, h:mm a")}
+                    Last Modified at {format(new Date(dateModified), "LLLL d, yyyy, h:mm a")}
                   </p>
                 )}
               </div>

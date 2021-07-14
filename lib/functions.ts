@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { NodeType } from "utils/DOMIntoMarkdown";
+import { NodeType } from "lib/utils/DOMIntoMarkdown";
 import { Secrets } from "secrets";
 
-export const validPageLink = (originalName: string) => `/${originalName.toLowerCase().trim().replace(/ +/g, "_")}`;
+export const validPageLink = (originalName: string) => `${encodeURIComponent(originalName.toLowerCase().trim().replace(/ +/g, "_"))}`;
 
 export async function uploadImage(image_name: string) {
   const form_data = new FormData();
@@ -149,7 +149,7 @@ export function selectionStackPop() {
 }
 
 function isDevelopment() {
-  if (process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV && process.env.NODE_ENV === "development") {
     return true;
   }
 
