@@ -1,5 +1,5 @@
 import styles from "./content_index.module.scss";
-import Link from 'next/Link';
+import Link from 'next/link';
 import { useState, useEffect } from "react";
 
 import { useAppSelector } from "lib/global/hooks";

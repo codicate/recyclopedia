@@ -55,7 +55,8 @@ import {
   flattenWidgetStateTypes,
 } from "./RichTextEditWidgetInformation";
 
-import { Article, ArticleDraft, setFeaturedArticle } from "lib/global/articlesSlice";
+import { ArticleModel } from 'lib/models';
+import { ArticleDraft, setFeaturedArticle } from "lib/global/articlesSlice";
 import Input from "components/Form/Input";
 
 import bottomToolbarStyle from "./bottomToolbar.module.scss";
@@ -743,7 +744,7 @@ function HyperlinkContextMenu(properties: HyperlinkContextMenuProperties) {
 
 interface RichTextEditorProperties {
   submissionHandler: (f: ArticleDraft) => void,
-  currentArticle?: Article,
+  currentArticle?: ArticleModel,
   updateDirtyFlag: React.Dispatch<React.SetStateAction<boolean>>,
   toggleDraftStatus: () => void,
 }
@@ -860,7 +861,7 @@ export function RichTextEditor({
         name: (initialArticleState?.name) || (editableTitleDOMRef.current.textContent || ""),
         content: markdownText,
         tags: tags,
-        dateCreated: (currentArticle) ? currentArticle.dateCreated : new Date(),
+        dateCreated: (currentArticle) ? currentArticle.dateCreated : new Date().getTime(),
       });
 
       if (initialArticleState === undefined) {

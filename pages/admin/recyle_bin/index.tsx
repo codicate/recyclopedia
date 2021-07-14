@@ -1,5 +1,5 @@
-import styles from "./recycle_bin.module.scss";
-import Link from "next/Link";
+import styles from "./index.module.scss";
+import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { useAppSelector, useAppDispatch } from "lib/global/hooks";

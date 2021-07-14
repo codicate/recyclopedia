@@ -22,7 +22,7 @@ import { useAppSelector } from "lib/global/hooks";
 import { App, User, Credentials } from "realm-web";
 import { MessageLogType, logMessage } from "lib/functions";
 
-import { VoteModel, ArticleModel } from 'lib/models';
+import { VoteType, ArticleModel } from 'lib/models';
 
 
 
@@ -307,13 +307,6 @@ export async function replyToComment(loginType: LoginType, accountDetails: Accou
       await user.functions.replyToComment(articleName, parentId, completedComment);
     }
   )(undefined, {});
-}
-
-// this one will need to check based on the logged in user.
-// to determine whether we should revote.
-export enum VoteType {
-  Like,
-  Dislike
 }
 
 export type ArticleVoteTarget = string;

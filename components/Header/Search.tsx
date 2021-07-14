@@ -1,8 +1,9 @@
 import styles from "components/Searchbar/Searchbar.module.scss";
 import { useState, useRef } from "react";
-import Link from 'next/Link';
+import Link from 'next/link';
 
-import { ArticleModel, readArticlesFromLoginType } from "lib/global/articlesSlice";
+import { ArticleModel } from 'lib/models';
+import { readArticlesFromLoginType } from "lib/global/articlesSlice";
 import { validPageLink } from "lib/functions";
 import Searchbar from "components/Searchbar/Searchbar";
 

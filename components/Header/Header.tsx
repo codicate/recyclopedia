@@ -1,5 +1,5 @@
 import styles from "./Header.module.scss";
-import Link from 'next/Link';
+import Link from 'next/link';
 
 import { useAppDispatch, useAppSelector } from "lib/global/hooks";
 import { LoginType, logout, selectLoginType } from "lib/global/adminSlice";

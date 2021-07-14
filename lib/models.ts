@@ -1,3 +1,10 @@
+// this one will need to check based on the logged in user.
+// to determine whether we should revote.
+export enum VoteType {
+  Like,
+  Dislike
+}
+
 export interface VoteModel {
   // MongoDB does not know about typescript types
   type: "like" | "dislike" | "none";

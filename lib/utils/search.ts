@@ -1,4 +1,4 @@
-import { Article } from "lib/global/articlesSlice";
+import { ArticleModel } from "lib/models";
 
 interface StringMatchResult {
   matchScore: number,
@@ -63,7 +63,7 @@ function calculateStringMatchScore(haystack: string, needle: string): StringMatc
   return {matchScore: match_score, validMatch: matched > 0};
 }
 
-export default function approximateSearch(entries: Article[], key: string) { 
+export default function approximateSearch(entries: ArticleModel[], key: string) { 
   // I wish there were transducers like in Clojure. This might be hella expensive.
   const result = entries
     .map((entry) => {

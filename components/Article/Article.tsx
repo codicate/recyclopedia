@@ -5,9 +5,8 @@ import { format } from "date-fns";
 
 import { useAppSelector, useAppDispatch } from "lib/global/hooks";
 import { LoginType, selectLoginType } from "lib/global/adminSlice";
-import { ArticleModel } from 'lib/models';
+import { VoteType, ArticleModel } from 'lib/models';
 import {
-  VoteType,
   queryForArticles,
   getCommentsOfArticle,
   migrateArticle,

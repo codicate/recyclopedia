@@ -1,7 +1,7 @@
 import styles from "./FloatingSocialMenu.module.scss";
 import { useState } from "react";
 
-import { Vote, VoteType } from "lib/global/articlesSlice";
+import { VoteType, VoteModel } from 'lib/models';
 import { currentVoteTypeOfCurrentUser, getLikeCountAndDislikeCount } from "components/Comment/Comment";
 
 import MediaShareBtns from "./MediaShareBtns";
@@ -17,7 +17,7 @@ function FloatingSocialMenu({
 }: {
   title: string;
   commentSectionRef: React.RefObject<HTMLDivElement>;
-  votes: Vote[],
+  votes: VoteModel[],
   vote: (vote: VoteType) => Promise<void>,
 }) {
   const [expandShare, setExpandShare] = useState(false);

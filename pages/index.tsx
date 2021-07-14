@@ -1,6 +1,6 @@
 import styles from "./index.module.scss";
 import React, { useEffect } from "react";
-import Link from 'next/Link';
+import Link from 'next/link';
 
 import { useAppDispatch, useAppSelector } from "lib/global/hooks";
 import { ArticleModel } from 'lib/models';

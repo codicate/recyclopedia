@@ -3,7 +3,8 @@ import Image from 'next/image';
 import { useState, useEffect } from "react";
 import { formatDistance } from "date-fns";
 
-import { databaseApi, VoteType } from "lib/global/articlesSlice";
+import { VoteType } from 'lib/models';
+import { databaseApi } from "lib/global/articlesSlice";
 
 import CheckboxButton from "components/UI/CheckboxButton";
 
