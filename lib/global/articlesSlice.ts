@@ -113,7 +113,7 @@ export const queryForArticles = createAsyncThunk(
     // @ts-ignore
     async function (user: Realm.User, query?: any, thunkApi: any) {
       // TODO(jerry): dummy, until we actually add all dates for articles
-      const articles = await user.functions.getAllArticles();
+      const articles = await user.functions.getArticles();
       return articles;
     }
   )

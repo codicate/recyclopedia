@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { GetStaticProps, GetStaticPaths } from 'next';
 
 import TokensCasher from 'lib/utils/tokensCacher';
-import { getAllArticles } from 'lib/api/articles';
+import getArticles from 'lib/api/getArticles';
 import { ArticleModel } from 'lib/models';
 
 import Article from 'components/Article/Article';
@@ -34,7 +34,7 @@ export default Articles;
 const tokensCasher = new TokensCasher<QueriedArticleToken>('article');
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const tokens = await getAllArticles();
+  const tokens = await getArticles();
   await tokensCasher.cacheTokens(tokens);
 
   const paths = tokens.map((token) => ({

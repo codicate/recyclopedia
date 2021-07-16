@@ -142,7 +142,7 @@ export default initializeApp(Home);
 
   IE:
   It's like:
-  getAllArticles().slice(bucketIndex * bucketSize, (bucketIndex+1) * bucketSize);
+  getArticles().slice(bucketIndex * bucketSize, (bucketIndex+1) * bucketSize);
   but since it's on the server side, it reduces the load to send all of them.
 
   Then in the wildcard route we simply try to make the article component request the article

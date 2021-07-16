@@ -5,7 +5,7 @@ import { validPageLink } from 'lib/functions';
 import { ArticleModel } from 'lib/models';
 
 
-const getAllArticlesQuery = `
+const getArticlesQuery = `
 {
   articles {
     name
@@ -23,19 +23,19 @@ const getAllArticlesQuery = `
 }
 `;
 
-interface GetAllArticlesModel {
+interface getArticlesModel {
   data: {
     articles: ArticleModel[];
   };
 }
 
-export async function getAllArticles() {
-  const res: AxiosResponse<GetAllArticlesModel> = await axios({
+async function getArticles() {
+  const res: AxiosResponse<getArticlesModel> = await axios({
     method: 'post',
     url: REALM_GRAPHQL_ENDPOINT,
     headers: await generateAuthHeader(),
     data: {
-      query: getAllArticlesQuery
+      query: getArticlesQuery
     }
   });
 
@@ -46,3 +46,5 @@ export async function getAllArticles() {
     ...article
   }));
 }
+
+export default getArticles;
