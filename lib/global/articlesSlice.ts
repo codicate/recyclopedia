@@ -10,8 +10,6 @@
     setFeaturedArticle is the only one I'm aware of with bad data.
 */
 
-import { CommentModel, TopLevelCommentModel } from "components/Comment/Comment";
-
 import { createSlice, createAsyncThunk, createDraftSafeSelector } from "@reduxjs/toolkit";
 import { RootState } from "lib/global/store";
 import { AccountDetails, loginWithEmailAndPassword } from "lib/global/adminSlice";
@@ -22,7 +20,7 @@ import { useAppSelector } from "lib/global/hooks";
 import { App, User, Credentials } from "realm-web";
 import { MessageLogType, logMessage } from "lib/functions";
 
-import { VoteType, ArticleModel } from 'lib/models';
+import { VoteType, CommentModel, ArticleModel } from 'lib/models';
 
 
 
@@ -98,8 +96,6 @@ export const initApi = createAsyncThunk(
       const accountDetails = state.admin.accountDetails;
 
       await dispatch(loginWithEmailAndPassword(accountDetails));
-      dispatch(queryForArticles(undefined));
-      dispatch(queryForAllTags(undefined));
     } catch (error) {
       console.error("Failed to login because: ", error);
       return rejectWithValue(error.response.data);
@@ -134,9 +130,7 @@ interface MigrationParameters {
   newName: string,
 }
 
-/*
-  It annoys me that these single thunks require so much boiler plate...
-*/
+// It annoys me that these single thunks require so much boiler plate...
 export const migrateArticle = createAsyncThunk(
   "articles/migrateArticle",
   tryToCallWithUser(
@@ -247,12 +241,14 @@ export const selectNameOfFeaturedArticle = createDraftSafeSelector(
 
 // implicitly uses the state of the logged-in user!
 export function buildCommentDraft(loginType: LoginType, accountDetails: AccountDetails, comment: string) {
-  const currentDate = new Date();
-
   const commentContents = {
     content: comment,
-    createdAt: currentDate,
+    createdAt: new Date().getTime(),
     votes: [],
+    user: {
+      name: 'Anonymous User',
+      avatar: "/public/images/vora-is-hot-af.png"
+    }
   };
 
   const commentDraft: CommentModel =
@@ -263,7 +259,7 @@ export function buildCommentDraft(loginType: LoginType, accountDetails: AccountD
         user: {
           name: accountDetails.email,
           // comments should not really have avatars in the future.
-          avatar: "https://lh6.googleusercontent.com/-f9MhM40YFzc/AAAAAAAAAAI/AAAAAAABjbo/iG_SORRy0I4/photo.jpg",
+          avatar: "/public/images/vora-is-hot-af.png", 
         }
       };
 

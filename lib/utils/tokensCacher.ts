@@ -21,10 +21,10 @@ export default class TokensCasher<T extends { id: string; }> {
     return fse.outputJSONSync(this.tokensFilePath, JSON.stringify(tokenObj));
   };
 
-  async retrieveToken(id: string) {
+  retrieveToken(id: string) {
     console.log(this.tokensFilePath);
 
-    const tokensFile = await fse.readJsonSync(this.tokensFilePath);
+    const tokensFile = fse.readJsonSync(this.tokensFilePath);
     const tokenObj = JSON.parse(tokensFile.toString()) as Record<string, T>;
     return tokenObj[id];
   };

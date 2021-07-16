@@ -3,30 +3,13 @@ import Image from 'next/image';
 import { useState, useEffect } from "react";
 import { formatDistance } from "date-fns";
 
-import { VoteType } from 'lib/models';
+import { VoteType, VoteModel, CommentModel } from 'lib/models';
 import { databaseApi } from "lib/global/articlesSlice";
 
 import CheckboxButton from "components/UI/CheckboxButton";
 
-export interface UserModel {
-  name: string;
-  avatar: string;
-}
 
-type MongoDBRealmUserIdType = string;
-export interface Vote {
-  userId: MongoDBRealmUserIdType;
-  // MongoDB does not know about typescript types
-  type: "like" | "dislike" | "none";
-}
-
-export interface CommentModel {
-  user?: UserModel;
-  content: string;
-  createdAt: Date;
-  votes: Vote[];
-}
-export function currentVoteTypeOfCurrentUser(votes: Vote[]) {
+export function currentVoteTypeOfCurrentUser(votes: VoteModel[]) {
   for (const vote of votes) {
     if (vote.userId === databaseApi.applicationUser?.id) {
       return vote.type;
@@ -35,7 +18,7 @@ export function currentVoteTypeOfCurrentUser(votes: Vote[]) {
   return "none";
 }
 
-export function getLikeCountAndDislikeCount(votes: Vote[]) {
+export function getLikeCountAndDislikeCount(votes: VoteModel[]) {
   const likeCount = votes.reduce((total, { type }) =>
     total + ((type === "like") ? 1 : 0), 0);
   const dislikeCount = votes.reduce((total, { type }) =>
@@ -114,7 +97,7 @@ function Comment({
         <div>
           <p>{commenterUserName}</p>
           <p>
-            {formatDistance(comment.createdAt, new Date())} ago
+            {formatDistance(new Date(comment.createdAt), new Date())} ago
           </p>
         </div>
       </div>
