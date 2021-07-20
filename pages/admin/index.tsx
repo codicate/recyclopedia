@@ -38,6 +38,7 @@ function Admin({
         dateModified: new Date().getTime(),
         draftStatus: draftStatus,
         tags: submissionData.tags,
+        comments: []
       },
       ({ name }) => {
         console.log(`Article ${name} written!`);

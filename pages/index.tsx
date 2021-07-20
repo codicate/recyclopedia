@@ -14,7 +14,7 @@ import {
 
 import { selectLoginType, LoginType } from "lib/global/adminSlice";
 
-import { Secrets } from "secrets";
+import Secrets from "secrets";
 import { validPageLink, randomElt } from "lib/functions";
 
 import Spinner from "components/UI/Spinner";
