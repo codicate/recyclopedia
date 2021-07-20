@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/router';
 
-import { useAppSelector, useAppDispatch } from "lib/global/hooks";
-import { selectLoginType, LoginType } from "lib/global/adminSlice";
+import { useAppSelector, useAppDispatch } from "lib/state/hooks";
+import { selectLoginType, LoginType } from "lib/state/admin";
 import { ArticleModel } from "lib/models";
-import { insertArticle, ArticleDraft } from "lib/global/articlesSlice";
+import { insertArticle, ArticleDraft } from "lib/state/articles";
 
 import { NoticeBanner } from "components/Editors/NoticeBanner";
 import { RichTextEditor } from "components/Editors/RichTextEditor";
@@ -15,6 +15,23 @@ function Admin({
 }: {
   currentArticle?: ArticleModel;
 }) {
+  /*
+    useAppDispatch();
+    const asd = useAppDispatch(); // it will try to login automatically
+    
+    var tried_to_login;
+    function useAppDispatch() {
+      const real_dispatch = useAppDispatch;
+
+      // lazy load
+      if (user.realm.not_logged_in && !tried_to_login) {
+        tried_to_login = true;
+        real_dispatch(initApi()); // don't await
+      }
+
+      return real_dispatch;
+    }
+  */
   const dispatch = useAppDispatch();
   const [dirtyFlag, updateDirtyFlag] = useState(false);
 

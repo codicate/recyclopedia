@@ -1,6 +1,8 @@
 import { useEffect } from "react";
+
 import { NodeType } from "lib/utils/DOMIntoMarkdown";
-import Secrets from "secrets";
+import Secrets from 'secrets';
+
 
 export const validPageLink = (originalName: string) => `${encodeURIComponent(originalName.toLowerCase().trim().replace(/ +/g, "_"))}`;
 
@@ -99,11 +101,9 @@ export function classListClear(node: Element) {
 
 export function classListReplace(node: Element, classes: string[]) {
   classListClear(node);
-  console.log(node.classList);
   for (const classItem of classes) {
     node.classList.add(classItem);
   }
-  console.log(node.classList);
 }
 
 // http://w3c.github.io/html-reference/syntax.html

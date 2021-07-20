@@ -1,8 +1,8 @@
 import styles from "./account.module.scss";
 import { useRouter } from "next/router";
 
-import { useAppDispatch } from "lib/global/hooks";
-import { LoginAttemptResult, loginWithEmailAndPassword, LoginType } from "lib/global/adminSlice";
+import { useAppDispatch } from "lib/state/hooks";
+import { LoginAttemptResult, loginWithEmailAndPassword, LoginType } from "lib/state/admin";
 
 import Form from "components/Form/Form";
 import Button from "components/UI/Button";
@@ -40,10 +40,10 @@ function Login() {
           }
         }}
         submitFn={async (input) => {
-          const loginResult = (await dispatch(loginWithEmailAndPassword(input))).payload as LoginAttemptResult;
-          console.log(loginResult);
+          const dispatchRes = await dispatch(loginWithEmailAndPassword(input));
+          const loginAttemptResult = dispatchRes.payload as LoginAttemptResult;
 
-          if (loginResult.type !== LoginType.Anonymous) {
+          if (loginAttemptResult.type !== LoginType.Anonymous) {
             router.push("/");
           } else {
             alert("bad login");

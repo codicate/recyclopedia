@@ -16,14 +16,10 @@ export default class TokensCasher<T extends { id: string; }> {
       [token.id]: token
     }), {});
 
-    console.log(this.tokensFilePath);
-
     return fse.outputJSONSync(this.tokensFilePath, JSON.stringify(tokenObj));
   };
 
   retrieveToken(id: string) {
-    console.log(this.tokensFilePath);
-
     const tokensFile = fse.readJsonSync(this.tokensFilePath);
     const tokenObj = JSON.parse(tokensFile.toString()) as Record<string, T>;
     return tokenObj[id];

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { formatDistance } from "date-fns";
 
 import { VoteType, VoteModel, CommentModel } from 'lib/models';
-import { databaseApi } from "lib/global/articlesSlice";
+import { databaseApi } from "lib/state/articles";
 
 import CheckboxButton from "components/UI/CheckboxButton";
 
