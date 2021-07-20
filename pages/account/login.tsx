@@ -1,8 +1,8 @@
 import styles from "./account.module.scss";
 import { useRouter } from "next/router";
 
-import { useAppDispatch } from "lib/state/hooks";
-import { LoginAttemptResult, loginWithEmailAndPassword, LoginType } from "lib/state/admin";
+import { useAppDispatch } from "state/hooks";
+import { LoginAttemptResult, loginWithEmailAndPassword, LoginType } from "state/admin";
 
 import Form from "components/Form/Form";
 import Button from "components/UI/Button";

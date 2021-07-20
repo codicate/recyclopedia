@@ -2,9 +2,9 @@ import styles from "./index.module.scss";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { useAppSelector, useAppDispatch } from "lib/state/hooks";
-import { selectArticlesData, deleteArticle, restoreArticle } from "lib/state/articles";
-import { LoginType, selectLoginType } from "lib/state/admin";
+import { useAppSelector, useAppDispatch } from "state/hooks";
+import { selectArticlesData, deleteArticle, restoreArticle } from "state/articles";
+import { LoginType, selectLoginType } from "state/admin";
 
 import { validPageLink, dictionaryUpdateKey } from "lib/functions";
 import Button from "components/UI/Button";

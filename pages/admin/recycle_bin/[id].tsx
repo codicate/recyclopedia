@@ -1,9 +1,9 @@
 import Head from 'next/head';
 import { GetStaticPaths, GetStaticProps } from 'next';
 
-import TokensCasher from 'lib/utils/tokensCacher';
+import TokensCasher from 'utils/tokensCacher';
 import { RecycleBinArticleModel } from 'lib/models';
-import getRecyleBinArticles from 'lib/api/getRecyleBinArticles';
+import getRecyleBinArticles from 'api/getRecyleBinArticles';
 
 import Article from 'components/Article/Article';
 

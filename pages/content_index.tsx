@@ -4,12 +4,12 @@ import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 
-import { useAppSelector } from "lib/state/hooks";
-import { LoginType, selectLoginType } from "lib/state/admin";
+import { useAppSelector } from "state/hooks";
+import { LoginType, selectLoginType } from "state/admin";
 
 import { validPageLink, dictionaryUpdateKey } from "lib/functions";
-import getArticleLinks, { ArticleLink } from "lib/api/getArticleLinks";
-import getArticleTags from 'lib/api/getArticleTags';
+import getArticleLinks, { ArticleLink } from "api/getArticleLinks";
+import getArticleTags from 'api/getArticleTags';
 
 import Collapsible from "components/UI/Collapsible";
 import CheckboxButton from "components/UI/CheckboxButton";

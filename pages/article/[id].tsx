@@ -1,9 +1,9 @@
 import Head from 'next/head';
 import { GetStaticProps, GetStaticPaths } from 'next';
 
-import TokensCasher from 'lib/utils/tokensCacher';
+import TokensCasher from 'utils/tokensCacher';
 import { ArticleModel } from 'lib/models';
-import getArticles from 'lib/api/getArticles';
+import getArticles from 'api/getArticles';
 
 import Article from 'components/Article/Article';
 

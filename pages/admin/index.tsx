@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/router';
 
-import { useAppSelector, useAppDispatch } from "lib/state/hooks";
-import { selectLoginType, LoginType } from "lib/state/admin";
+import { useAppSelector, useAppDispatch } from "state/hooks";
+import { selectLoginType, LoginType } from "state/admin";
 import { ArticleModel } from "lib/models";
-import { insertArticle, ArticleDraft } from "lib/state/articles";
+import { insertArticle, ArticleDraft } from "state/articles";
 
 import { NoticeBanner } from "components/Editors/NoticeBanner";
 import { RichTextEditor } from "components/Editors/RichTextEditor";

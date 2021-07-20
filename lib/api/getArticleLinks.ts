@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 
-import { generateAuthHeader, REALM_GRAPHQL_ENDPOINT } from 'lib/utils/realmClient';
+import { generateAuthHeader, REALM_GRAPHQL_ENDPOINT } from 'utils/realmClient';
 import { ArticleModel } from 'lib/models';
 
 

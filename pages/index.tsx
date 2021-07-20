@@ -2,15 +2,15 @@ import styles from "./index.module.scss";
 import { useEffect } from "react";
 import Link from 'next/link';
 
-import { useAppDispatch, useAppSelector } from "lib/state/hooks";
+import { useAppDispatch, useAppSelector } from "state/hooks";
 import {
   initApi,
   selectStatus,
   readArticlesFromLoginType,
   selectNameOfFeaturedArticle,
   ArticlesDataProperties
-} from "lib/state/articles";
-import { selectLoginType, LoginType } from "lib/state/admin";
+} from "state/articles";
+import { selectLoginType, LoginType } from "state/admin";
 import { ArticleModel } from 'lib/models';
 import { validPageLink, randomElt } from "lib/functions";
 import Secrets from 'secrets';

@@ -2,7 +2,7 @@ import styles from "./ResponsiveNav.module.scss";
 import { useEffect, useRef, useState } from "react";
 import cn from "classnames";
 
-import useEventListener from "lib/hooks/useEventListener";
+import useEventListener from "hooks/useEventListener";
 
 
 function ResponsiveNav({

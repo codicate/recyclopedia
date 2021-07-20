@@ -1,4 +1,4 @@
-import realm from 'lib/utils/realmClient';
+import realm from 'utils/realmClient';
 
 
 const getArticleTags = async (): Promise<string[]> => {

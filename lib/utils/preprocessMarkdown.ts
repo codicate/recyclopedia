@@ -15,7 +15,7 @@ import {
   eatWhitespaceSeparatedToken,
   requireWhitespaceSeparatedCharacter,
   eatWhitespaceSeparatedString,
-} from "lib/utils/intoParsable";
+} from "utils/intoParsable";
 
 export interface HeaderInformation {
   level: number,

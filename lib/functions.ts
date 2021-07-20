@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { NodeType } from "lib/utils/DOMIntoMarkdown";
+import { NodeType } from "utils/DOMIntoMarkdown";
 import Secrets from 'secrets';
 
 
