@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
 
-import { useAppSelector, useAppDispatch } from "lib/global/hooks";
-import { LoginType, selectLoginType } from "lib/global/adminSlice";
+import { useAppSelector, useAppDispatch } from "lib/state/hooks";
+import { LoginType, selectLoginType } from "lib/state/admin";
 import { VoteType, ArticleModel } from 'lib/models';
 import {
   queryForArticles,
@@ -13,7 +13,7 @@ import {
   deleteArticle,
   restoreArticle,
   articleVote,
-} from "lib/global/articlesSlice";
+} from "lib/state/articles";
 
 import { validPageLink } from "lib/functions";
 import { preprocessMarkdown } from "lib/utils/preprocessMarkdown";

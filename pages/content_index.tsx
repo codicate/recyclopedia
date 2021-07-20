@@ -4,8 +4,8 @@ import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 
-import { useAppSelector } from "lib/global/hooks";
-import { LoginType, selectLoginType } from "lib/global/adminSlice";
+import { useAppSelector } from "lib/state/hooks";
+import { LoginType, selectLoginType } from "lib/state/admin";
 
 import { validPageLink, dictionaryUpdateKey } from "lib/functions";
 import getArticleLinks, { ArticleLink } from "lib/api/getArticleLinks";

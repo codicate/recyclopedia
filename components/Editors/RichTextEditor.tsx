@@ -56,7 +56,7 @@ import {
 } from "./RichTextEditWidgetInformation";
 
 import { ArticleModel } from 'lib/models';
-import { ArticleDraft, setFeaturedArticle } from "lib/global/articlesSlice";
+import { ArticleDraft, setFeaturedArticle } from "lib/state/articles";
 import Input from "components/Form/Input";
 
 import bottomToolbarStyle from "./bottomToolbar.module.scss";
@@ -64,7 +64,7 @@ import editorStyle from "./RichTextEditor.module.scss";
 import articleStyles from "components/Article/Article.module.scss";
 import Button from "components/UI/Button";
 import { AssertionError } from "assert";
-import { useAppDispatch } from "lib/global/hooks";
+import { useAppDispatch } from "lib/state/hooks";
 
 /** Unsafe wrappers... Cause most of this has to be unsafe to be even possible... **/
 /** Well... Draft.JS is a thing, but that can't exactly do the same thing as this... Otherwise it would require way less code. **/

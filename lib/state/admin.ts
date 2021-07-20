@@ -1,8 +1,8 @@
 import { createSlice, createDraftSafeSelector, createAsyncThunk } from "@reduxjs/toolkit";
-import { RootState } from "lib/global/store";
+import { RootState } from "lib/state/store";
 
 import { Credentials } from "realm-web";
-import { databaseApi } from "lib/global/articlesSlice";
+import { databaseApi } from "lib/state/articles";
 
 export enum LoginType {
   NotLoggedIn,
@@ -98,14 +98,14 @@ const adminSlice = createSlice({
         const payload = action.payload;
 
         switch (payload.type) {
-        case LoginType.User:
-        case LoginType.Admin:
-          state.accountDetails = payload.accountDetails;
-          state.loginType = payload.type;
-          state.accountCustomData = payload.customData;
-          break;
+          case LoginType.User:
+          case LoginType.Admin:
+            state.accountDetails = payload.accountDetails;
+            state.loginType = payload.type;
+            state.accountCustomData = payload.customData;
+            break;
 
-        default: break;
+          default: break;
         }
       }
     );

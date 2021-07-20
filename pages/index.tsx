@@ -2,7 +2,7 @@ import styles from "./index.module.scss";
 import React, { useEffect } from "react";
 import Link from 'next/link';
 
-import { useAppDispatch, useAppSelector } from "lib/global/hooks";
+import { useAppDispatch, useAppSelector } from "lib/state/hooks";
 import { ArticleModel } from 'lib/models';
 import {
   initApi,
@@ -10,11 +10,11 @@ import {
   readArticlesFromLoginType,
   selectNameOfFeaturedArticle,
   ArticlesDataProperties
-} from "lib/global/articlesSlice";
+} from "lib/state/articles";
 
-import { selectLoginType, LoginType } from "lib/global/adminSlice";
+import { selectLoginType, LoginType } from "lib/state/admin";
 
-import { Secrets } from "secrets";
+import Secrets from 'secrets';
 import { validPageLink, randomElt } from "lib/functions";
 
 import Spinner from "components/UI/Spinner";

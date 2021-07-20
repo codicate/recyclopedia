@@ -1,6 +1,6 @@
 import { Credentials, App } from 'realm-web';
 
-import { Secrets } from 'secrets';
+import Secrets from 'secrets';
 
 
 const APP_ID = Secrets.RECYCLOPEDIA_APPLICATION_ID;

@@ -1,11 +1,15 @@
 import 'styles/globals.scss';
-import { useState } from "react";
+import { useEffect } from 'react';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { store, persistor } from 'lib/global/store';
+import { store, persistor } from 'lib/state/store';
+
+import { useAppDispatch } from 'lib/state/hooks';
+import { initApi } from 'lib/state/articles';
+import Secrets from 'secrets';
 
 import Header from "components/Header/Header";
 import Footer from "components/Footer/Footer";
@@ -24,6 +28,12 @@ const withRedux = <
 );
 
 function App({ Component, pageProps }: AppProps) {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(initApi(Secrets.RECYCLOPEDIA_APPLICATION_ID));
+  }, [dispatch]);
+
   return (
     <>
       <Head>
