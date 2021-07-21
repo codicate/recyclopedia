@@ -2,12 +2,12 @@ import path from "path";
 import fse from "fs-extra";
 
 
-// https://github.com/vercel/next.js/discussions/11272#discussioncomment-853781
+// Adopted from https://github.com/vercel/next.js/discussions/11272#discussioncomment-853781
 export default class TokensCasher<T extends { id: string; }> {
   private tokensFilePath: string;
 
   constructor(tokenName: string) {
-    this.tokensFilePath = path.join(process.cwd(), `cache/tokens/${tokenName}.json`);
+    this.tokensFilePath = path.join(process.cwd(), `.next/cache/tokens/${tokenName}.json`);
   }
 
   cacheTokens(tokens: T[]) {
