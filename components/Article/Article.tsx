@@ -1,18 +1,20 @@
 import styles from "components/Article/Article.module.scss";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
 
 import { useAppSelector, useAppDispatch } from "state/hooks";
 import { LoginType, selectLoginType } from "state/admin";
-import { VoteType, ArticleModel } from 'lib/models';
+import { VoteType, ArticleModel, VoteModel } from 'lib/models';
 import {
   queryForArticles,
   getCommentsOfArticle,
+  getVotesOfArticle,
   migrateArticle,
   deleteArticle,
   restoreArticle,
   articleVote,
+  useEffectWithGuaranteedInitializedApi,
 } from "state/articles";
 
 import { validPageLink } from "lib/functions";
@@ -29,7 +31,6 @@ import Button from "components/UI/Button";
 import MarkdownRender from "components/Article/MarkdownRender";
 import { TopLevelCommentModel } from "components/Comment/Comment";
 import CommentSection from "components/Comment/CommentSection";
-
 
 enum PageViewType {
   Reading,
@@ -53,7 +54,6 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
     content,
     dateCreated,
     dateModified,
-    votes
   } = article;
 
   const [migrationTitleName, updateMigrationTitleName] = useState(name);
@@ -66,6 +66,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
   const commentSectionRef = useRef<HTMLDivElement>(null);
 
   const [comments, updateComments] = useState<TopLevelCommentModel[]>([]);
+  const [votes, updateVotes]       = useState<VoteModel[]>([]);
 
   // We don't have direct notifications, and honestly in real time comments that can be
   // probably hectic. So this is the best thing I could think of. This is called when you reply
@@ -73,22 +74,17 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
   const [commentPinger, _ucp] = useState(0);
   function refetchComments() {
     _ucp(commentPinger + 1);
+    console.log("?");
   }
   // this won't be a dispatch I suppose.
-  // useEffect(() => {
-  //   (async () => {
-  //     /*
-  //       The like state is part of our articles.
-
-  //       As we don't have a separate way of querying for article likes individually
-  //       (nor do I allow querying specific articles yet), the best solution that works
-  //       within our bounds is simply querying all the articles again wholesale.
-  //     */
-  //     dispatch(queryForArticles(undefined));
-  //     const retrievedComments = await getCommentsOfArticle(name);
-  //     updateComments(retrievedComments);
-  //   })();
-  // }, [commentPinger]);
+  useEffectWithGuaranteedInitializedApi(dispatch,
+    (async () => {
+      dispatch(queryForArticles(undefined));
+      const retrievedComments = await getCommentsOfArticle(name);
+      const retrievedVotes    = await getVotesOfArticle(name);
+      updateComments(retrievedComments);
+      updateVotes(retrievedVotes);
+    }), [commentPinger]);
 
   function toggleView(target: PageViewType) {
     if (viewType !== target) {
@@ -159,7 +155,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
               <FloatingSocialMenu
                 title={name}
                 commentSectionRef={commentSectionRef}
-                votes={article.votes}
+                votes={votes}
                 vote={
                   async function (vote: VoteType) {
                     await articleVote(currentLoginType, name, vote);

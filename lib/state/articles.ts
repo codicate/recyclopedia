@@ -15,12 +15,14 @@ import { RootState } from "state/store";
 import { AccountDetails, loginWithEmailAndPassword } from "state/admin";
 
 import { selectAccountCustomData, selectAccountDetails, selectLoginType, LoginType } from "state/admin";
-import { useAppSelector } from "state/hooks";
+import { useAppDispatch, useAppSelector } from "state/hooks";
 
 import { App, User, Credentials } from "realm-web";
 import { MessageLogType, logMessage } from "lib/functions";
 
 import { VoteType, CommentModel, ArticleModel } from 'lib/models';
+import Secrets from "secrets";
+import { useEffect } from "react";
 
 export interface RecycledArticle extends ArticleModel {
   pendingDaysUntilDeletion: number;
@@ -58,6 +60,23 @@ const initialState: {
   allTags: []
 };
 
+// This is a stupid syntactic little mess.
+// @ts-ignore
+function tryToCallWithUserWithoutRedux(fn) {
+   // @ts-ignore
+  return async function (argument) {
+    try {
+      if (databaseApi.applicationUser) {
+        return await fn(databaseApi.applicationUser, argument);
+      } else {
+        throw new Error("No user? This is some real bad news");
+      }
+    } catch (error) {
+      console.error("Call with user error: ", error);
+      return undefined;
+    }
+  }; 
+}
 // @ts-ignore
 function tryToCallWithUser(fn) {
   // @ts-ignore
@@ -79,6 +98,12 @@ export const initApi = createAsyncThunk(
   "articles/initApi",
   async (appId: string, { getState, dispatch, rejectWithValue }) => {
     const state = getState() as RootState;
+
+    // This little number is for useEffectWithGuaranteedInitializedApi
+    if (databaseApi.application) {
+      return;
+    }
+
     try {
       databaseApi.application = new App({ id: appId });
       const accountDetails = state.admin.accountDetails;
@@ -90,6 +115,25 @@ export const initApi = createAsyncThunk(
     }
   }
 );
+
+// Since we no longer have the loading stage...
+// Our login *may* fail to complete fast enough before the page loads.
+// This will force an initApi if it has not already happened.
+// Grrr... No I don't really like this either. We really need to come together
+// to refactor, but the problem is there's so much (well 5K lines is pretty small...), that we don't really know
+// where to get started. 
+
+// @ts-ignore
+export function useEffectWithGuaranteedInitializedApi(dispatch, effector, dependencyArray) {
+  useEffect(
+    function () {
+      (async function () {
+        await dispatch(initApi(Secrets.RECYCLOPEDIA_APPLICATION_ID));
+        effector();
+      })();
+    } , 
+    dependencyArray);
+}
 
 export const queryForArticles = createAsyncThunk(
   "articles/queryForArticles",
@@ -319,34 +363,48 @@ export async function articleVote(loginType: LoginType, articleName: string, vot
   if (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn)
     return;
 
-  await tryToCallWithUser(
+  await tryToCallWithUserWithoutRedux(
     async function (user: Realm.User, _: any, _1: any) {
       await user.functions.articleVote(articleName, voteTypeToString(voteType), user.id);
     }
-  )(undefined, {});
+  )(undefined);
 }
 export async function commentVote(loginType: LoginType, articleName: string, voteType: VoteType, target: VoteTarget) {
   if (loginType === LoginType.Anonymous || loginType === LoginType.NotLoggedIn)
     return;
 
-  await tryToCallWithUser(
+  await tryToCallWithUserWithoutRedux(
     async function (user: Realm.User, _: any, _1: any) {
       await user.functions.commentVote(articleName, voteTypeToString(voteType), target, user.id);
     }
-  )(undefined, {});
+  )(undefined);
 }
 
 export async function getCommentsOfArticle(name: string) {
   // tryToCallWithUser was supposed to reduce the redundancy for reducers
   // so this looks weird.
-  const fetchedComments = await tryToCallWithUser(
+  const fetchedComments = await tryToCallWithUserWithoutRedux(
     async function (user: Realm.User, _argument: any, _: any) {
       const comments = await user.functions.getCommentsOfArticle(name);
       return comments;
-    })(undefined, undefined);
+    })(undefined);
 
   if (fetchedComments) {
     return fetchedComments;
+  } else {
+    return [];
+  }
+}
+
+export async function getVotesOfArticle(name: string) {
+  const fetchedVotes = await tryToCallWithUserWithoutRedux(
+    async function (user: Realm.User, _argument: any, _: any) {
+      const votes = await user.functions.getVotesOfArticle(name);
+      return votes;
+    })(undefined);
+
+  if (fetchedVotes) {
+    return fetchedVotes;
   } else {
     return [];
   }

@@ -25,9 +25,6 @@ const Articles = ({ article }: PageProps) => (
   </>
 );
 
-export default Articles;
-
-
 const tokensCasher = new TokensCasher<QueriedArticleToken>('article');
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -61,3 +58,5 @@ export const getStaticProps: GetStaticProps<PageProps, ContextParams> = async ({
     notFound: true
   };
 };
+
+export default Articles;

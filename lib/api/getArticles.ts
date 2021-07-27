@@ -15,22 +15,6 @@ const getArticlesQuery = `
     dateCreated
     dateModified
     tags
-    votes {
-      type
-      userId
-    }
-    comments {
-      content
-      createdAt
-      user {
-        avatar
-        name
-      }
-      votes {
-        type
-        userId
-      }
-    }
   }
 }
 `;
