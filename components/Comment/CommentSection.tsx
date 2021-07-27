@@ -1,11 +1,11 @@
 import styles from "./CommentSection.module.scss";
 import React, { forwardRef } from "react";
-import { addComment } from "lib/state/articles";
-import { useAppSelector } from "lib/state/hooks";
-import { LoginType, selectLoginType, selectAccountDetails } from "lib/state/admin";
+import { addComment } from "state/articles";
+import { useAppSelector } from "state/hooks";
+import { LoginType, selectLoginType, selectAccountDetails } from "state/admin";
 
 import { VoteType } from 'lib/models';
-import { commentVote } from "lib/state/articles";
+import { commentVote } from "state/articles";
 
 import Form from "components/Form/Form";
 import Button from "components/UI/Button";

@@ -5,10 +5,10 @@ import Head from 'next/head';
 
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { store, persistor } from 'lib/state/store';
+import { store, persistor } from 'state/store';
 
-import { useAppDispatch } from 'lib/state/hooks';
-import { initApi } from 'lib/state/articles';
+import { useAppDispatch } from 'state/hooks';
+import { initApi } from 'state/articles';
 import Secrets from 'secrets';
 
 import Header from "components/Header/Header";

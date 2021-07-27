@@ -11,11 +11,11 @@
 */
 
 import { createSlice, createAsyncThunk, createDraftSafeSelector } from "@reduxjs/toolkit";
-import { RootState } from "lib/state/store";
-import { AccountDetails, loginWithEmailAndPassword } from "lib/state/admin";
+import { RootState } from "state/store";
+import { AccountDetails, loginWithEmailAndPassword } from "state/admin";
 
-import { selectAccountCustomData, selectAccountDetails, selectLoginType, LoginType } from "lib/state/admin";
-import { useAppSelector } from "lib/state/hooks";
+import { selectAccountCustomData, selectAccountDetails, selectLoginType, LoginType } from "state/admin";
+import { useAppSelector } from "state/hooks";
 
 import { App, User, Credentials } from "realm-web";
 import { MessageLogType, logMessage } from "lib/functions";

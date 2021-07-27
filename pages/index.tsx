@@ -1,21 +1,19 @@
 import styles from "./index.module.scss";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Link from 'next/link';
 
-import { useAppDispatch, useAppSelector } from "lib/state/hooks";
-import { ArticleModel } from 'lib/models';
+import { useAppDispatch, useAppSelector } from "state/hooks";
 import {
   initApi,
   selectStatus,
   readArticlesFromLoginType,
   selectNameOfFeaturedArticle,
   ArticlesDataProperties
-} from "lib/state/articles";
-
-import { selectLoginType, LoginType } from "lib/state/admin";
-
-import Secrets from 'secrets';
+} from "state/articles";
+import { selectLoginType, LoginType } from "state/admin";
+import { ArticleModel } from 'lib/models';
 import { validPageLink, randomElt } from "lib/functions";
+import Secrets from 'secrets';
 
 import Spinner from "components/UI/Spinner";
 import Banner from "components/Article/Banner";
