@@ -30,7 +30,7 @@ import { VoteType, CommentModel, ArticleModel } from 'lib/models';
 export interface ArticleDraft {
   name: string;
   content: string;
-  dateCreated?: number;
+  dateCreated?: Date;
   tags?: string[];
 }
 
@@ -109,7 +109,7 @@ export const queryForArticles = createAsyncThunk(
     // @ts-ignore
     async function (user: Realm.User, query?: any, thunkApi: any) {
       // TODO(jerry): dummy, until we actually add all dates for articles
-      const articles = await user.functions.getArticles();
+      const articles = await user.functions.getAllArticles();
       return articles;
     }
   )

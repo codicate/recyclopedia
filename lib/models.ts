@@ -29,8 +29,8 @@ export interface ArticleModel {
   content: string;
   draftStatus: boolean;
   bannerImage?: string;
-  dateCreated: number;
-  dateModified?: number;
+  dateCreated: Date;
+  dateModified?: Date;
   tags?: string[];
   votes: VoteModel[];
   comments: CommentModel[];

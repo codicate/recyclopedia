@@ -50,15 +50,16 @@ function Admin({
       {
         name: submissionData.name,
         content: submissionData.content,
-        dateCreated: (submissionData.dateCreated) ? submissionData.dateCreated : new Date().getTime(),
+        dateCreated: (submissionData.dateCreated) ? submissionData.dateCreated : new Date(),
         votes: [],
-        dateModified: new Date().getTime(),
+        dateModified: new Date(),
         draftStatus: draftStatus,
         tags: submissionData.tags,
         comments: []
       },
-      ({ name }) => {
-        console.log(`Article ${name} written!`);
+      (article) => {
+        console.log(`Article ${article.name} written!`);
+        console.log(article);
         updateDirtyFlag(false);
       }
     );
