@@ -74,7 +74,6 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
   const [commentPinger, _ucp] = useState(0);
   function refetchComments() {
     _ucp(commentPinger + 1);
-    console.log("?");
   }
   // this won't be a dispatch I suppose.
   useEffectWithGuaranteedInitializedApi(dispatch,
@@ -152,17 +151,20 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
         case PageViewType.Reading:
           return (
             <>
-              <FloatingSocialMenu
-                title={name}
-                commentSectionRef={commentSectionRef}
-                votes={votes}
-                vote={
-                  async function (vote: VoteType) {
-                    await articleVote(currentLoginType, name, vote);
-                    refetchComments();
-                  }
-                }
-              />
+              {
+                (votes.length > 0) ?
+                  <FloatingSocialMenu
+                    title={name}
+                    commentSectionRef={commentSectionRef}
+                    votes={votes}
+                    vote={
+                      async function (vote: VoteType) {
+                        await articleVote(currentLoginType, name, vote);
+                        refetchComments();
+                      }
+                    }
+                  /> : <></>
+              }
 
               {(article?.bannerImage) && (
                 <Banner bannerImage={article.bannerImage}></Banner>
