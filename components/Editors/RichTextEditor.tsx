@@ -861,7 +861,7 @@ export function RichTextEditor({
         name: (initialArticleState?.name) || (editableTitleDOMRef.current.textContent || ""),
         content: markdownText,
         tags: tags,
-        dateCreated: (currentArticle) ? currentArticle.dateCreated : new Date(),
+        dateCreated: (currentArticle) ? new Date(currentArticle.dateCreated) : new Date(),
       });
 
       if (initialArticleState === undefined) {
