@@ -24,6 +24,16 @@ export interface CommentModel {
   votes: VoteModel[];
 }
 
+// This is a partial version of the article
+// with optional fields. This is because we won't necessarily
+// be filling out all the fields.
+export interface ArticleDraftModel {
+  name: string;
+  content: string;
+  dateCreated?: Date;
+  tags?: string[];
+}
+
 export interface ArticleModel {
   name: string;
   content: string;

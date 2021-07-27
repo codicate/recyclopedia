@@ -22,18 +22,6 @@ import { MessageLogType, logMessage } from "lib/functions";
 
 import { VoteType, CommentModel, ArticleModel } from 'lib/models';
 
-
-
-// This is a partial version of the article
-// with optional fields. This is because we won't necessarily
-// be filling out all the fields.
-export interface ArticleDraft {
-  name: string;
-  content: string;
-  dateCreated?: Date;
-  tags?: string[];
-}
-
 export interface RecycledArticle extends ArticleModel {
   pendingDaysUntilDeletion: number;
 }

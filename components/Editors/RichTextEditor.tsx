@@ -55,8 +55,8 @@ import {
   flattenWidgetStateTypes,
 } from "./RichTextEditWidgetInformation";
 
-import { ArticleModel } from 'lib/models';
-import { ArticleDraft, setFeaturedArticle } from "state/articles";
+import { ArticleDraftModel, ArticleModel } from 'lib/models';
+import { setFeaturedArticle } from "state/articles";
 import Input from "components/Form/Input";
 
 import bottomToolbarStyle from "./bottomToolbar.module.scss";
@@ -743,7 +743,7 @@ function HyperlinkContextMenu(properties: HyperlinkContextMenuProperties) {
 }
 
 interface RichTextEditorProperties {
-  submissionHandler: (f: ArticleDraft) => void,
+  submissionHandler: (f: ArticleDraftModel) => void,
   currentArticle?: ArticleModel,
   updateDirtyFlag: React.Dispatch<React.SetStateAction<boolean>>,
   toggleDraftStatus: () => void,

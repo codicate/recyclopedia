@@ -3,8 +3,8 @@ import { useRouter } from 'next/router';
 
 import { useAppSelector, useAppDispatch } from "state/hooks";
 import { selectLoginType, LoginType } from "state/admin";
-import { ArticleModel } from "lib/models";
-import { insertArticle, ArticleDraft } from "state/articles";
+import { ArticleModel, ArticleDraftModel } from "lib/models";
+import { insertArticle } from "state/articles";
 
 import { NoticeBanner } from "components/Editors/NoticeBanner";
 import { RichTextEditor } from "components/Editors/RichTextEditor";
@@ -45,7 +45,7 @@ function Admin({
     onFinishedCallback?.(input);
   }
 
-  const submissionHandler = (submissionData: ArticleDraft) => {
+  const submissionHandler = (submissionData: ArticleDraftModel) => {
     submitHandler(
       {
         name: submissionData.name,
