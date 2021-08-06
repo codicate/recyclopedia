@@ -18,7 +18,7 @@ export default function Searchbar({
   const openSearchResultsDelay = 500;
   const lastTimeTyped = useRef(new Date().getTime());
 
-  useEventListener(document.body, "keydown", (e) => {
+  useEventListener(() => document.body, "keydown", (e) => {
     if (e.key === "/") {
       e.preventDefault();
       searchbar.current?.focus();

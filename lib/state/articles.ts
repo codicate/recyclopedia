@@ -11,7 +11,7 @@
 */
 
 import { createSlice, createAsyncThunk, createDraftSafeSelector } from "@reduxjs/toolkit";
-import { RootState } from "state/store";
+import { AppState } from "state/store";
 import { AccountDetails, loginWithEmailAndPassword } from "state/admin";
 
 import { selectAccountCustomData, selectAccountDetails, selectLoginType, LoginType } from "state/admin";
@@ -97,7 +97,7 @@ function tryToCallWithUser(fn) {
 export const initApi = createAsyncThunk(
   "articles/initApi",
   async (appId: string, { getState, dispatch, rejectWithValue }) => {
-    const state = getState() as RootState;
+    const state = getState() as AppState;
 
     // This little number is for useEffectWithGuaranteedInitializedApi
     if (databaseApi.application) {
@@ -255,7 +255,7 @@ const articlesSlice = createSlice({
 });
 
 export default articlesSlice.reducer;
-const selectSelf = (state: RootState) => state.articles;
+const selectSelf = (state: AppState) => state.articles;
 
 // shouldn't it be possible to programmatically generate these instead
 // of copy and paste? Like building the export dictionary manually?

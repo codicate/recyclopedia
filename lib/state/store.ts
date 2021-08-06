@@ -1,4 +1,8 @@
-import { configureStore, ThunkAction, Action, combineReducers } from "@reduxjs/toolkit";
+import {
+  configureStore, combineReducers, createSlice,
+  ThunkAction, Action
+} from "@reduxjs/toolkit";
+import { createWrapper, HYDRATE } from 'next-redux-wrapper';
 import {
   persistStore, persistReducer,
   FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER
@@ -23,8 +27,8 @@ const rootReducer = combineReducers({
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 
-export const store = configureStore({
-  reducer: persistedReducer,
+const makeStore = () => configureStore({
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: {
       ignoredActions: [
@@ -36,16 +40,33 @@ export const store = configureStore({
   })
 });
 
-export const persistor = persistStore(store);
-
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type AppStore = ReturnType<typeof makeStore>;
+export type AppState = ReturnType<AppStore['getState']>;
+export type AppDispatch = AppStore['dispatch'];
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
-  RootState,
+  AppState,
   unknown,
   Action<string>
 >;
+
+export const wrapper = createWrapper<AppStore>(makeStore);
+
+
+type CreateSliceParams = Parameters<typeof createSlice>[0];
+export const createNextSlice = ({ extraReducers, ...params }: CreateSliceParams) => createSlice({
+  ...params,
+  extraReducers: {
+    [HYDRATE]: (state, action) => {
+      console.log('HYDRATE', state, action.payload);
+      return {
+        ...state as AppState,
+        ...action.payload.some,
+      };
+    },
+    ...extraReducers
+  }
+});
 
 
 /*

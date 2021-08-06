@@ -1,5 +1,5 @@
 import { createSlice, createDraftSafeSelector, createAsyncThunk } from "@reduxjs/toolkit";
-import { RootState } from "state/store";
+import { AppState } from "state/store";
 
 import { Credentials } from "realm-web";
 import { databaseApi } from "state/articles";
@@ -117,7 +117,7 @@ export const {
 } = adminSlice.actions;
 export default adminSlice.reducer;
 
-const selectSelf = (state: RootState) => state.admin;
+const selectSelf = (state: AppState) => state.admin;
 
 export const selectLoginType = createDraftSafeSelector(
   selectSelf,

@@ -2,32 +2,18 @@ import 'styles/globals.scss';
 import { useEffect } from 'react';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
+import Secrets from 'secrets';
 
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-import { store, persistor } from 'state/store';
-
+import { wrapper } from 'state/store';
 import { useAppDispatch } from 'state/hooks';
 import { initApi } from 'state/articles';
-import Secrets from 'secrets';
 
 import Header from "components/Header/Header";
 import Footer from "components/Footer/Footer";
 
 
-const withRedux = <
-  T extends Record<string, unknown>
->(
-  App: (props: T) => JSX.Element
-) => (props: T) => (
-  <Provider store={store}>
-    <PersistGate persistor={persistor}>
-      <App {...props} />
-    </PersistGate>
-  </Provider>
-);
-
 function App({ Component, pageProps }: AppProps) {
+  console.log('ff', wrapper)
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -63,4 +49,4 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-export default withRedux(App);
+export default wrapper.withRedux(App);

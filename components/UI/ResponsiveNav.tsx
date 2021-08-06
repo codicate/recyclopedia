@@ -38,7 +38,7 @@ function ResponsiveNav({
   }, [children]);
   // Children is added to the dependency array so that when the user login/logout, navbar will resize in response
 
-  useEventListener(window, "resize", () => {
+  useEventListener(() => window, "resize", () => {
     handleResize();
   });
 
