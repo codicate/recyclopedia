@@ -13,7 +13,6 @@ import Footer from "components/Footer/Footer";
 
 
 function App({ Component, pageProps }: AppProps) {
-  console.log('ff', wrapper)
   const dispatch = useAppDispatch();
 
   useEffect(() => {

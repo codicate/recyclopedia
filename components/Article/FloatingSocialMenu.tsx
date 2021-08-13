@@ -1,7 +1,8 @@
 import styles from "./FloatingSocialMenu.module.scss";
 import { useState } from "react";
-
 import { VoteType, VoteModel } from 'lib/models';
+import { useAppSelector } from "state/hooks";
+import { LoginType, selectLoginType } from "state/admin";
 import { currentVoteTypeOfCurrentUser, getLikeCountAndDislikeCount } from "components/Comment/Comment";
 
 import MediaShareBtns from "./MediaShareBtns";
@@ -22,6 +23,7 @@ function FloatingSocialMenu({
 }) {
   const [expandShare, setExpandShare] = useState(false);
   const { likeCount, dislikeCount } = getLikeCountAndDislikeCount(votes);
+  const currentLoginType = useAppSelector(selectLoginType) || LoginType.Anonymous;
 
   return (
     <div className={styles.floatingSocialMenu}>
@@ -29,14 +31,14 @@ function FloatingSocialMenu({
         name='likes'
         materialIcon='thumb_up'
         counter={likeCount}
-        checked={(() => currentVoteTypeOfCurrentUser(votes) === "like")()}
+        checked={(() => (currentLoginType != LoginType.Anonymous) && currentVoteTypeOfCurrentUser(votes) === "like")()}
         onClick={() => (async () => { await vote(VoteType.Like); })()}
       />
       <CheckboxCounterBtn
         name='dislikes'
         materialIcon='thumb_down'
         counter={dislikeCount}
-        checked={(() => currentVoteTypeOfCurrentUser(votes) === "dislike")()}
+        checked={(() => (currentLoginType != LoginType.Anonymous) && currentVoteTypeOfCurrentUser(votes) === "dislike")()}
         onClick={() => (async () => { await vote(VoteType.Dislike); })()}
       />
       {(expandShare) && (

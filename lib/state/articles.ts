@@ -107,8 +107,8 @@ export const initApi = createAsyncThunk(
     try {
       databaseApi.application = new App({ id: appId });
       const accountDetails = state.admin.accountDetails;
-
-      await dispatch(loginWithEmailAndPassword(accountDetails));
+      const badAccount = accountDetails.email === "" || accountDetails.password === "";
+      await dispatch(loginWithEmailAndPassword(!badAccount ? (accountDetails) : undefined));
     } catch (error) {
       console.error("Failed to login because: ", error);
       return rejectWithValue(error.response.data);
@@ -306,7 +306,6 @@ export async function addComment(loginType: LoginType, accountDetails: AccountDe
 
   await tryToCallWithUser(
     async function (user: Realm.User, _: any, _1: any) {
-      console.log(completedComment);
       await user.functions.addComment(articleName, completedComment);
     }
   )(undefined, {});

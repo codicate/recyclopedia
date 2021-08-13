@@ -54,7 +54,12 @@ export async function loginWith(information?: AccountDetails) {
   let user = undefined;
   try {
     user = await databaseApi.application?.logIn(credentials);
-    return { type: LoginType.User, user };
+
+    if (!information) {
+      return { type: LoginType.Anonymous, user };
+    } else {
+      return { type: LoginType.User, user };
+    }
   } catch (error) {
     user = await databaseApi.application?.logIn(Credentials.anonymous());
     return { type: LoginType.Anonymous, user };
@@ -66,7 +71,7 @@ export async function loginWith(information?: AccountDetails) {
 export const loginWithEmailAndPassword = createAsyncThunk(
   "admin/loginWithEmailAndPassword",
   //@ts-ignore
-  async (accountDetails: AccountDetails) => {
+  async (accountDetails?: AccountDetails) => {
     const { type, user } = await loginWith(accountDetails);
 
     if (type !== LoginType.Anonymous) {

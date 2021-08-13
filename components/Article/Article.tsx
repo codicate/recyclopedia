@@ -152,7 +152,6 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
           return (
             <>
               {
-                (votes.length > 0) ?
                   <FloatingSocialMenu
                     title={name}
                     commentSectionRef={commentSectionRef}
@@ -163,7 +162,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
                         refetchComments();
                       }
                     }
-                  /> : <></>
+                  />
               }
 
               {(article?.bannerImage) && (
@@ -208,7 +207,6 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
                 defaultValue={migrationTitleName}
                 value={migrationTitleName} />
               <Button onClick={async () => {
-                console.log(migrationTitleName, name);
                 if (migrationTitleName === name) {
                   alert("You cannot migrate a page unto itself!");
                 } else {
