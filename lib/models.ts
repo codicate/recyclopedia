@@ -19,7 +19,7 @@ export interface VoteModel {
 
 export interface CommentModel {
   content: string;
-  createdAt: number;
+  createdAt: Date;
   user: UserModel;
   votes: VoteModel[];
 }

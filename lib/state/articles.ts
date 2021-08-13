@@ -275,7 +275,7 @@ export const selectNameOfFeaturedArticle = createDraftSafeSelector(
 export function buildCommentDraft(loginType: LoginType, accountDetails: AccountDetails, comment: string) {
   const commentContents = {
     content: comment,
-    createdAt: new Date().getTime(),
+    createdAt: new Date(),
     votes: [],
     user: {
       name: 'Anonymous User',
@@ -306,6 +306,7 @@ export async function addComment(loginType: LoginType, accountDetails: AccountDe
 
   await tryToCallWithUser(
     async function (user: Realm.User, _: any, _1: any) {
+      console.log(completedComment);
       await user.functions.addComment(articleName, completedComment);
     }
   )(undefined, {});
