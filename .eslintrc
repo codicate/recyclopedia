@@ -19,26 +19,34 @@
     "@typescript-eslint"
   ],
   "rules": {
-    "indent": 0,
-    "quotes": 0,
-    "linebreak-style": [
-      "error",
-      "unix"
-    ],
+    "eol-last": 0,
+    "comma-dangle": 0,
+    "consistent-return": 0,
+    "no-console": 0,
     "no-empty-pattern": 0,
+    "no-multiple-empty-lines": 0,
+    "jsx-quotes": 0,
     "react/prop-types": 0,
     "react/display-name": 0,
     "react/react-in-jsx-scope": 0,
+    "@typescript-eslint/semi": 0,
     "@typescript-eslint/ban-ts-comment": 1,
+    "@typescript-eslint/no-unused-vars": 0,
     "@typescript-eslint/no-extra-semi": 0,
     "@typescript-eslint/no-empty-function": 0,
+    "@typescript-eslint/no-use-before-define": 0,
+    "@typescript-eslint/no-unused-expressions": 0,
+    "@typescript-eslint/no-misused-promises": 0,
+    "@typescript-eslint/no-floating-promises": 0,
     "@typescript-eslint/explicit-function-return-type": 0,
     "@typescript-eslint/explicit-module-boundary-types": 0,
-    "@typescript-eslint/no-unused-vars": [
-      1,
-      {
-        "argsIgnorePattern": "^_"
-      }
+    "indent": 0,
+    "@typescript-eslint/indent": 0,
+    "quotes": 0,
+    "@typescript-eslint/quotes": 0,
+    "linebreak-style": [
+      "error",
+      "unix"
     ]
   }
 }
