@@ -8,8 +8,13 @@ import { useAppSelector } from "state/hooks";
 import { LoginType, selectLoginType } from "state/admin";
 
 import { validPageLink, dictionaryUpdateKey } from "lib/functions";
-import getArticleLinks, { ArticleLink } from "api/getArticleLinks";
-import getArticleTags from 'api/getArticleTags';
+// import getArticleLinks, { ArticleLink } from "api/getArticleLinks";
+// import getArticleTags from 'api/getArticleTags';
+import {
+  getArticleLinks,
+  ArticleLink,
+  getArticleTags
+} from 'api/strapi_test/all';
 
 import Collapsible from "components/UI/Collapsible";
 import CheckboxButton from "components/UI/CheckboxButton";

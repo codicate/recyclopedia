@@ -3,7 +3,10 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 
 import TokensCasher from 'utils/tokensCacher';
 import { ArticleModel } from 'lib/models';
-import getArticles from 'api/getArticles';
+// import getArticles from 'api/getArticles';
+import {
+  getArticles
+} from 'api/strapi_test/all';
 
 import Article from 'components/Article/Article';
 
@@ -14,7 +17,6 @@ type QueriedArticleToken = ArticleModel & ContextParams;
 interface PageProps {
   article: QueriedArticleToken;
 };
-
 
 const Articles = ({ article }: PageProps) => (
   <>
@@ -27,8 +29,14 @@ const Articles = ({ article }: PageProps) => (
 
 const tokensCasher = new TokensCasher<QueriedArticleToken>('article');
 
+// NOTE(jerry):
+// just from observing the stuff it looks id is just the name encoded as a validPageLink
+import {validPageLink} from 'lib/functions';
+
 export const getStaticPaths: GetStaticPaths = async () => {
-  const tokens = await getArticles();
+  const tokens = (await getArticles()).map(
+    (original) => {return {... original, id: validPageLink(original.name)}}
+  );
   tokensCasher.cacheTokens(tokens);
 
   const paths = tokens.map((token) => ({
@@ -36,6 +44,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
       id: token.id
     }
   }));
+
+  console.log(paths);
 
   return {
     paths,

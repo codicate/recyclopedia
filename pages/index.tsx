@@ -1,5 +1,5 @@
 import styles from "./index.module.scss";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import Link from 'next/link';
 
 import { useAppDispatch, useAppSelector } from "state/hooks";
@@ -122,31 +122,3 @@ const initializeApp = (
 };
 
 export default initializeApp(Home);
-
-
-/*
-  For obvious reasons getting ALL the articles is kind of dumb. I believe it
-  would be better if we fetched articles on the 404 path.
-
-  Basically we don't generate the routes here. Rather we kind of hook them up on demand.
-
-  So the index is still generated with links, and only as much as we need to display a page.
-
-  Basically that means I have to do something like:
-
-  bucketSize  = the amount of things we consider to be on a "page"
-  bucketIndex = the "page"
-  getArticleInformationPageful(bucketSize: number, bucketIndex: number);
-
-  IE:
-  It's like:
-  getArticles().slice(bucketIndex * bucketSize, (bucketIndex+1) * bucketSize);
-  but since it's on the server side, it reduces the load to send all of them.
-
-  Then in the wildcard route we simply try to make the article component request the article
-  in the URL. If it can't do it, then we just display normal 404.
-
-  We only have 1 million free api requests from MongoDB so this might ironically be worse since
-  each article will take a request from the API (even though it uses less storage space on the
-  client side).
-*/

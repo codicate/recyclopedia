@@ -6,6 +6,9 @@ import { format } from "date-fns";
 import { useAppSelector, useAppDispatch } from "state/hooks";
 import { LoginType, selectLoginType } from "state/admin";
 import { VoteType, ArticleModel, VoteModel } from 'lib/models';
+
+// NOTE(jerry):
+// this still fetches from mongodb realm!
 import {
   queryForArticles,
   getCommentsOfArticle,
@@ -52,8 +55,10 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
   const {
     name,
     content,
-    dateCreated,
-    dateModified,
+    // dateCreated,
+    // dateModified,
+    created_at,
+    updated_at,
   } = article;
 
   const [migrationTitleName, updateMigrationTitleName] = useState(name);
@@ -172,11 +177,11 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
               <h1 className={styles.title}> {name} </h1>
               <div className={styles.dateView}>
                 <p>
-                  Created at {format(new Date(dateCreated), "LLLL d, yyyy, h:mm a")}
+                  Created at {format(new Date(created_at), "LLLL d, yyyy, h:mm a")}
                 </p>
-                {(dateModified) && (
+                {(updated_at) && (
                   <p>
-                    Last Modified at {format(new Date(dateModified), "LLLL d, yyyy, h:mm a")}
+                    Last Modified at {format(new Date(updated_at), "LLLL d, yyyy, h:mm a")}
                   </p>
                 )}
               </div>
