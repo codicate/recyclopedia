@@ -19,7 +19,7 @@ import {
   restoreArticle,
   articleVote,
   useEffectWithGuaranteedInitializedApi,
-} from "state/articles";
+} from "state/strapi_test/articles";
 
 import { validPageLink } from "lib/functions";
 import { preprocessMarkdown } from "utils/preprocessMarkdown";
