@@ -2,7 +2,8 @@ import styles from "./account.module.scss";
 import { useRouter } from "next/router";
 
 import { useAppDispatch } from "state/hooks";
-import { LoginAttemptResult, loginWithEmailAndPassword, LoginType } from "state/admin";
+// import { LoginAttemptResult, loginWithEmailAndPassword, LoginType } from "state/admin";
+import { LoginAttemptResult, loginWithEmailAndPassword, LoginType } from "state/strapi_test/admin";
 
 import Form from "components/Form/Form";
 import Button from "components/UI/Button";
@@ -40,8 +41,9 @@ function Login() {
           }
         }}
         submitFn={async (input) => {
-          const dispatchRes = await dispatch(loginWithEmailAndPassword(input));
-          const loginAttemptResult = dispatchRes.payload as LoginAttemptResult;
+          // const dispatchRes = await dispatch(loginWithEmailAndPassword(input));
+          const dispatchRes = await (loginWithEmailAndPassword(input));
+          const loginAttemptResult = dispatchRes as LoginAttemptResult;
 
           if (loginAttemptResult.type !== LoginType.Anonymous) {
             router.push("/");

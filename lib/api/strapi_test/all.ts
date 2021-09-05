@@ -14,8 +14,6 @@ export async function getArticles() {
   // I promise :)
   const articles = data as ArticleModel[];
 
-  // console.log(articles);
-  // return [] as ArticleModel[];
   return articles.map((article) => ({
     id: validPageLink(article.name),
     ...article
