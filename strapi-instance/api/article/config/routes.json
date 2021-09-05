@@ -25,6 +25,14 @@
       }
     },
     {
+      "method": "GET",
+      "path": "/articles/by_name/:id",
+      "handler": "article.findOneByName",
+      "config": {
+        "policies": []
+      }
+    },
+    {
       "method": "POST",
       "path": "/articles",
       "handler": "article.create",

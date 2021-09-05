@@ -3,11 +3,21 @@ import axios from 'axios';
 // When we get real deployment make this an environment variable.
 const STRAPI_INSTANCE_URL = "http://localhost:1337";
 
-import { RecycleBinArticleModel } from 'lib/models';
+import { CommentModel, RecycleBinArticleModel } from 'lib/models';
 import { validPageLink } from 'lib/functions';
 import { ArticleModel } from 'lib/models';
 
 export type ArticleLink = Pick<ArticleModel, 'name' | 'draftStatus' | 'tags'>;
+
+export async function getArticle(name: string) {
+  const {data} = await axios.get(`${STRAPI_INSTANCE_URL}/articles/by_name/${name}`);
+  return data as ArticleModel;
+}
+
+export async function getArticleComments(name: string): Promise<CommentModel[]> {
+  const article = await getArticle(name);
+  return article.comments;
+}
 
 export async function getArticles() {
   const {data}   = await axios.get(`${STRAPI_INSTANCE_URL}/articles`);

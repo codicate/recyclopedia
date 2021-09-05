@@ -14,6 +14,7 @@ import {
   getArticleLinks,
   getArticleTags,
   getRecycleBinArticles,
+  getArticleComments,
 } from 'lib/api/strapi_test/all';
 
 export interface RecycledArticle extends ArticleModel {
@@ -331,20 +332,15 @@ export async function commentVote(loginType: LoginType, articleName: string, vot
 }
 
 export async function getCommentsOfArticle(name: string) {
-  // tryToCallWithUser was supposed to reduce the redundancy for reducers
-  // so this looks weird.
-  // const fetchedComments = await tryToCallWithUserWithoutRedux(
-  //   async function (user: Realm.User, _argument: any, _: any) {
-  //     const comments = await user.functions.getCommentsOfArticle(name);
-  //     return comments;
-  //   })(undefined);
+  const fetchedComments = getArticleComments(name);
 
-  // if (fetchedComments) {
-  //   return fetchedComments;
-  // } else {
-  //   return [];
-  // }
-  return [];
+  console.log(fetchedComments);
+
+  if (fetchedComments) {
+    return fetchedComments;
+  } else {
+    return [];
+  }
 }
 
 export async function getVotesOfArticle(name: string) {

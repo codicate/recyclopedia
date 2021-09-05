@@ -8,17 +8,20 @@ import { databaseApi } from "state/articles";
 
 import CheckboxButton from "components/UI/CheckboxButton";
 
-
 export function currentVoteTypeOfCurrentUser(votes: VoteModel[]) {
-  for (const vote of votes) {
-    if (vote.userId === databaseApi.applicationUser?.id) {
-      return vote.type;
-    }
-  }
+  // for (const vote of votes) {
+  //   if (vote.userId === databaseApi.applicationUser?.id) {
+  //     return vote.type;
+  //   }
+  // }
   return "none";
 }
 
 export function getLikeCountAndDislikeCount(votes: VoteModel[]) {
+  if (!votes) {
+    return { likeCount: 0, dislikeCount: 0 };
+  }
+
   const likeCount = votes.reduce((total, { type }) =>
     total + ((type === "like") ? 1 : 0), 0);
   const dislikeCount = votes.reduce((total, { type }) =>
@@ -66,12 +69,12 @@ function Comment({
 
   useEffect(
     function () {
-      for (const vote of comment.votes) {
-        if (vote.userId === databaseApi.applicationUser?.id) {
-          setVoteType(vote.type);
-          break;
-        }
-      }
+      // for (const vote of comment.votes) {
+      //   if (vote.userId === databaseApi.applicationUser?.id) {
+      //     setVoteType(vote.type);
+      //     break;
+      //   }
+      // }
     },
     []
   );
@@ -81,6 +84,7 @@ function Comment({
     enough.
   */
   const { likeCount, dislikeCount } = getLikeCountAndDislikeCount(comment.votes);
+  console.log(comment);
 
   return (
     <div className={styles.comment}>
