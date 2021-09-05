@@ -1,7 +1,9 @@
 import styles from "./account.module.scss";
 import { useRouter } from "next/router";
 
-import { registerAccount } from "state/admin";
+// import  { registerAccount } from "state/admin";
+import  { registerAccount } from "state/strapi_test/admin";
+// import * as StrapiTestAdmin from 'state/strapi_test/admin';
 
 import Form from "components/Form/Form";
 import Button from "components/UI/Button";
@@ -49,7 +51,7 @@ function Register() {
               email: input.email,
               password: input.password
             });
-
+            // await StrapiTestAdmin.registerAccount({email: input.email, password: input.password});
             router.push('/');
           } else {
             alert("Passwords do not match!");
