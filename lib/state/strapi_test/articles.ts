@@ -2,8 +2,13 @@
 
 import { createSlice, createAsyncThunk, createDraftSafeSelector } from "@reduxjs/toolkit";
 import { AppState } from "state/store";
-import {  selectLoginType, LoginType, AccountDetails, loginWithEmailAndPassword } from "state/strapi_test/admin";
-import { useAppDispatch, useAppSelector } from "state/hooks";
+import {
+  selectLoginType,
+  LoginType,
+  AccountDetails,
+  loginWithEmailAndPassword
+} from "state/strapi_test/admin";
+import { useAppSelector } from "state/hooks";
 
 import { VoteType, CommentModel, ArticleModel } from 'lib/models';
 import Secrets from "secrets";
@@ -11,10 +16,8 @@ import { useEffect } from "react";
 
 import {
   getArticles,
-  getArticleLinks,
-  getArticleTags,
-  getRecycleBinArticles,
   getArticleComments,
+  addArticleComment,
 } from 'lib/api/strapi_test/all';
 
 export interface RecycledArticle extends ArticleModel {
@@ -223,7 +226,7 @@ export const selectNameOfFeaturedArticle = createDraftSafeSelector(
 );
 
 // implicitly uses the state of the logged-in user!
-export function buildCommentDraft(loginType: LoginType, accountDetails: AccountDetails, comment: string) {
+export function buildCommentDraft(loginType: LoginType, accountDetails: AccountDetails | undefined | null, comment: string) {
   const commentContents = {
     content: comment,
     createdAt: new Date(),
@@ -240,6 +243,7 @@ export function buildCommentDraft(loginType: LoginType, accountDetails: AccountD
       : {
         ...commentContents,
         user: {
+          // @ts-ignore
           name: accountDetails.email,
           // comments should not really have avatars in the future.
           avatar: "/public/images/vora-is-hot-af.png", 
@@ -249,17 +253,13 @@ export function buildCommentDraft(loginType: LoginType, accountDetails: AccountD
   return commentDraft;
 }
 
-export async function addComment(loginType: LoginType, accountDetails: AccountDetails, articleName: string, comment: string) {
+export async function addComment(loginType: LoginType, accountDetails: AccountDetails | undefined | null, articleName: string, comment: string) {
   const completedComment = {
     ...buildCommentDraft(loginType, accountDetails, comment),
-    replies: []
+    replies: [] // TODO(jerry): remove reply support, not needed!
   };
-
-  // await tryToCallWithUser(
-  //   async function (user: Realm.User, _: any, _1: any) {
-  //     await user.functions.addComment(articleName, completedComment);
-  //   }
-  // )(undefined, {});
+  console.log(completedComment);
+  addArticleComment(articleName, completedComment);
 }
 
 export async function deleteComment(articleName: string, commentId: number) {
@@ -268,11 +268,6 @@ export async function deleteComment(articleName: string, commentId: number) {
     remove this when it does.
   */
   alert("This function is a shim and does not work yet!");
-  // await tryToCallWithUser(
-  //   async function (user: Realm.User, _: any, _1: any) {
-  //     await user.functions.removeComment(articleName, commentId);
-  //   }
-  // )(undefined, {});
 }
 
 // parentId:
@@ -280,12 +275,6 @@ export async function deleteComment(articleName: string, commentId: number) {
 // when deleting. This is not done yet. (some sort of GUID) basically.
 export async function replyToComment(loginType: LoginType, accountDetails: AccountDetails, articleName: string, parentId: number, comment: string) {
   const completedComment = buildCommentDraft(loginType, accountDetails, comment);
-
-  // await tryToCallWithUser(
-  //   async function (user: Realm.User, _: any, _1: any) {
-  //     await user.functions.replyToComment(articleName, parentId, completedComment);
-  //   }
-  // )(undefined, {});
 }
 
 export type ArticleVoteTarget = string;
@@ -313,28 +302,14 @@ function voteTypeToString(voteType: VoteType): VoteTypeString {
 export async function articleVote(loginType: LoginType, articleName: string, voteType: VoteType) {
   if (loginType === LoginType.NotLoggedIn)
     return;
-
-  // await tryToCallWithUserWithoutRedux(
-  //   async function (user: Realm.User, _: any, _1: any) {
-  //     await user.functions.articleVote(articleName, voteTypeToString(voteType), user.id);
-  //   }
-  // )(undefined);
 }
 export async function commentVote(loginType: LoginType, articleName: string, voteType: VoteType, target: VoteTarget) {
   if (loginType === LoginType.NotLoggedIn)
     return;
-
-  // await tryToCallWithUserWithoutRedux(
-  //   async function (user: Realm.User, _: any, _1: any) {
-  //     await user.functions.commentVote(articleName, voteTypeToString(voteType), target, user.id);
-  //   }
-  // )(undefined);
 }
 
 export async function getCommentsOfArticle(name: string) {
   const fetchedComments = getArticleComments(name);
-
-  console.log(fetchedComments);
 
   if (fetchedComments) {
     return fetchedComments;
@@ -345,17 +320,6 @@ export async function getCommentsOfArticle(name: string) {
 
 export async function getVotesOfArticle(name: string) {
   return [];
-  // const fetchedVotes = await tryToCallWithUserWithoutRedux(
-  //   async function (user: Realm.User, _argument: any, _: any) {
-  //     const votes = await user.functions.getVotesOfArticle(name);
-  //     return votes;
-  //   })(undefined);
-
-  // if (fetchedVotes) {
-  //   return fetchedVotes;
-  // } else {
-  //   return [];
-  // }
 }
 
 export function readArticlesFromLoginType(): ArticlesData {
@@ -364,17 +328,6 @@ export function readArticlesFromLoginType(): ArticlesData {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const articlesData = useAppSelector(selectArticlesData);
   return articlesData;
-
-  // if (loginType === LoginType.Admin) {
-  //   return articlesData;
-  // } else {
-  //   const newArticleSet =
-  //     articlesData.articles.filter((article) => !article.draftStatus);
-  //   return {
-  //     ...articlesData,
-  //     articles: newArticleSet,
-  //   };
-  // }
 }
 
 export const selectAllTags = createDraftSafeSelector(

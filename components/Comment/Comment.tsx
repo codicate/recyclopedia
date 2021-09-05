@@ -84,7 +84,6 @@ function Comment({
     enough.
   */
   const { likeCount, dislikeCount } = getLikeCountAndDislikeCount(comment.votes);
-  console.log(comment);
 
   return (
     <div className={styles.comment}>

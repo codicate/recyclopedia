@@ -49,6 +49,12 @@
       }
     },
     {
+      "method": "PUT",
+      "path": "/articles/by_name/:id/add_comment",
+      "handler": "article.addCommentByName",
+      "config": { "policies": [] }
+    },
+    {
       "method": "DELETE",
       "path": "/articles/:id",
       "handler": "article.delete",

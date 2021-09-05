@@ -9,6 +9,8 @@ import { ArticleModel } from 'lib/models';
 
 export type ArticleLink = Pick<ArticleModel, 'name' | 'draftStatus' | 'tags'>;
 
+// No exceptions to handle failure cases! Do be careful!
+
 export async function getArticle(name: string) {
   const {data} = await axios.get(`${STRAPI_INSTANCE_URL}/articles/by_name/${name}`);
   return data as ArticleModel;
@@ -17,6 +19,21 @@ export async function getArticle(name: string) {
 export async function getArticleComments(name: string): Promise<CommentModel[]> {
   const article = await getArticle(name);
   return article.comments;
+}
+
+// TODO(jerry): no user association yet.
+export async function addArticleComment(articleName: string, comment: CommentModel) {
+  console.log("add comment!");
+  const response = await axios.put(
+    `${STRAPI_INSTANCE_URL}/articles/by_name/${articleName}/add_comment/`,
+    {
+      content: comment.content,
+      createdAt: comment.createdAt,
+      votes: [],
+    }
+  );
+
+  console.log(response);
 }
 
 export async function getArticles() {
