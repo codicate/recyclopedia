@@ -5,7 +5,8 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 import { useAppSelector } from "state/hooks";
-import { LoginType, selectLoginType } from "state/admin";
+// import { LoginType, selectLoginType } from "state/admin";
+import { LoginType, selectLoginType } from "state/strapi_test/admin";
 
 import { validPageLink, dictionaryUpdateKey } from "lib/functions";
 // import getArticleLinks, { ArticleLink } from "api/getArticleLinks";

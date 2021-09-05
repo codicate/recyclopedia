@@ -1,4 +1,8 @@
+import { createSlice, createDraftSafeSelector, createAsyncThunk } from "@reduxjs/toolkit";
+import { AppState } from "state/store";
+
 import axios from 'axios';
+import { logMessage } from "lib/functions";
 // TODO(jerry):
 // merge all into more coherent structure when this is all
 // working
@@ -8,25 +12,41 @@ import axios from 'axios';
 const STRAPI_INSTANCE_URL = "http://localhost:1337";
 
 export enum LoginType {
-  NotLoggedIn,
-  Anonymous,
-  User,
-  Admin,
+	NotLoggedIn,
+	User,
+	Admin,
 }
 
 export interface AccountDetails {
-  email: string;
-  password: string;
+	email: string;
+	password: string;
 }
 
 export interface LoginAttemptResult {
-  type: LoginType,
-  accountDetails?: AccountDetails,
+	type: LoginType,
+	accountDetails?: AccountDetails,
+	userInformation?: User,
 }
 
-export async function loginWith(information?: AccountDetails) {
+interface User {
+	username:   string,
+	email:      string,
+	created_at: Date,
+	accessToken: string,
+}
+
+interface ApplicationState {
+	loginType: LoginType,
+	userInformation?: User,
+	accountDetails?: AccountDetails,
+}
+
+export async function loginWith(information?: AccountDetails) : Promise<LoginAttemptResult> {
+	const failure = { type: LoginType.NotLoggedIn, };
+
 	if (!information) {
-		return;
+		console.log("shit!");
+		return failure;
 	}
 
 	try {
@@ -38,15 +58,27 @@ export async function loginWith(information?: AccountDetails) {
 			}
 		);
 
-		console.log('auth logged in?');
-		console.log(response.data.user);
+		const { user, jwt } = response.data;
+		const { username, email, created_at } = user;
 
-		return { type: LoginType.User, user: undefined};
+		console.log("response survived!");
+
+		return { 
+			type: LoginType.User, 
+			accountDetails: information,
+			userInformation: {
+				username,
+				email,
+				created_at,
+				accessToken: jwt
+			}
+		};
 	} catch (error) {
+		console.log("error!");
 		console.log(error);
-	} finally {
-		return { type: LoginType.Anonymous, user: undefined };
 	}
+
+	return failure;
 }
 
 // sorry for tabs, not sure why VSCode is doing this right now.
@@ -60,24 +92,53 @@ export async function registerAccount(accountDetails: AccountDetails) {
 				password: accountDetails.password,
 			}
 		);
-
-		console.log(response.data.user);
 	} catch (error) {
 		console.log(error);
 	}
 }
 
-export async function loginWithEmailAndPassword(accountDetails?: AccountDetails) {
-    const result = await loginWith(accountDetails);
-    const type = result?.type;
+export const loginWithEmailAndPassword = createAsyncThunk(
+	"admin/loginWithEmailAndPassword",
+	async function (accountDetails?: AccountDetails) : Promise<LoginAttemptResult> {
+		console.log("admin/loginWithEmailAndPassword");
+		const loginResult = await loginWith(accountDetails);
+		return loginResult;
+	}
+)
 
-    if (type !== LoginType.Anonymous) {
-      return {
-        accountDetails,
-        type: type,
-        customData: {},
-      };
-    }
+const adminInitialState: ApplicationState = {
+	loginType: LoginType.NotLoggedIn,
+};
 
-    return { type };
-}
+const adminSlice = createSlice(
+	{
+		name: "admin",
+		initialState: adminInitialState,	
+
+		reducers: {
+			logout: function (state) {
+				state.loginType = LoginType.NotLoggedIn;
+			},
+		},
+
+		extraReducers: function (builder) {
+			builder.addCase(
+				loginWithEmailAndPassword.fulfilled,
+				function (state, action) {
+					const { accountDetails, userInformation, type, } = action.payload;
+					state.loginType = type;
+					state.userInformation = userInformation;
+					state.accountDetails  = accountDetails;
+				}
+			)
+		}
+	}
+);
+
+export const { logout } = adminSlice.actions;
+export default adminSlice.reducer;
+
+// @ts-ignore
+const selector = (name: string) => createDraftSafeSelector((state: AppState) => state.admin, (admin) => admin[name]);
+export const selectAccountDetails    = selector("accountDetails");
+export const selectLoginType         = selector("loginType");

@@ -2,7 +2,8 @@ import styles from "./Header.module.scss";
 import Link from 'next/link';
 
 import { useAppDispatch, useAppSelector } from "state/hooks";
-import { LoginType, logout, selectLoginType } from "state/admin";
+// import { LoginType, logout, selectLoginType } from "state/admin";
+import { LoginType, logout, selectLoginType } from "state/strapi_test/admin";
 
 import approximateSearch from "utils/search";
 import Search, { renderHoverboxSearch } from "components/Header/Search";

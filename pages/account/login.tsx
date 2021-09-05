@@ -41,11 +41,12 @@ function Login() {
           }
         }}
         submitFn={async (input) => {
-          // const dispatchRes = await dispatch(loginWithEmailAndPassword(input));
-          const dispatchRes = await (loginWithEmailAndPassword(input));
-          const loginAttemptResult = dispatchRes as LoginAttemptResult;
+          const dispatchRes = await dispatch(loginWithEmailAndPassword(input));
+          const loginAttemptResult = dispatchRes.payload as LoginAttemptResult;
+          console.log(dispatchRes);
+          console.log(loginAttemptResult);
 
-          if (loginAttemptResult.type !== LoginType.Anonymous) {
+          if (loginAttemptResult.type !== LoginType.NotLoggedIn) {
             router.push("/");
           } else {
             alert("bad login");

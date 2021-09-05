@@ -2,7 +2,8 @@ import styles from "./FloatingSocialMenu.module.scss";
 import { useState } from "react";
 import { VoteType, VoteModel } from 'lib/models';
 import { useAppSelector } from "state/hooks";
-import { LoginType, selectLoginType } from "state/admin";
+// import { LoginType, selectLoginType } from "state/admin";
+import { LoginType, selectLoginType } from "state/strapi_test/admin";
 import { currentVoteTypeOfCurrentUser, getLikeCountAndDislikeCount } from "components/Comment/Comment";
 
 import MediaShareBtns from "./MediaShareBtns";

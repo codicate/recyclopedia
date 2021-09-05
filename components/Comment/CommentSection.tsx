@@ -2,7 +2,8 @@ import styles from "./CommentSection.module.scss";
 import React, { forwardRef } from "react";
 import { addComment } from "state/articles";
 import { useAppSelector } from "state/hooks";
-import { LoginType, selectLoginType, selectAccountDetails } from "state/admin";
+// import { LoginType, selectLoginType, selectAccountDetails } from "state/admin";
+import { LoginType, selectLoginType, selectAccountDetails } from "state/strapi_test/admin";
 
 import { VoteType } from 'lib/models';
 import { commentVote } from "state/articles";

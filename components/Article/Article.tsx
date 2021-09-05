@@ -4,7 +4,8 @@ import { useRouter } from "next/router";
 import { format } from "date-fns";
 
 import { useAppSelector, useAppDispatch } from "state/hooks";
-import { LoginType, selectLoginType } from "state/admin";
+// import { LoginType, selectLoginType } from "state/admin";
+import { LoginType, selectLoginType } from "state/strapi_test/admin";
 import { VoteType, ArticleModel, VoteModel } from 'lib/models';
 
 // NOTE(jerry):

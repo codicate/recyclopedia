@@ -12,9 +12,11 @@
 
 import { createSlice, createAsyncThunk, createDraftSafeSelector } from "@reduxjs/toolkit";
 import { AppState } from "state/store";
-import { AccountDetails, loginWithEmailAndPassword } from "state/admin";
+// import { AccountDetails, loginWithEmailAndPassword } from "state/admin";
+import { AccountDetails, loginWithEmailAndPassword } from "state/strapi_test/admin";
 
-import { selectAccountCustomData, selectAccountDetails, selectLoginType, LoginType } from "state/admin";
+// import { selectAccountCustomData, selectAccountDetails, selectLoginType, LoginType } from "state/admin";
+import { selectAccountDetails, selectLoginType, LoginType } from "state/strapi_test/admin";
 import { useAppDispatch, useAppSelector } from "state/hooks";
 
 import { App, User, Credentials } from "realm-web";
@@ -107,8 +109,9 @@ export const initApi = createAsyncThunk(
     try {
       databaseApi.application = new App({ id: appId });
       const accountDetails = state.admin.accountDetails;
-      const badAccount = accountDetails.email === "" || accountDetails.password === "";
-      await dispatch(loginWithEmailAndPassword(!badAccount ? (accountDetails) : undefined));
+      if (accountDetails) {
+        await dispatch(loginWithEmailAndPassword(accountDetails));
+      }
     } catch (error) {
       console.error("Failed to login because: ", error);
       return rejectWithValue(error.response.data);

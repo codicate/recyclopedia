@@ -10,7 +10,8 @@ import {
 import storage from "redux-persist/lib/storage";
 
 import articlesReducer from "./articles";
-import adminReducer from "./admin";
+// import adminReducer from "./admin";
+import adminReducer from "./strapi_test/admin";
 
 
 const persistConfig = {

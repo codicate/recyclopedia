@@ -10,7 +10,8 @@ import {
   selectNameOfFeaturedArticle,
   ArticlesDataProperties
 } from "state/articles";
-import { selectLoginType, LoginType } from "state/admin";
+// import { selectLoginType, LoginType } from "state/admin";
+import { selectLoginType, LoginType } from "state/strapi_test/admin";
 import { ArticleModel } from 'lib/models';
 import { validPageLink, randomElt } from "lib/functions";
 import Secrets from 'secrets';
