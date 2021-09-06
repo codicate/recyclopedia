@@ -39,6 +39,11 @@ Requests.provideImplementation(
       const promise = axios.get(url, config as AxiosRequestConfig);
       return AsynchronousAxiosResponseWait<responseType>(promise);
     },
+    async delete<responseType>(url: string, config?: Requests.RequestConfiguration): Promise<Requests.Response<responseType>> {
+      console.log("Delete wrap!");
+      const promise = axios.delete(url, config as AxiosRequestConfig);
+      return AsynchronousAxiosResponseWait<responseType>(promise);
+    },
     async post<responseType, dataType>(url: string, data: dataType, config?: Requests.RequestConfiguration): Promise<Requests.Response<responseType>> {
       console.log("Post wrap!: ", url);
       const promise = axios.post(url, data, config as AxiosRequestConfig);

@@ -25,14 +25,18 @@ export interface NotUndefinedResponse<responseDataType = any> {
 	headers: any;
 }
 export interface RequestImplementation {
-	get:  <responseType>(url: string, config?: RequestConfiguration) => Promise<Response<responseType>>;
-	post: <responseType, dataType>(url: string, data: dataType, config?: RequestConfiguration) => Promise<Response<responseType>>;
-	put:  <responseType, dataType>(url: string, data: dataType, config?: RequestConfiguration) => Promise<Response<responseType>>;
+	get:     <responseType>(url: string, config?: RequestConfiguration) => Promise<Response<responseType>>;
+	delete:  <responseType>(url: string, config?: RequestConfiguration) => Promise<Response<responseType>>;
+	post:    <responseType, dataType>(url: string, data: dataType, config?: RequestConfiguration) => Promise<Response<responseType>>;
+	put:     <responseType, dataType>(url: string, data: dataType, config?: RequestConfiguration) => Promise<Response<responseType>>;
 };
 
 // Honestly... These should probably always "exception".
 const stubImplementation: RequestImplementation = {
 	async get<responseType>(url: string, config?: RequestConfiguration): Promise<Response<responseType>> {
+		return { status: 400, headers: {} };
+	},
+	async delete<responseType>(url: string, config?: RequestConfiguration): Promise<Response<responseType>> {
 		return { status: 400, headers: {} };
 	},
 	async post<responseType, dataType>(url: string, data: dataType, config?: RequestConfiguration): Promise<Response<responseType>> {
@@ -67,6 +71,12 @@ export async function get<responseType = any>(url: string, config?: RequestConfi
 	return implementation.get<responseType>(url, config);
 }
 
+// gah! Reserved keywords finally bite!
+// TODO(jerry): rename later.
+export async function _delete<responseType = any>(url: string, config?: RequestConfiguration) : Promise<Response<responseType>>{
+	return implementation.delete<responseType>(url, config);
+}
+
 export async function put<responseType = any, dataType = any>(url: string, data: dataType, config?: RequestConfiguration) : Promise<Response<responseType>>{
 	return implementation.put<responseType, dataType>(url, data, config);
 }
@@ -85,6 +95,15 @@ export async function post<responseType = any, dataType = any>(url: string, data
 export async function get_safe<responseType = any>(url: string, defaultValue: responseType, config?: RequestConfiguration): Promise<NotUndefinedResponse<responseType>> {
 	try {
 		const promise = (get(url, config)) as Promise<NotUndefinedResponse>;
+		return promise;
+	} catch (error) {
+		console.error(error);
+		return errorResponseForDefaultData(defaultValue);
+	}
+}
+export async function delete_safe<responseType = any>(url: string, defaultValue: responseType, config?: RequestConfiguration): Promise<NotUndefinedResponse<responseType>> {
+	try {
+		const promise = (_delete(url, config)) as Promise<NotUndefinedResponse>;
 		return promise;
 	} catch (error) {
 		console.error(error);
