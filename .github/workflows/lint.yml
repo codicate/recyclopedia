@@ -15,10 +15,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: '14.15'
 
       - name: Install yarn dependencies
         run: yarn
 
       - name: Run linter
-        run: yarn lint:fix
+        run: yarn workspace recyclopedia-app lint:fix
