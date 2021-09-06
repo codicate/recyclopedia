@@ -93,6 +93,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
       const retrievedVotes    = await getVotesOfArticle(name);
       updateComments(retrievedComments);
       updateVotes(retrievedVotes);
+      console.log("votes: ", retrievedVotes);
     }), [commentPinger]);
 
   function toggleView(target: PageViewType) {

@@ -55,6 +55,12 @@
       "config": { "policies": [] }
     },
     {
+      "method": "PUT",
+      "path": "/articles/by_name/:id/vote",
+      "handler": "article.voteByName",
+      "config": { "policies": [] }
+    },
+    {
       "method": "DELETE",
       "path": "/articles/:id",
       "handler": "article.delete",

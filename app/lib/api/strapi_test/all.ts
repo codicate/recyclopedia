@@ -3,10 +3,10 @@ import * as Requests from 'lib/requests';
 // When we get real deployment make this an environment variable.
 const STRAPI_INSTANCE_URL = "http://localhost:1337";
 
-import { CommentModel, RecycleBinArticleModel } from 'lib/models';
+import { CommentModel, RecycleBinArticleModel, VoteModel, VoteType } from 'lib/models';
 import { validPageLink } from 'lib/functions';
 import { ArticleModel } from 'lib/models';
-import { access } from 'fs-extra';
+import { User } from "state/strapi_test/admin";
 
 export type ArticleLink = Pick<ArticleModel, 'name' | 'draftStatus' | 'tags'>;
 
@@ -18,6 +18,12 @@ export async function getArticle(name: string) {
 export async function getArticleComments(name: string): Promise<CommentModel[]> {
   const article = await getArticle(name);
   return article.comments;
+}
+
+export async function getVotesOfArticle(name: string): Promise<VoteModel[]> {
+  const article = await getArticle(name);
+  console.log("article", article);
+  return article.votes.map((vote) => { return { userId: vote.user, type: vote.type } });
 }
 
 // TODO(jerry): no user association yet.
@@ -58,6 +64,8 @@ export async function getArticles() {
   return result;
 }
 
+// Might as well take a user and retrieve the access token like I do in articleVote
+// which would be more convenient!
 export async function insertArticle(article: ArticleModel, accessToken: string) {
   const accessHeader = { Authorization: `Bearer ${accessToken}` };
   try {
@@ -75,6 +83,26 @@ export async function insertArticle(article: ArticleModel, accessToken: string) 
     console.log("insert response: ", response);
   } catch (error) {
     console.error(error);
+  }
+}
+
+// This is duped from another file. Need to think of better way to organize, since I want to
+// keep most stuff here for now.
+export async function articleVote(userInformation: User, articleName: string, voteCommand: string) {
+  console.log(userInformation);
+  if (userInformation) {
+    const requestCommand = {
+      user: userInformation,
+      type: voteCommand,
+    };
+
+    await Requests.put(
+      `${STRAPI_INSTANCE_URL}/articles/by_name/${articleName}/vote`,
+      requestCommand,
+      {
+        headers: { Authorization: `Bearer ${userInformation.accessToken}` }
+      }
+    );
   }
 }
 

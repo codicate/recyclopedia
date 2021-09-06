@@ -71,6 +71,7 @@ function ArticleShowcase({
 
 function Home() {
   const currentLoginType = useAppSelector(selectLoginType);
+  // const articlesData = readArticlesFromLoginType() || [];
   const articlesData = readArticlesFromLoginType() || [];
 
   return (
@@ -86,7 +87,7 @@ function Home() {
         <p>
           This is developed by <a href="https://www.projectenv.org/">The Environment Project</a>
         </p>
-        <ArticleShowcase articlesData={articlesData} />
+        {/* <ArticleShowcase articlesData={articlesData} /> */}
       </div>
     </>
   );

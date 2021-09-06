@@ -25,6 +25,9 @@
     },
     "tags": {
       "collection": "tags"
+    },
+    "votes": {
+      "collection": "vote"
     }
   }
 }

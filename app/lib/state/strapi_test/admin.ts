@@ -71,6 +71,7 @@ export async function loginWith(information?: AccountDetails) : Promise<LoginAtt
 			type,
 			accountDetails: information,
 			userInformation: {
+				... user,
 				username,
 				email,
 				created_at,

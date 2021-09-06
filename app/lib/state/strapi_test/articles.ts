@@ -20,7 +20,10 @@ import {
   getArticles,
   getArticleComments,
   addArticleComment,
+  // TODO(jerry): rename?
   insertArticle as _insertArticle,
+  articleVote   as _articleVote,
+  getVotesOfArticle as _getVotesOfArticle,
 } from 'lib/api/strapi_test/all';
 import { access } from "fs-extra";
 
@@ -295,7 +298,7 @@ export interface VoteTarget {
 // without associating votes. We can use localStorage to emulate what I'm requesting
 // but for obvious reasons localStorage is pretty easy to do vote fraud with.
 // and I'm quite a fan of democracy so let's not try to fake it, for now let's just not do it.
-type VoteTypeString = "like" | "dislike" | "unknown";
+type VoteTypeString = "like" | "dislike" | "none";
 function voteTypeToString(voteType: VoteType): VoteTypeString {
   switch (voteType) {
     case VoteType.Like:
@@ -303,11 +306,11 @@ function voteTypeToString(voteType: VoteType): VoteTypeString {
     case VoteType.Dislike:
       return "dislike";
     default:
-      return "unknown";
+      return "none";
   }
 }
 export async function articleVote(userInformation: User, articleName: string, voteType: VoteType) {
-  console.log("USER", userInformation);
+  await _articleVote(userInformation, articleName, voteTypeToString(voteType));
 }
 export async function commentVote(loginType: LoginType, articleName: string, voteType: VoteType, target: VoteTarget) {
   if (loginType === LoginType.NotLoggedIn)
@@ -325,7 +328,7 @@ export async function getCommentsOfArticle(name: string) {
 }
 
 export async function getVotesOfArticle(name: string) {
-  return [];
+  return _getVotesOfArticle(name);
 }
 
 export function readArticlesFromLoginType(): ArticlesData {

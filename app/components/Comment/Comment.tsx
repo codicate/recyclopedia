@@ -4,16 +4,15 @@ import { useState, useEffect } from "react";
 import { formatDistance } from "date-fns";
 
 import { VoteType, VoteModel, CommentModel } from 'lib/models';
-import { databaseApi } from "state/articles";
 
 import CheckboxButton from "components/UI/CheckboxButton";
 
-export function currentVoteTypeOfCurrentUser(votes: VoteModel[]) {
-  // for (const vote of votes) {
-  //   if (vote.userId === databaseApi.applicationUser?.id) {
-  //     return vote.type;
-  //   }
-  // }
+export function voteTypeByUserId(votes: VoteModel[], userId: any) {
+  for (const vote of votes) {
+    if (vote.userId === userId) {
+      return vote.type;
+    }
+  }
   return "none";
 }
 

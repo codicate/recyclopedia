@@ -3,8 +3,8 @@ import { useState } from "react";
 import { VoteType, VoteModel } from 'lib/models';
 import { useAppSelector } from "state/hooks";
 // import { LoginType, selectLoginType } from "state/admin";
-import { LoginType, selectLoginType } from "state/strapi_test/admin";
-import { currentVoteTypeOfCurrentUser, getLikeCountAndDislikeCount } from "components/Comment/Comment";
+import { LoginType, selectLoginType, selectUserInformation } from "state/strapi_test/admin";
+import { voteTypeByUserId, getLikeCountAndDislikeCount } from "components/Comment/Comment";
 
 import MediaShareBtns from "./MediaShareBtns";
 import CheckboxCounterBtn from "components/UI/CheckboxCounterBtn";
@@ -24,7 +24,8 @@ function FloatingSocialMenu({
 }) {
   const [expandShare, setExpandShare] = useState(false);
   const { likeCount, dislikeCount } = getLikeCountAndDislikeCount(votes);
-  const currentLoginType = useAppSelector(selectLoginType) || LoginType.Anonymous;
+  const currentLoginType = useAppSelector(selectLoginType);
+  const currentUserId = useAppSelector(selectUserInformation).id;
 
   return (
     <div className={styles.floatingSocialMenu}>
@@ -32,14 +33,14 @@ function FloatingSocialMenu({
         name='likes'
         materialIcon='thumb_up'
         counter={likeCount}
-        checked={(() => (currentLoginType != LoginType.Anonymous) && currentVoteTypeOfCurrentUser(votes) === "like")()}
+        checked={(() => (currentLoginType !== LoginType.NotLoggedIn) && voteTypeByUserId(votes, currentUserId) === "like")()}
         onClick={() => (async () => { await vote(VoteType.Like); })()}
       />
       <CheckboxCounterBtn
         name='dislikes'
         materialIcon='thumb_down'
         counter={dislikeCount}
-        checked={(() => (currentLoginType != LoginType.Anonymous) && currentVoteTypeOfCurrentUser(votes) === "dislike")()}
+        checked={(() => (currentLoginType != LoginType.NotLoggedIn) && voteTypeByUserId(votes, currentUserId) === "dislike")()}
         onClick={() => (async () => { await vote(VoteType.Dislike); })()}
       />
       {(expandShare) && (
