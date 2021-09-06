@@ -80,12 +80,16 @@ function Comment({
 
   useEffect(
     function () {
-      // for (const vote of comment.votes) {
-      //   if (vote.userId === databaseApi.applicationUser?.id) {
-      //     setVoteType(vote.type);
-      //     break;
-      //   }
-      // }
+      if (!comment.votes || currentLoginType === LoginType.NotLoggedIn) {
+        return;
+      }
+
+      for (const vote of comment.votes) {
+        if (vote.user === currentUser.id) {
+          setVoteType(vote.type);
+          break;
+        }
+      }
     },
     []
   );

@@ -44,7 +44,6 @@ export async function loginWith(information?: AccountDetails) : Promise<LoginAtt
 	const failure = { type: LoginType.NotLoggedIn, };
 
 	if (!information) {
-		console.log("shit!");
 		return failure;
 	}
 
@@ -59,8 +58,6 @@ export async function loginWith(information?: AccountDetails) : Promise<LoginAtt
 
 		const { user, jwt } = response.data;
 		const { username, email, created_at } = user;
-
-		console.log("response survived!");
 
 		let type: LoginType = LoginType.User;
 		if (user.role.name === "Author") {
@@ -105,7 +102,6 @@ export async function registerAccount(accountDetails: AccountDetails) {
 export const loginWithEmailAndPassword = createAsyncThunk(
 	"admin/loginWithEmailAndPassword",
 	async function (accountDetails?: AccountDetails) : Promise<LoginAttemptResult> {
-		console.log("admin/loginWithEmailAndPassword");
 		const loginResult = await loginWith(accountDetails);
 		return loginResult;
 	}
@@ -130,7 +126,6 @@ const adminSlice = createSlice(
 			builder.addCase(
 				loginWithEmailAndPassword.fulfilled,
 				function (state, action) {
-					console.log("work");
 					const { accountDetails, userInformation, type, } = action.payload;
 					state.loginType = type;
 					state.userInformation = userInformation;
