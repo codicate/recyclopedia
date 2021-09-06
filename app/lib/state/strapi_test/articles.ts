@@ -258,8 +258,7 @@ export async function addComment(loginType: LoginType, accountDetails: AccountDe
     ...buildCommentDraft(loginType, accountDetails, comment),
     replies: [] // TODO(jerry): remove reply support, not needed!
   };
-  console.log(completedComment);
-  addArticleComment(articleName, completedComment);
+  await addArticleComment(articleName, completedComment);
 }
 
 export async function deleteComment(articleName: string, commentId: number) {
