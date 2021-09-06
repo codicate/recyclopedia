@@ -25,7 +25,7 @@ function FloatingSocialMenu({
   const [expandShare, setExpandShare] = useState(false);
   const { likeCount, dislikeCount } = getLikeCountAndDislikeCount(votes);
   const currentLoginType = useAppSelector(selectLoginType);
-  const currentUserId = useAppSelector(selectUserInformation).id;
+  const currentUser = useAppSelector(selectUserInformation);
 
   return (
     <div className={styles.floatingSocialMenu}>
@@ -33,14 +33,14 @@ function FloatingSocialMenu({
         name='likes'
         materialIcon='thumb_up'
         counter={likeCount}
-        checked={(() => (currentLoginType !== LoginType.NotLoggedIn) && voteTypeByUserId(votes, currentUserId) === "like")()}
+        checked={(() => (currentLoginType !== LoginType.NotLoggedIn) && voteTypeByUserId(votes, currentUser.id) === "like")()}
         onClick={() => (async () => { await vote(VoteType.Like); })()}
       />
       <CheckboxCounterBtn
         name='dislikes'
         materialIcon='thumb_down'
         counter={dislikeCount}
-        checked={(() => (currentLoginType != LoginType.NotLoggedIn) && voteTypeByUserId(votes, currentUserId) === "dislike")()}
+        checked={(() => (currentLoginType != LoginType.NotLoggedIn) && voteTypeByUserId(votes, currentUser.id) === "dislike")()}
         onClick={() => (async () => { await vote(VoteType.Dislike); })()}
       />
       {(expandShare) && (

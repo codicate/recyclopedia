@@ -6,20 +6,13 @@ const { sanitizeEntity, parseMultipartData } = require('strapi-utils');
  * to customize this controller
  */
 
-function sameUser(userA, userB) {
-    if (userA.username === userB.username && userA.email === userB.email) {
-        return true;
-    }
-
-    return false;
-}
 function findExistingVoteByUser(votes, user) {
     if (!votes) {
         return undefined;
     }
 
     for (let index = 0; index < votes.length; ++index) {
-        if (sameUser(user, votes[index].user)) {
+        if (user.id, votes[index].user) {
             return index;
         }
     }
@@ -42,13 +35,11 @@ module.exports = {
             const commentData      = context.request.body;
             const newComment       = await strapi.services.comment.create(commentData);
             const santiziedComment = sanitizeEntity(newComment, { model: strapi.models.comment });
-            console.log(santiziedComment);
 
             const original = await this.findOneByName(context);
             original.comments = original.comments.concat(santiziedComment);
 
             const newArticleResult = await strapi.services.article.update({ name: id }, original);
-            console.log(newArticleResult);
             return sanitizeEntity(newArticleResult, { model: strapi.models.article });
         }
 
@@ -64,12 +55,18 @@ module.exports = {
             console.log(voteData.user);
 
             let existingVoteId = findExistingVoteByUser(original.votes, voteData.user);
+            console.log(existingVoteId);
             if (existingVoteId !== undefined) {
-                if (original.votes[existingVoteId].type === voteData.type) {
-                    original.votes[existingVoteId].type = "none";
+                const voteId       = original.votes[existingVoteId].id;
+                const originalVote = await strapi.query('vote').findOne({id: voteId});
+                if (originalVote.type === voteData.type) {
+                    originalVote.type = "none";
                 } else {
-                    original.votes[existingVoteId].type = voteData.type;
+                    originalVote.type = voteData.type;
                 }
+                console.log("change vote");
+
+                await strapi.services.vote.update({id: voteId}, originalVote);
             } else {
                 const newVote = await strapi.services.vote.create(voteData);
                 const sanitizedVote = sanitizeEntity(newVote, { model: strapi.models.vote });
@@ -81,9 +78,7 @@ module.exports = {
                 original.votes = original.votes.concat(sanitizedVote);
             }
 
-
             const newArticleResult = await strapi.services.article.update({ name: id }, original);
-            console.log(newArticleResult);
             return sanitizeEntity(newArticleResult, { model: strapi.models.article });
         }
 
