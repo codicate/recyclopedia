@@ -39,12 +39,23 @@ export async function addArticleComment(articleName: string, comment: CommentMod
 export async function getArticles() {
   const {data}   = await axios.get(`${STRAPI_INSTANCE_URL}/articles`);
   // I promise :)
+  // NOTE(jerry):
+  // tags are stored differently here. We sanitize it afterwards.
   const articles = data as ArticleModel[];
 
-  return articles.map((article) => ({
+  const result = articles.map((article) => ({
+    ...article,
+    //@ts-ignore
+    // This isn't really true,
+    // but I don't really want to add additional typing because
+    // I know what I'm supposed to be seeing...
+    tags: (article.tags).map(({name}) => name),
     id: validPageLink(article.name),
-    ...article
   }));
+
+  console.log(result);
+
+  return result;
 }
 
 // NOTE(jerry):
@@ -56,7 +67,8 @@ export async function getArticleLinks() {
 
 // NOTE(jerry): Not included in strapi test!
 export async function getArticleTags() {
-  return ([] as string[]);
+  const {data} = await axios.get(`${STRAPI_INSTANCE_URL}/tags`);
+  return (data as {name: string}[]).map(({name}) => name);
 }
 // NOTE(jerry): Not included in strapi test!
 export async function getRecycleBinArticles() {

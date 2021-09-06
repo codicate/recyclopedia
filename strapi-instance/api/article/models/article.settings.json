@@ -22,6 +22,9 @@
     },
     "comments": {
       "collection": "comment"
+    },
+    "tags": {
+      "collection": "tags"
     }
   }
 }
