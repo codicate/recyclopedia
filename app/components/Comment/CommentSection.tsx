@@ -3,10 +3,14 @@ import React, { forwardRef } from "react";
 import { addComment } from "state/strapi_test/articles";
 import { useAppSelector } from "state/hooks";
 // import { LoginType, selectLoginType, selectAccountDetails } from "state/admin";
-import { LoginType, selectLoginType, selectAccountDetails } from "state/strapi_test/admin";
+import {
+  selectLoginType,
+  selectAccountDetails,
+  selectUserInformation
+} from "state/strapi_test/admin";
 
 import { VoteType } from 'lib/models';
-import { commentVote } from "state/articles";
+import { commentVote } from "state/strapi_test/articles";
 
 import Form from "components/Form/Form";
 import Button from "components/UI/Button";
@@ -30,6 +34,7 @@ const CommentSection = forwardRef<HTMLDivElement, CommentSectionProps>(
   ) {
     const loginType = useAppSelector(selectLoginType);
     const accountDetails = useAppSelector(selectAccountDetails);
+    const userInformation = useAppSelector(selectUserInformation);
 
     return (
       <div
@@ -48,7 +53,6 @@ const CommentSection = forwardRef<HTMLDivElement, CommentSectionProps>(
               }
             }}
             submitFn={async (input) => {
-              console.log("WHAT", loginType, accountDetails);
               await addComment(loginType, accountDetails, articleName, input.comment);
               refetchComments();
             }}
@@ -74,7 +78,7 @@ const CommentSection = forwardRef<HTMLDivElement, CommentSectionProps>(
                   /*
                   */
                   async function (type: VoteType) {
-                    await commentVote(loginType, articleName, type, { id: idx });
+                    await commentVote(userInformation, type, comment.id);
                     refetchComments();
                   }
                 } />

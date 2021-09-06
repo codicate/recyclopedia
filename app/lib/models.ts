@@ -18,6 +18,7 @@ export interface VoteModel {
 }
 
 export interface CommentModel {
+  id: number; // from strapi.
   content: string;
   createdAt: Date;
   user: UserModel;

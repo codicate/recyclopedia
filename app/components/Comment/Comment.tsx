@@ -3,11 +3,20 @@ import Image from 'next/image';
 import { useState, useEffect } from "react";
 import { formatDistance } from "date-fns";
 
+import { useAppSelector } from "state/hooks";
+import { LoginType, selectLoginType, selectUserInformation } from "state/strapi_test/admin";
+
 import { VoteType, VoteModel, CommentModel } from 'lib/models';
 
 import CheckboxButton from "components/UI/CheckboxButton";
 
 export function voteTypeByUserId(votes: VoteModel[], userId: any) {
+  if (!votes) {
+    return "none";
+  }
+
+  // I really don't see why this can't just NOP when
+  // the iterator is null/undefined?
   for (const vote of votes) {
     if (vote.userId === userId) {
       return vote.type;
@@ -52,6 +61,9 @@ function Comment({
   parentId?: number;
   children?: React.ReactChild | React.ReactChild[];
 }) {
+  const currentLoginType = useAppSelector(selectLoginType);
+  const currentUser = useAppSelector(selectUserInformation);
+
   const {
     commenterAvatar,
     commenterUserName
@@ -115,27 +127,10 @@ function Comment({
           className={styles.commentBtn}
           checked={
             function () {
-              return currentVoteTypeOfCurrentUser(comment.votes) === "like" || voteType === "like";
+              return (currentLoginType !== LoginType.NotLoggedIn) && (voteTypeByUserId(comment.votes, currentUser.id) === "like" || voteType === "like");
             }()
           }
           onClick={() => (async () => {
-            /*
-            Vote(Type)
-  
-            if not voted:
-              do the vote
-  
-            Vote(Type)
-  
-            if found_vote_type == type:
-              unvote();
-            else:
-              unvote();
-              vote(other_type)
-            */
-
-            // Since we're not doing replies
-            // we don't need the full vote target so this should be fine I guess.
             if (voteType === "like") {
               setVoteType("none");
             } else {
@@ -154,7 +149,7 @@ function Comment({
           className={styles.commentBtn}
           checked={
             function () {
-              return currentVoteTypeOfCurrentUser(comment.votes) === "dislike" || voteType === "dislike";
+              return (currentLoginType !== LoginType.NotLoggedIn) && (voteTypeByUserId(comment.votes, currentUser.id) === "dislike" || voteType === "dislike");
             }()
           }
           onClick={() => (async () => {
@@ -171,15 +166,6 @@ function Comment({
           </span>
           {dislikeCount}
         </CheckboxButton>
-        {/* <Button
-          styledAs='oval'
-          className={styles.commentBtn}
-        >
-          <span className='material-icons'>
-            comment
-          </span>
-          Reply
-        </Button> */}
       </div >
       {children}
     </div >
@@ -195,18 +181,7 @@ function TopLevelComment({
   commentId: number;
   vote: (vote: VoteType) => Promise<void>;
 }) {
-  return (
-    <Comment comment={comment} vote={vote}>
-      {/* 
-      Uncomment this for reply functionality.
-
-      <>
-        <br></br>
-        {comment.replies.map((reply, index) =>
-          <Comment key={index} parentId={commentId} comment={reply}></Comment>)}
-      </> */}
-    </Comment>
-  );
+  return (<Comment comment={comment} vote={vote}/>);
 }
 
 export default TopLevelComment;

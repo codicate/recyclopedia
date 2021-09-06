@@ -23,6 +23,7 @@ import {
   // TODO(jerry): rename?
   insertArticle as _insertArticle,
   articleVote   as _articleVote,
+  commentVote   as _commentVote,
   getVotesOfArticle as _getVotesOfArticle,
 } from 'lib/api/strapi_test/all';
 import { access } from "fs-extra";
@@ -312,9 +313,15 @@ function voteTypeToString(voteType: VoteType): VoteTypeString {
 export async function articleVote(userInformation: User, articleName: string, voteType: VoteType) {
   await _articleVote(userInformation, articleName, voteTypeToString(voteType));
 }
-export async function commentVote(loginType: LoginType, articleName: string, voteType: VoteType, target: VoteTarget) {
-  if (loginType === LoginType.NotLoggedIn)
-    return;
+// NOTE(jerry):
+// VoteTarget is no longer needed because we've never used the reply functionality
+// so let's just phase it out.
+
+// article name is no longer needed because strapi stores things in a row/tables format
+// and not document based like MongoDB, also apparently Strapi 4 will drop MongoDB support...
+// So this is kind of what's going to happen anyways.
+export async function commentVote(userInformation: User, voteType: VoteType, commentId: number) {
+  await _commentVote(userInformation, commentId, voteTypeToString(voteType));
 }
 
 export async function getCommentsOfArticle(name: string) {

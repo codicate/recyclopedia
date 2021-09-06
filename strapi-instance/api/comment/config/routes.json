@@ -47,6 +47,12 @@
       "config": {
         "policies": []
       }
+    },
+    {
+      "method": "PUT",
+      "path": "/comments/:id/vote",
+      "handler": "comment.vote",
+      "config": { "policies": [] }
     }
   ]
 }

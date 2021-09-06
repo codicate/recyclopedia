@@ -88,8 +88,23 @@ export async function insertArticle(article: ArticleModel, accessToken: string) 
 
 // This is duped from another file. Need to think of better way to organize, since I want to
 // keep most stuff here for now.
+export async function commentVote(userInformation: User, commentId: number, voteCommand: string) {
+  if (userInformation) {
+    const requestCommand = {
+      user: userInformation,
+      type: voteCommand,
+    };
+
+    await Requests.put(
+      `${STRAPI_INSTANCE_URL}/comments/${commentId}/vote`,
+      requestCommand,
+      {
+        headers: { Authorization: `Bearer ${userInformation.accessToken}` }
+      }
+    );
+  }
+}
 export async function articleVote(userInformation: User, articleName: string, voteCommand: string) {
-  console.log(userInformation);
   if (userInformation) {
     const requestCommand = {
       user: userInformation,
