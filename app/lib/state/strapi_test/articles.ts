@@ -18,7 +18,9 @@ import {
   getArticles,
   getArticleComments,
   addArticleComment,
+  insertArticle as _insertArticle,
 } from 'lib/api/strapi_test/all';
+import { access } from "fs-extra";
 
 export interface RecycledArticle extends ArticleModel {
   pendingDaysUntilDeletion: number;
@@ -148,8 +150,13 @@ export const restoreArticle = createAsyncThunk(
 
 export const insertArticle = createAsyncThunk(
   "articles/insertArticle",
-  async function() {
 
+  async (articleData: ArticleModel, { getState, dispatch, rejectWithValue }) => {
+    const { admin } = getState() as AppState;
+    if (admin.loginType === LoginType.Admin) {
+      const accessToken  = admin.userInformation?.accessToken;
+      _insertArticle(articleData, accessToken);
+    }
   }
   // tryToCallWithUser(
   //   // @ts-ignore

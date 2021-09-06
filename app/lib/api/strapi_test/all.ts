@@ -6,6 +6,7 @@ const STRAPI_INSTANCE_URL = "http://localhost:1337";
 import { CommentModel, RecycleBinArticleModel } from 'lib/models';
 import { validPageLink } from 'lib/functions';
 import { ArticleModel } from 'lib/models';
+import { access } from 'fs-extra';
 
 export type ArticleLink = Pick<ArticleModel, 'name' | 'draftStatus' | 'tags'>;
 
@@ -55,6 +56,26 @@ export async function getArticles() {
   console.log(result);
 
   return result;
+}
+
+export async function insertArticle(article: ArticleModel, accessToken: string) {
+  const accessHeader = { Authorization: `Bearer ${accessToken}` };
+  try {
+    const response = await Requests.post(
+      `${STRAPI_INSTANCE_URL}/articles`,
+      {
+        name: article.name,
+        content: article.content,
+        createdAt: article.dateCreated,
+        comments: [],
+        tags: [],
+      },
+      { headers: accessHeader }
+    );
+    console.log("insert response: ", response);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 // NOTE(jerry):

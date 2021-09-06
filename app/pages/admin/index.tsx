@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from 'next/router';
 
 import { useAppSelector, useAppDispatch } from "state/hooks";
-import { selectLoginType, LoginType } from "state/admin";
+import { selectLoginType, LoginType } from "state/strapi_test/admin";
 import { ArticleModel, ArticleDraftModel } from "lib/models";
-import { insertArticle } from "state/articles";
+import { insertArticle } from "state/strapi_test/articles";
 
 import { NoticeBanner } from "components/Editors/NoticeBanner";
 import { RichTextEditor } from "components/Editors/RichTextEditor";
@@ -37,10 +37,7 @@ function Admin({
 
   const [draftStatus, updateDraftStatus] = useState((currentArticle) ? currentArticle.draftStatus : false);
 
-  function submitHandler(
-    input: ArticleModel,
-    onFinishedCallback?: (input: ArticleModel) => void
-  ) {
+  function submitHandler(input: ArticleModel, onFinishedCallback?: (input: ArticleModel) => void) {
     dispatch(insertArticle(input));
     onFinishedCallback?.(input);
   }

@@ -39,7 +39,7 @@ Requests.provideImplementation(
       return AsynchronousAxiosResponseWait<responseType>(promise);
     },
     async post<responseType, dataType>(url: string, data: dataType, config?: Requests.RequestConfiguration): Promise<Requests.Response<responseType>> {
-      console.log("Post wrap!");
+      console.log("Post wrap!: ", url);
       const promise = axios.post(url, data, config as AxiosRequestConfig);
       return AsynchronousAxiosResponseWait<responseType>(promise);
     },

@@ -62,8 +62,13 @@ export async function loginWith(information?: AccountDetails) : Promise<LoginAtt
 
 		console.log("response survived!");
 
+		let type: LoginType = LoginType.User;
+		if (user.role.name === "Author") {
+			type = LoginType.Admin;
+		}
+
 		return { 
-			type: LoginType.User, 
+			type,
 			accountDetails: information,
 			userInformation: {
 				username,
