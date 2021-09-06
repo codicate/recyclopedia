@@ -45,6 +45,16 @@ export interface ArticleModel {
   votes: VoteModel[];
   comments: CommentModel[];
 }
+export const ArticleModel = {
+  default:  {
+    name: "Article Default",
+    content: "Article Default Content",
+    draftStatus: false,
+    dateCreated: new Date(),
+    votes: [],
+    comments: []
+  }
+};
 
 export interface RecycleBinArticleModel extends ArticleModel {
   pendingDaysUntilDeletion: number;

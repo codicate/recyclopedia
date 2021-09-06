@@ -11,6 +11,45 @@ import { initApi } from 'state/articles';
 import Header from "components/Header/Header";
 import Footer from "components/Footer/Footer";
 
+import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
+import * as Requests from 'lib/requests';
+
+// Keep this as the only place Axios *must* be exposed.
+function AsynchronousAxiosResponseWait<responseType>(axiosPromise: any): Promise<Requests.Response<responseType>> {
+  return new Promise(
+    async function (resolve, reject) {
+      try {
+        const response = await axiosPromise;
+        resolve({
+          status: response.status,
+          data: response.data,
+          headers: response.headers,
+        });
+      } catch (error) {
+        reject(error);
+      }
+    }
+  )
+}
+Requests.provideImplementation(
+  {
+    async get<responseType>(url: string, config?: Requests.RequestConfiguration): Promise<Requests.Response<responseType>> {
+      console.log("Get wrap!");
+      const promise = axios.get(url, config as AxiosRequestConfig);
+      return AsynchronousAxiosResponseWait<responseType>(promise);
+    },
+    async post<responseType, dataType>(url: string, data: dataType, config?: Requests.RequestConfiguration): Promise<Requests.Response<responseType>> {
+      console.log("Post wrap!");
+      const promise = axios.post(url, data, config as AxiosRequestConfig);
+      return AsynchronousAxiosResponseWait<responseType>(promise);
+    },
+    async put<responseType, dataType>(url: string, data: dataType, config?: Requests.RequestConfiguration): Promise<Requests.Response<responseType>> {
+      console.log("Put wrap!");
+      const promise = axios.put(url, data, config as AxiosRequestConfig);
+      return AsynchronousAxiosResponseWait<responseType>(promise);
+    }
+  }
+);
 
 function App({ Component, pageProps }: AppProps) {
   const dispatch = useAppDispatch();

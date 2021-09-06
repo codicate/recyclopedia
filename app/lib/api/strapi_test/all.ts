@@ -1,4 +1,5 @@
-import axios from 'axios';
+// import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
+import * as Requests from 'lib/requests';
 
 // When we get real deployment make this an environment variable.
 const STRAPI_INSTANCE_URL = "http://localhost:1337";
@@ -9,11 +10,9 @@ import { ArticleModel } from 'lib/models';
 
 export type ArticleLink = Pick<ArticleModel, 'name' | 'draftStatus' | 'tags'>;
 
-// No exceptions to handle failure cases! Do be careful!
-
 export async function getArticle(name: string) {
-  const {data} = await axios.get(`${STRAPI_INSTANCE_URL}/articles/by_name/${name}`);
-  return data as ArticleModel;
+  const { data } = await Requests.get_safe<ArticleModel>( `${STRAPI_INSTANCE_URL}/articles/by_name/${name}`, ArticleModel.default);
+  return data;
 }
 
 export async function getArticleComments(name: string): Promise<CommentModel[]> {
@@ -24,8 +23,9 @@ export async function getArticleComments(name: string): Promise<CommentModel[]> 
 // TODO(jerry): no user association yet.
 export async function addArticleComment(articleName: string, comment: CommentModel) {
   console.log("add comment!");
-  const response = await axios.put(
+  const response = await Requests.put_safe(
     `${STRAPI_INSTANCE_URL}/articles/by_name/${articleName}/add_comment/`,
+    {},
     {
       content: comment.content,
       createdAt: comment.createdAt,
@@ -37,11 +37,11 @@ export async function addArticleComment(articleName: string, comment: CommentMod
 }
 
 export async function getArticles() {
-  const {data}   = await axios.get(`${STRAPI_INSTANCE_URL}/articles`);
+  const { data } = await Requests.get_safe<ArticleModel[]>(`${STRAPI_INSTANCE_URL}/articles`, []);
   // I promise :)
   // NOTE(jerry):
   // tags are stored differently here. We sanitize it afterwards.
-  const articles = data as ArticleModel[];
+  const articles = data;
 
   const result = articles.map((article) => ({
     ...article,
@@ -76,8 +76,8 @@ export async function getArticleLinks() {
   with a number.
 */
 export async function getArticleTags() {
-  const {data} = await axios.get(`${STRAPI_INSTANCE_URL}/tags`);
-  const allTags = (data as {name: string}[]).map(({name}) => name);
+  const {data} = await Requests.get_safe<{name: string}[]>(`${STRAPI_INSTANCE_URL}/tags`, []);
+  const allTags = data.map(({name}) => name);
 
   /*
     is basically the idea.
