@@ -1,3 +1,5 @@
+// TODO(jerry):
+// realign all models.
 import styles from "components/Article/Article.module.scss";
 import { useRef, useState } from "react";
 import { useRouter } from "next/router";
@@ -5,7 +7,7 @@ import { format } from "date-fns";
 
 import { useAppSelector, useAppDispatch } from "state/hooks";
 // import { LoginType, selectLoginType } from "state/admin";
-import { LoginType, selectLoginType } from "state/strapi_test/admin";
+import { LoginType, selectLoginType, selectUserInformation } from "state/strapi_test/admin";
 import { VoteType, ArticleModel, VoteModel } from 'lib/models';
 
 // NOTE(jerry):
@@ -50,7 +52,8 @@ interface ArticleProperties {
 function ArticleComponent({ article, inRecycling }: ArticleProperties) {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const currentLoginType = useAppSelector(selectLoginType) || LoginType.Anonymous;
+  const currentLoginType = useAppSelector(selectLoginType);
+  const userInformation  = useAppSelector(selectUserInformation);
   const isAdmin = currentLoginType === LoginType.Admin;
 
   const {
@@ -84,6 +87,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
   // this won't be a dispatch I suppose.
   useEffectWithGuaranteedInitializedApi(dispatch,
     (async () => {
+      // BUGME(jerry)
       dispatch(queryForArticles(undefined));
       const retrievedComments = await getCommentsOfArticle(name);
       const retrievedVotes    = await getVotesOfArticle(name);
@@ -164,7 +168,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
                     votes={votes}
                     vote={
                       async function (vote: VoteType) {
-                        await articleVote(currentLoginType, name, vote);
+                        await articleVote(userInformation, name, vote);
                         refetchComments();
                       }
                     }

@@ -4,9 +4,11 @@ import { createSlice, createAsyncThunk, createDraftSafeSelector } from "@reduxjs
 import { AppState } from "state/store";
 import {
   selectLoginType,
+  selectUserInformation,
   LoginType,
   AccountDetails,
-  loginWithEmailAndPassword
+  loginWithEmailAndPassword,
+  User
 } from "state/strapi_test/admin";
 import { useAppSelector } from "state/hooks";
 
@@ -237,7 +239,6 @@ export function buildCommentDraft(loginType: LoginType, accountDetails: AccountD
   const commentContents = {
     content: comment,
     createdAt: new Date(),
-    votes: [],
     user: {
       name: 'Anonymous User',
       avatar: "/public/images/vora-is-hot-af.png"
@@ -305,9 +306,8 @@ function voteTypeToString(voteType: VoteType): VoteTypeString {
       return "unknown";
   }
 }
-export async function articleVote(loginType: LoginType, articleName: string, voteType: VoteType) {
-  if (loginType === LoginType.NotLoggedIn)
-    return;
+export async function articleVote(userInformation: User, articleName: string, voteType: VoteType) {
+  console.log("USER", userInformation);
 }
 export async function commentVote(loginType: LoginType, articleName: string, voteType: VoteType, target: VoteTarget) {
   if (loginType === LoginType.NotLoggedIn)
@@ -333,7 +333,8 @@ export function readArticlesFromLoginType(): ArticlesData {
   const loginType = useAppSelector(selectLoginType);
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const articlesData = useAppSelector(selectArticlesData);
-  return articlesData;
+  console.log(articlesData);
+  return articlesData || [];
 }
 
 export const selectAllTags = createDraftSafeSelector(

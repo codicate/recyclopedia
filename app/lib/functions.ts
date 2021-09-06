@@ -6,6 +6,10 @@ import Secrets from 'secrets';
 
 export const validPageLink = (originalName: string) => `${encodeURIComponent(originalName.toLowerCase().trim().replace(/ +/g, "_"))}`;
 
+/*
+  TODO(jerry):
+  This needs to be removed and changed to work with Strapi's upload.
+*/
 export async function uploadImage(image_name: string) {
   const form_data = new FormData();
   form_data.append("image", image_name);

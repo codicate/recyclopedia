@@ -31,6 +31,7 @@ function AsynchronousAxiosResponseWait<responseType>(axiosPromise: any): Promise
     }
   )
 }
+// TODO(jerry): delete method.
 Requests.provideImplementation(
   {
     async get<responseType>(url: string, config?: Requests.RequestConfiguration): Promise<Requests.Response<responseType>> {

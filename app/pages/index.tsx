@@ -71,7 +71,7 @@ function ArticleShowcase({
 
 function Home() {
   const currentLoginType = useAppSelector(selectLoginType);
-  const articlesData = readArticlesFromLoginType();
+  const articlesData = readArticlesFromLoginType() || [];
 
   return (
     <>

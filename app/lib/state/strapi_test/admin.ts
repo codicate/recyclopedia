@@ -27,7 +27,7 @@ export interface LoginAttemptResult {
 	userInformation?: User,
 }
 
-interface User {
+export interface User {
 	username:   string,
 	email:      string,
 	created_at: Date,
@@ -129,6 +129,7 @@ const adminSlice = createSlice(
 			builder.addCase(
 				loginWithEmailAndPassword.fulfilled,
 				function (state, action) {
+					console.log("work");
 					const { accountDetails, userInformation, type, } = action.payload;
 					state.loginType = type;
 					state.userInformation = userInformation;
@@ -146,3 +147,4 @@ export default adminSlice.reducer;
 const selector = (name: string) => createDraftSafeSelector((state: AppState) => state.admin, (admin) => admin[name]);
 export const selectAccountDetails    = selector("accountDetails");
 export const selectLoginType         = selector("loginType");
+export const selectUserInformation   = selector("userInformation");
