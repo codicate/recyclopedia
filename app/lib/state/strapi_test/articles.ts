@@ -60,7 +60,6 @@ export const initApi = createAsyncThunk(
   "articles/initApi",
   async (appId: string, { getState, dispatch, rejectWithValue }) => {
     const state = getState() as AppState;
-    console.log(">?");
     const accountDetails = state.admin.accountDetails;
     if (accountDetails) {
       await dispatch(loginWithEmailAndPassword(accountDetails));
@@ -160,17 +159,12 @@ export const insertArticle = createAsyncThunk(
   async (articleData: ArticleModel, { getState, dispatch, rejectWithValue }) => {
     const { admin } = getState() as AppState;
     if (admin.loginType === LoginType.Admin) {
+      // If only there were a way to tie the "existance" of a variable
+      // to something else?
       const accessToken  = admin.userInformation?.accessToken;
       _insertArticle(articleData, accessToken);
     }
   }
-  // tryToCallWithUser(
-  //   // @ts-ignore
-  //   async function (user: Realm.User, articleContent: Article, { dispatch }) {
-  //     console.log("stub");
-  //     dispatch(queryForArticles(undefined));
-  //   }
-  // )
 );
 
 export const setFeaturedArticle = createAsyncThunk(
@@ -178,13 +172,6 @@ export const setFeaturedArticle = createAsyncThunk(
   async function() {
 
   }
-  // tryToCallWithUser(
-  //   // @ts-ignore
-  //   async function (user: Realm.User, articleTitle: string | null, { dispatch }) {
-  //     console.log('stub');
-  //     dispatch(queryForArticles(undefined));
-  //   }
-  // )
 );
 
 const articlesSlice = createSlice({

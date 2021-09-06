@@ -56,7 +56,6 @@ function Admin({
       },
       (article) => {
         console.log(`Article ${article.name} written!`);
-        console.log(article);
         updateDirtyFlag(false);
       }
     );

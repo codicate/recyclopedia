@@ -28,12 +28,10 @@ function findExistingVoteByUser(votes, user) {
 module.exports = {
 	async vote(context) {
 		const {id} = context.params;
-		console.log(id);
 		const original = await strapi.query('comment').findOne({id});
 
 		if (!context.is("multipart")) {
 			const voteData = context.request.body;
-			console.log(voteData.user);
 
 			let existingVoteId = findExistingVoteByUser(original.votes, voteData.user);
 
@@ -45,7 +43,6 @@ module.exports = {
 				} else {
 					originalVote.type = voteData.type;
 				}
-				console.log("change vote");
 
 				await strapi.services.vote.update({ id: voteId }, originalVote);
 			} else {

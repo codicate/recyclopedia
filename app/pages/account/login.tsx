@@ -43,8 +43,6 @@ function Login() {
         submitFn={async (input) => {
           const dispatchRes = await dispatch(loginWithEmailAndPassword(input));
           const loginAttemptResult = dispatchRes.payload as LoginAttemptResult;
-          console.log(dispatchRes);
-          console.log(loginAttemptResult);
 
           if (loginAttemptResult.type !== LoginType.NotLoggedIn) {
             router.push("/");

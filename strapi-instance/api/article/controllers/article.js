@@ -52,10 +52,8 @@ module.exports = {
 
         if (!context.is('multipart')) {
             const voteData      = context.request.body;
-            console.log(voteData.user);
 
             let existingVoteId = findExistingVoteByUser(original.votes, voteData.user);
-            console.log(existingVoteId);
             if (existingVoteId !== undefined) {
                 const voteId       = original.votes[existingVoteId].id;
                 const originalVote = await strapi.query('vote').findOne({id: voteId});
@@ -64,7 +62,6 @@ module.exports = {
                 } else {
                     originalVote.type = voteData.type;
                 }
-                console.log("change vote");
 
                 await strapi.services.vote.update({id: voteId}, originalVote);
             } else {

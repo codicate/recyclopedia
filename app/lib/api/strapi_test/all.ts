@@ -33,19 +33,16 @@ export async function getArticleComments(name: string): Promise<CommentModel[]> 
   const article = await getArticle(name);
   const commentPromises = article.comments.map(({id}) => getCommentById(id));
   const fullComments    = await Promise.all(commentPromises);
-  console.log("Fcomments: ", fullComments);
   return fullComments;
 }
 
 export async function getVotesOfArticle(name: string): Promise<VoteModel[]> {
   const article = await getArticle(name);
-  console.log("article", article);
   return article.votes.map((vote) => { return { userId: vote.user, type: vote.type } });
 }
 
 // TODO(jerry): no user association yet.
 export async function addArticleComment(articleName: string, comment: CommentModel) {
-  console.log("add comment!");
   const response = await Requests.put_safe(
     `${STRAPI_INSTANCE_URL}/articles/by_name/${articleName}/add_comment/`,
     {},
@@ -55,8 +52,6 @@ export async function addArticleComment(articleName: string, comment: CommentMod
       votes: [],
     }
   );
-
-  console.log(response);
 }
 
 export async function getArticles() {
@@ -75,8 +70,6 @@ export async function getArticles() {
     tags: (article.tags).map(({name}) => name),
     id: validPageLink(article.name),
   }));
-
-  console.log(result);
 
   return result;
 }
@@ -97,7 +90,6 @@ export async function insertArticle(article: ArticleModel, accessToken: string) 
       },
       { headers: accessHeader }
     );
-    console.log("insert response: ", response);
   } catch (error) {
     console.error(error);
   }
