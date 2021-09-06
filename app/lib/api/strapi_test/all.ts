@@ -65,10 +65,26 @@ export async function getArticleLinks() {
   return (await getArticles()) as ArticleLink[];
 }
 
-// NOTE(jerry): Not included in strapi test!
+/*
+  We should only include tags that actually get used, however because the tags
+  are interned we have to handle this a bit differently.
+
+  Probably just make the tags get "reference counted", with any tag updates to articles
+  affecting the collection.
+
+  Tags may never be deleted, but that might be okay since they're just basically single strings
+  with a number.
+*/
 export async function getArticleTags() {
   const {data} = await axios.get(`${STRAPI_INSTANCE_URL}/tags`);
-  return (data as {name: string}[]).map(({name}) => name);
+  const allTags = (data as {name: string}[]).map(({name}) => name);
+
+  /*
+    is basically the idea.
+
+    return allTags.filter(({references} => references > 0));
+  */
+  return allTags;
 }
 // NOTE(jerry): Not included in strapi test!
 export async function getRecycleBinArticles() {
