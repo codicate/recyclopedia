@@ -110,6 +110,7 @@ export async function post_safe<dataType = any, responseType = any>(url: string,
 	}
 }
 
+// NOTE(jerry): we never use mutations.
 export async function graphql_query<responseType>(endpoint: string, graphQLQuery: string, config?: RequestConfiguration): Promise<NotUndefinedResponse<responseType>> {
 	const promise = (post(endpoint, {query: graphQLQuery}, config));
 	return promise as Promise<NotUndefinedResponse>;

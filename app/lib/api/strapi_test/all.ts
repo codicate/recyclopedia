@@ -1,4 +1,3 @@
-// import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 import * as Requests from 'lib/requests';
 
 // When we get real deployment make this an environment variable.

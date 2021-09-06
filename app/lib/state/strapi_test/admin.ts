@@ -1,8 +1,7 @@
 import { createSlice, createDraftSafeSelector, createAsyncThunk } from "@reduxjs/toolkit";
 import { AppState } from "state/store";
 
-import axios from 'axios';
-import { logMessage } from "lib/functions";
+import * as Requests from 'lib/requests';
 // TODO(jerry):
 // merge all into more coherent structure when this is all
 // working
@@ -50,7 +49,7 @@ export async function loginWith(information?: AccountDetails) : Promise<LoginAtt
 	}
 
 	try {
-		const response = await axios.post(
+		const response = await Requests.post(
 			`${STRAPI_INSTANCE_URL}/auth/local`,
 			{
 				identifier: information.email,
@@ -84,7 +83,7 @@ export async function loginWith(information?: AccountDetails) : Promise<LoginAtt
 // sorry for tabs, not sure why VSCode is doing this right now.
 export async function registerAccount(accountDetails: AccountDetails) {
 	try {
-		const response = await axios.post(
+		const response = await Requests.post(
 			`${STRAPI_INSTANCE_URL}/auth/local/register`,
 			{
 				username: accountDetails.email,
