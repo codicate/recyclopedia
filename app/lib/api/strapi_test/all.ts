@@ -15,9 +15,26 @@ export async function getArticle(name: string) {
   return data;
 }
 
+async function getCommentById(id: number) {
+  // I assume that you know that the comment exists here since we only access it
+  // from getArticleComments.
+  // It's my responsibility to synchronize the tables somewhere else so this should always assume good input.
+  const { data } = (await Requests.get<CommentModel>(`${STRAPI_INSTANCE_URL}/comments/${id}`)) as Requests.NotUndefinedResponse;
+  return data;
+}
+
+/*
+  NOTE(jerry):
+    It appears heavily nested things do not show up and we have to fetch them ourselves... Not a big deal I suppose.
+
+  I'll just a do a slow one by one fetch.
+*/
 export async function getArticleComments(name: string): Promise<CommentModel[]> {
   const article = await getArticle(name);
-  return article.comments;
+  const commentPromises = article.comments.map(({id}) => getCommentById(id));
+  const fullComments    = await Promise.all(commentPromises);
+  console.log("Fcomments: ", fullComments);
+  return fullComments;
 }
 
 export async function getVotesOfArticle(name: string): Promise<VoteModel[]> {
