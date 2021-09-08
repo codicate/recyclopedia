@@ -297,6 +297,13 @@ function voteTypeToString(voteType: VoteType): VoteTypeString {
       return "none";
   }
 }
+function voteTypeFromString(voteType: VoteTypeString) {
+  switch (voteType) {
+      case "like":    return VoteType.Like;
+      case "dislike": return VoteType.Dislike;
+      default:        return VoteType.None;
+  }
+}
 export async function articleVote(userInformation: User, articleName: string, voteType: VoteType) {
   await _articleVote(userInformation, articleName, voteTypeToString(voteType));
 }

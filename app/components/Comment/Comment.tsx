@@ -94,6 +94,25 @@ function Comment({
     []
   );
 
+  function confirmUserVoteType(type: string) {
+    if (currentLoginType === LoginType.NotLoggedIn) {
+      return false;
+    }
+
+    if (voteTypeByUserId(comment.votes, currentUser.id) === type || voteType === type) {
+      return true;
+    }
+  }
+  async function performVote(type: string) {
+    if (voteType === type) {
+      setVoteType("none");
+    } else {
+      setVoteType(type);
+    }
+
+    await vote(voteTypeFromString(type));
+  }
+
   /*
     Careful, I'm unaware of how correct the clientside predicting is... But it looks correct
     enough.
@@ -129,19 +148,8 @@ function Comment({
           name='like'
           styledAs='oval'
           className={styles.commentBtn}
-          checked={
-            function () {
-              return (currentLoginType !== LoginType.NotLoggedIn) && (voteTypeByUserId(comment.votes, currentUser.id) === "like" || voteType === "like");
-            }()
-          }
-          onClick={() => (async () => {
-            if (voteType === "like") {
-              setVoteType("none");
-            } else {
-              setVoteType("like");
-            }
-            await vote(VoteType.Like);
-          })()}>
+          checked={confirmUserVoteType("like")}
+          onClick={() => performVote("like")}>
           <span className='material-icons'>
             thumb_up
           </span>
@@ -151,19 +159,8 @@ function Comment({
           name='dislike'
           styledAs='oval'
           className={styles.commentBtn}
-          checked={
-            function () {
-              return (currentLoginType !== LoginType.NotLoggedIn) && (voteTypeByUserId(comment.votes, currentUser.id) === "dislike" || voteType === "dislike");
-            }()
-          }
-          onClick={() => (async () => {
-            if (voteType === "dislike") {
-              setVoteType("none");
-            } else {
-              setVoteType("dislike");
-            }
-            await vote(VoteType.Dislike);
-          })()}
+          checked={confirmUserVoteType("dislike")}
+          onClick={() => performVote("dislike")}
         >
           <span className='material-icons'>
             thumb_down

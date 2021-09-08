@@ -8,7 +8,8 @@ export interface UserModel {
 // to determine whether we should revote.
 export enum VoteType {
   Like,
-  Dislike
+  Dislike,
+  None
 }
 
 export interface VoteModel {
