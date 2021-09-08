@@ -12,11 +12,31 @@ export enum VoteType {
   None
 }
 
+export type VoteTypeString = "like" | "dislike" | "none";
 export interface VoteModel {
   // MongoDB does not know about typescript types
   type: "like" | "dislike" | "none";
   userId: string;
 }
+export const VoteModel = {
+  toString(voteType: VoteType): VoteTypeString {
+    switch (voteType) {
+      case VoteType.Like:
+        return "like";
+      case VoteType.Dislike:
+        return "dislike";
+      default:
+        return "none";
+    }
+  },
+  fromString(voteType: VoteTypeString) {
+    switch (voteType) {
+      case "like":    return VoteType.Like;
+      case "dislike": return VoteType.Dislike;
+      default:        return VoteType.None;
+    }
+  }
+};
 
 export interface CommentModel {
   id: number; // from strapi.

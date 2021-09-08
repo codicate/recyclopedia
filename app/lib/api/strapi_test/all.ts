@@ -29,11 +29,31 @@ async function getCommentById(id: number) {
 
   I'll just a do a slow one by one fetch.
 */
+async function sanitizeComments(comments: CommentModel[]) {
+  return await Promise.all(
+    comments.map(
+      async function (comment) {
+        const user = await getUserById(comment.user?.id);
+
+        const sanitized = {
+          ...comment,
+          user: {
+            avatar: user?.avatar || "https://lh6.googleusercontent.com/-f9MhM40YFzc/AAAAAAAAAAI/AAAAAAABjbo/iG_SORRy0I4/photo.jpg",
+            name:   user?.username || "Anonymous",
+          }
+        };
+
+        return sanitized;
+      }
+  ));
+}
+
 export async function getArticleComments(name: string): Promise<CommentModel[]> {
   const article = await getArticle(name);
   const commentPromises = article.comments.map(({id}) => getCommentById(id));
   const fullComments    = await Promise.all(commentPromises);
-  return fullComments;
+
+  return sanitizeComments(fullComments);
 }
 
 export async function getVotesOfArticle(name: string): Promise<VoteModel[]> {
@@ -49,6 +69,7 @@ export async function addArticleComment(articleName: string, comment: CommentMod
     {
       content: comment.content,
       createdAt: comment.createdAt,
+      user: comment.user,
       votes: [],
     }
   );
@@ -135,6 +156,24 @@ export async function articleVote(userInformation: User, articleName: string, vo
 // the same but with less fields.
 export async function getArticleLinks() {
   return (await getArticles()) as ArticleLink[];
+}
+
+// TODO(jerry):
+// not sure whether this is really a privacy / security hole...
+// Should probably just always ask for authentication
+// IE: we only give this information to people who are actually visiting
+// the website (ship a token on visit, in order to prevent scrapers or whatever
+// from getting information. Not perfect, but it's one more layer to go through...)
+type Optional<T> = T | undefined | null;
+export async function getUserById(id?: number): Optional<User> {
+  if (id) {
+    try {
+      const { data } = await Requests.get<User>(`${STRAPI_INSTANCE_URL}/users/${id}`);
+      return data;
+    } catch (error) {
+      return undefined;
+    }
+  }
 }
 
 /*

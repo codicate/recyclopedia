@@ -22,7 +22,7 @@
     "votes": {
       "collection": "vote"
     },
-    "users_permissions_user": {
+    "user": {
       "plugin": "users-permissions",
       "model": "user"
     }

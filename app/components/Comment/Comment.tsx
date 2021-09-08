@@ -68,13 +68,13 @@ function Comment({
     commenterAvatar,
     commenterUserName
   } = (comment.user) ? {
-    commenterAvatar: comment.user.avatar,
+    commenterAvatar: "/public/images/vora-is-hot-af.png", 
     commenterUserName: comment.user.name,
   } : {
-      // TODO find a better icon.
-      commenterAvatar: "https://lh6.googleusercontent.com/-f9MhM40YFzc/AAAAAAAAAAI/AAAAAAABjbo/iG_SORRy0I4/photo.jpg",
-      commenterUserName: "Anonymous",
-    };
+    // TODO find a better icon.
+    commenterAvatar: "https://lh6.googleusercontent.com/-f9MhM40YFzc/AAAAAAAAAAI/AAAAAAABjbo/iG_SORRy0I4/photo.jpg",
+    commenterUserName: "Anonymous",
+  };
 
   const [voteType, setVoteType] = useState("none");
 
@@ -110,7 +110,7 @@ function Comment({
       setVoteType(type);
     }
 
-    await vote(voteTypeFromString(type));
+    await vote(VoteModel.fromString(type));
   }
 
   /*
@@ -133,9 +133,7 @@ function Comment({
         />
         <div>
           <p>{commenterUserName}</p>
-          <p>
-            {formatDistance(new Date(comment.createdAt), new Date())} ago
-          </p>
+          <p> {formatDistance(new Date(comment.createdAt), new Date())} ago </p>
         </div>
       </div>
 

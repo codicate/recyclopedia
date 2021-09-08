@@ -8,11 +8,11 @@ import {
   LoginType,
   AccountDetails,
   loginWithEmailAndPassword,
-  User
+  User,
 } from "state/strapi_test/admin";
 import { useAppSelector } from "state/hooks";
 
-import { VoteType, CommentModel, ArticleModel } from 'lib/models';
+import { VoteModel, VoteType, CommentModel, ArticleModel } from 'lib/models';
 import Secrets from "secrets";
 import { useEffect } from "react";
 
@@ -226,7 +226,7 @@ export const selectNameOfFeaturedArticle = createDraftSafeSelector(
 );
 
 // implicitly uses the state of the logged-in user!
-export function buildCommentDraft(loginType: LoginType, accountDetails: AccountDetails | undefined | null, comment: string) {
+export function buildCommentDraft(loginType: LoginType, userInformation: User | undefined | null, comment: string) {
   const commentContents = {
     content: comment,
     createdAt: new Date(),
@@ -241,20 +241,15 @@ export function buildCommentDraft(loginType: LoginType, accountDetails: AccountD
       ? commentContents
       : {
         ...commentContents,
-        user: {
-          // @ts-ignore
-          name: accountDetails.email,
-          // comments should not really have avatars in the future.
-          avatar: "/public/images/vora-is-hot-af.png", 
-        }
+        user: {id: userInformation.id}
       };
 
   return commentDraft;
 }
 
-export async function addComment(loginType: LoginType, accountDetails: AccountDetails | undefined | null, articleName: string, comment: string) {
+export async function addComment(loginType: LoginType, userInformation: User | undefined | null, articleName: string, comment: string) {
   const completedComment = {
-    ...buildCommentDraft(loginType, accountDetails, comment),
+    ...buildCommentDraft(loginType, userInformation, comment),
     replies: [] // TODO(jerry): remove reply support, not needed!
   };
   await addArticleComment(articleName, completedComment);
@@ -275,37 +270,8 @@ export async function replyToComment(loginType: LoginType, accountDetails: Accou
   const completedComment = buildCommentDraft(loginType, accountDetails, comment);
 }
 
-export type ArticleVoteTarget = string;
-export interface VoteTarget {
-  id: number,
-  // replies should also be GUIDed somehow.
-  replyId?: number,
-}
-
-// To be as quick as possible, we will ignorantly just vote ignorantly
-// without associating votes. We can use localStorage to emulate what I'm requesting
-// but for obvious reasons localStorage is pretty easy to do vote fraud with.
-// and I'm quite a fan of democracy so let's not try to fake it, for now let's just not do it.
-type VoteTypeString = "like" | "dislike" | "none";
-function voteTypeToString(voteType: VoteType): VoteTypeString {
-  switch (voteType) {
-    case VoteType.Like:
-      return "like";
-    case VoteType.Dislike:
-      return "dislike";
-    default:
-      return "none";
-  }
-}
-function voteTypeFromString(voteType: VoteTypeString) {
-  switch (voteType) {
-      case "like":    return VoteType.Like;
-      case "dislike": return VoteType.Dislike;
-      default:        return VoteType.None;
-  }
-}
 export async function articleVote(userInformation: User, articleName: string, voteType: VoteType) {
-  await _articleVote(userInformation, articleName, voteTypeToString(voteType));
+  await _articleVote(userInformation, articleName, VoteModel.toString(voteType));
 }
 // NOTE(jerry):
 // VoteTarget is no longer needed because we've never used the reply functionality
@@ -315,7 +281,7 @@ export async function articleVote(userInformation: User, articleName: string, vo
 // and not document based like MongoDB, also apparently Strapi 4 will drop MongoDB support...
 // So this is kind of what's going to happen anyways.
 export async function commentVote(userInformation: User, voteType: VoteType, commentId: number) {
-  await _commentVote(userInformation, commentId, voteTypeToString(voteType));
+  await _commentVote(userInformation, commentId, VoteModel.toString(voteType));
 }
 
 export async function getCommentsOfArticle(name: string) {

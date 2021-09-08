@@ -2,7 +2,6 @@ import styles from "./CommentSection.module.scss";
 import React, { forwardRef } from "react";
 import { addComment } from "state/strapi_test/articles";
 import { useAppSelector } from "state/hooks";
-// import { LoginType, selectLoginType, selectAccountDetails } from "state/admin";
 import {
   selectLoginType,
   selectAccountDetails,
@@ -53,7 +52,7 @@ const CommentSection = forwardRef<HTMLDivElement, CommentSectionProps>(
               }
             }}
             submitFn={async (input) => {
-              await addComment(loginType, accountDetails, articleName, input.comment);
+              await addComment(loginType, userInformation, articleName, input.comment);
               refetchComments();
             }}
           >

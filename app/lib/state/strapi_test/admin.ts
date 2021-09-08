@@ -11,129 +11,135 @@ import * as Requests from 'lib/requests';
 const STRAPI_INSTANCE_URL = "http://localhost:1337";
 
 export enum LoginType {
-	NotLoggedIn,
-	User,
-	Admin,
+  NotLoggedIn,
+  User,
+  Admin,
 }
 
 export interface AccountDetails {
-	email: string;
-	password: string;
+  email: string;
+  password: string;
 }
 
 export interface LoginAttemptResult {
-	type: LoginType,
-	accountDetails?: AccountDetails,
-	userInformation?: User,
+  type: LoginType,
+  accountDetails?: AccountDetails,
+  userInformation?: User,
 }
 
+/*
+   This is allowed to implementation dependent, since AccountDetails is the "public"
+   face of the User.
+   
+   This one is just used for private reasons.
+*/
 export interface User {
-	username:   string,
-	email:      string,
-	created_at: Date,
-	accessToken: string,
+  id: number,
+  username:   string,
+  email:      string,
+  created_at: Date,
+  accessToken: string,
 }
 
 interface ApplicationState {
-	loginType: LoginType,
-	userInformation?: User,
-	accountDetails?: AccountDetails,
+  loginType: LoginType,
+  userInformation?: User,
+  accountDetails?: AccountDetails,
 }
 
 export async function loginWith(information?: AccountDetails) : Promise<LoginAttemptResult> {
-	const failure = { type: LoginType.NotLoggedIn, };
+  const failure = { type: LoginType.NotLoggedIn, };
 
-	if (!information) {
-		return failure;
-	}
+  if (!information) {
+    return failure;
+  }
 
-	try {
-		const response = await Requests.post(
-			`${STRAPI_INSTANCE_URL}/auth/local`,
-			{
-				identifier: information.email,
-				password: information.password,
-			}
-		);
+  try {
+    const response = await Requests.post(
+      `${STRAPI_INSTANCE_URL}/auth/local`,
+    {
+      identifier: information.email,
+      password: information.password,
+    }
+    );
 
-		const { user, jwt } = response.data;
-		const { username, email, created_at } = user;
+    const { user, jwt } = response.data;
+    const { username, email, created_at } = user;
 
-		let type: LoginType = LoginType.User;
-		if (user.role.name === "Author") {
-			type = LoginType.Admin;
-		}
+    let type: LoginType = LoginType.User;
+    if (user.role.name === "Author") {
+      type = LoginType.Admin;
+    }
 
-		return { 
-			type,
-			accountDetails: information,
-			userInformation: {
-				... user,
-				username,
-				email,
-				created_at,
-				accessToken: jwt
-			}
-		};
-	} catch (error) {
-		console.log("error!");
-		console.log(error);
-	}
+    return { 
+      type,
+      accountDetails: information,
+      userInformation: {
+        ... user,
+        username,
+        email,
+        created_at,
+        accessToken: jwt
+      }
+    };
+  } catch (error) {
+    console.log("error!");
+    console.log(error);
+  }
 
-	return failure;
+  return failure;
 }
 
-// sorry for tabs, not sure why VSCode is doing this right now.
 export async function registerAccount(accountDetails: AccountDetails) {
-	try {
-		const response = await Requests.post(
-			`${STRAPI_INSTANCE_URL}/auth/local/register`,
-			{
-				username: accountDetails.email,
-				email: accountDetails.email,
-				password: accountDetails.password,
-			}
-		);
-	} catch (error) {
-		console.log(error);
-	}
+  try {
+    const response = await Requests.post(
+      `${STRAPI_INSTANCE_URL}/auth/local/register`,
+    {
+      username: accountDetails.email,
+      email: accountDetails.email,
+      password: accountDetails.password,
+    }
+    );
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export const loginWithEmailAndPassword = createAsyncThunk(
-	"admin/loginWithEmailAndPassword",
-	async function (accountDetails?: AccountDetails) : Promise<LoginAttemptResult> {
-		const loginResult = await loginWith(accountDetails);
-		return loginResult;
-	}
+  "admin/loginWithEmailAndPassword",
+  async function (accountDetails?: AccountDetails) : Promise<LoginAttemptResult> {
+    const loginResult = await loginWith(accountDetails);
+    return loginResult;
+  }
 )
 
 const adminInitialState: ApplicationState = {
-	loginType: LoginType.NotLoggedIn,
+  loginType: LoginType.NotLoggedIn,
 };
 
 const adminSlice = createSlice(
-	{
-		name: "admin",
-		initialState: adminInitialState,	
+  {
+    name: "admin",
+    initialState: adminInitialState,	
 
-		reducers: {
-			logout: function (state) {
-				state.loginType = LoginType.NotLoggedIn;
-			},
-		},
+    reducers: {
+      logout: function (state) {
+        state.loginType = LoginType.NotLoggedIn;
+      },
+    },
 
-		extraReducers: function (builder) {
-			builder.addCase(
-				loginWithEmailAndPassword.fulfilled,
-				function (state, action) {
-					const { accountDetails, userInformation, type, } = action.payload;
-					state.loginType = type;
-					state.userInformation = userInformation;
-					state.accountDetails  = accountDetails;
-				}
-			)
-		}
-	}
+    extraReducers: function (builder) {
+      builder.addCase(
+        loginWithEmailAndPassword.fulfilled,
+        function (state, action) {
+          const { accountDetails, userInformation, type, } = action.payload;
+          state.loginType = type;
+          state.userInformation = userInformation;
+          state.accountDetails  = accountDetails;
+        }
+      )
+    }
+  }
 );
 
 export const { logout } = adminSlice.actions;
