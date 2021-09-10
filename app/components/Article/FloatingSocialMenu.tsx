@@ -1,6 +1,6 @@
 import styles from "./FloatingSocialMenu.module.scss";
 import { useState } from "react";
-import { VoteType, VoteModel } from 'lib/models';
+import { VoteType, VoteModel, VoteTypeString } from 'lib/models';
 import { useAppSelector } from "state/hooks";
 // import { LoginType, selectLoginType } from "state/admin";
 import { LoginType, selectLoginType, selectUserInformation } from "state/strapi_test/admin";
@@ -23,9 +23,35 @@ function FloatingSocialMenu({
   vote: (vote: VoteType) => Promise<void>,
 }) {
   const [expandShare, setExpandShare] = useState(false);
-  const { likeCount, dislikeCount } = getLikeCountAndDislikeCount(votes);
   const currentLoginType = useAppSelector(selectLoginType);
   const currentUser = useAppSelector(selectUserInformation);
+  const [voteType, setVoteType] = useState<VoteTypeString>("none");
+
+  const { likeCount, dislikeCount } =
+    (currentLoginType !== LoginType.NotLoggedIn) ?
+      getLikeCountAndDislikeCount(votes, { user: currentUser, vote: voteType }) :
+      getLikeCountAndDislikeCount(votes);
+
+  function confirmUserVoteType(type: VoteTypeString) {
+    if (currentLoginType === LoginType.NotLoggedIn) {
+      return false;
+    }
+
+    if (voteType === type) {
+      return true;
+    }
+
+    return false;
+  }
+  function performVote(type: VoteTypeString) {
+    if (voteType === type) {
+      setVoteType("none");
+    } else {
+      setVoteType(type);
+    }
+
+    vote(VoteModel.fromString(type));
+  }
 
   return (
     <div className={styles.floatingSocialMenu}>
@@ -33,16 +59,15 @@ function FloatingSocialMenu({
         name='likes'
         materialIcon='thumb_up'
         counter={likeCount}
-        // checked={(() => (currentLoginType !== LoginType.NotLoggedIn) && voteTypeByUserId(votes, currentUser.id) === "like")()}
-        checked={(() => (currentLoginType !== LoginType.NotLoggedIn) && voteTypeByUserId(votes, currentUser.id) === "like")()}
-        onClick={() => (async () => { await vote(VoteType.Like); })()}
+        checked={confirmUserVoteType("like")}
+        onClick={() => (async () => { performVote("like") })()}
       />
       <CheckboxCounterBtn
         name='dislikes'
         materialIcon='thumb_down'
         counter={dislikeCount}
-        checked={(() => (currentLoginType != LoginType.NotLoggedIn) && voteTypeByUserId(votes, currentUser.id) === "dislike")()}
-        onClick={() => (async () => { await vote(VoteType.Dislike); })()}
+        checked={confirmUserVoteType("dislike")}
+        onClick={() => (async () => { performVote("dislike") })()}
       />
       {(expandShare) && (
         <MediaShareBtns title={title} />
