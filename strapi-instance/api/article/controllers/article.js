@@ -46,7 +46,11 @@ module.exports = {
 
     async findOneByName(context) {
         const {id} = context.params;
-        const entity = await strapi.services.article.findOne({ name: id });
+        let entity;
+
+        const proposedName = id.replace(/_+/g, " ");
+        console.log("rp: ", id, proposedName);
+        entity = await strapi.services.article.findOne({ name: proposedName });
 
         return sanitizeEntity(entity, { model: strapi.models.article });
     },

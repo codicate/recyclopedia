@@ -308,7 +308,6 @@ export function readArticlesFromLoginType(): ArticlesData {
   const loginType = useAppSelector(selectLoginType);
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const articlesData = useAppSelector(selectArticlesData);
-  console.log(articlesData);
   return articlesData || [];
 }
 

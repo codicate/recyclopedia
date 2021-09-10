@@ -4,7 +4,7 @@ import { NodeType } from "utils/DOMIntoMarkdown";
 import Secrets from 'secrets';
 
 
-export const validPageLink = (originalName: string) => `${encodeURIComponent(originalName.toLowerCase().trim().replace(/ +/g, "_"))}`;
+export const validPageLink = (originalName: string) => `${encodeURIComponent(originalName.trim().replace(/ +/g, "_"))}`;
 
 /*
   TODO(jerry):
