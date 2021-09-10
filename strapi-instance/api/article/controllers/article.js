@@ -21,6 +21,29 @@ function findExistingVoteByUser(votes, user) {
 }
 
 module.exports = {
+    async create(context) {
+        if (!context.is('multipart')) {
+            const articleData = context.request.body;
+            const existingArticle = await strapi.services.article.findOne({ name: articleData.name });
+
+            if (existingArticle) {
+                const updatedArticle = await strapi.services.article.update(
+                    {
+                        name: articleData.name
+                    },
+                    {
+                        ... existingArticle,
+                        content: articleData.content,
+                    }
+                );
+                return sanitizeEntity(updatedArticle, { model: strapi.models.article });
+            } else {
+                const newArticle = await strapi.services.article.create(articleData);
+                return sanitizeEntity(newArticle) ;
+            }
+        }
+    },
+
     async findOneByName(context) {
         const {id} = context.params;
         const entity = await strapi.services.article.findOne({ name: id });

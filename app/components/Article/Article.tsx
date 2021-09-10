@@ -1,3 +1,6 @@
+// NOTE(jerry):
+// Editing has one t. I did not know this somehow until today.
+
 // TODO(jerry):
 // realign all models.
 import styles from "components/Article/Article.module.scss";
