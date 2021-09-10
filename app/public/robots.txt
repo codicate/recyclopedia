@@ -1,3 +1,9 @@
-# https://www.robotstxt.org/robotstxt.html
+# *
 User-agent: *
-Disallow:
+Allow: /
+
+# Host
+Host: https://recyclopedia.vercel.app
+
+# Sitemaps
+Sitemap: https://recyclopedia.vercel.app/sitemap.xml

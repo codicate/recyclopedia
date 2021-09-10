@@ -47,8 +47,8 @@ const stubImplementation: RequestImplementation = {
 	}
 };
 
-var implementation: RequestImplementation = stubImplementation;
-var implementationProvided: boolean = false;
+let implementation: RequestImplementation = stubImplementation;
+let implementationProvided = false;
 
 export function provideImplementation(newImplementation: RequestImplementation) {
 	if (!implementationProvided) {

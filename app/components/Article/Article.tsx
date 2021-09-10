@@ -61,7 +61,10 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
     content,
     // dateCreated,
     // dateModified,
+
+    // @ts-expect-error
     created_at,
+    // @ts-expect-error
     updated_at,
   } = article;
 
@@ -88,10 +91,10 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
   useEffectWithGuaranteedInitializedApi(dispatch,
     (async () => {
       // BUGME(jerry)
-      dispatch(queryForArticles(undefined));
+      dispatch(queryForArticles());
       const retrievedComments = await getCommentsOfArticle(name);
       const retrievedVotes    = await getVotesOfArticle(name);
-      updateComments(retrievedComments);
+      updateComments(retrievedComments as TopLevelCommentModel[]);
       updateVotes(retrievedVotes);
     }), [commentPinger]);
 
@@ -220,6 +223,7 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
                 if (migrationTitleName === name) {
                   alert("You cannot migrate a page unto itself!");
                 } else {
+            // @ts-expect-error
                   const dispatchResult = await dispatch(migrateArticle({
                     name,
                     newName: migrationTitleName

@@ -85,6 +85,7 @@ function Comment({
       }
 
       for (const vote of comment.votes) {
+        // @ts-expect-error
         if (vote.user === currentUser.id) {
           setVoteType(vote.type);
           break;
@@ -110,6 +111,7 @@ function Comment({
       setVoteType(type);
     }
 
+    // @ts-expect-error
     await vote(VoteModel.fromString(type));
   }
 

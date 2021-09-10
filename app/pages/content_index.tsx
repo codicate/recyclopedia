@@ -159,6 +159,10 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
     props: {
       articleLinks,
       tags
-    }
+    },
+    /*
+    NOTE(jerry): articles are more likely to update than new articles are created.
+    */
+    revalidate: 7,
   };
 };

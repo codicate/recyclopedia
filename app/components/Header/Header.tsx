@@ -27,10 +27,7 @@ const Header = () => {
       />
       <ResponsiveNav id={styles.navbar}>
         <Link href='/content_index'>Index</Link>
-        {(
-          currentLoginType !== LoginType.Anonymous &&
-          currentLoginType !== LoginType.NotLoggedIn
-        ) ?
+        {(currentLoginType !== LoginType.NotLoggedIn) ?
           (
             // This is for logged users
             <>

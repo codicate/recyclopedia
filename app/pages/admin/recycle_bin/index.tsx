@@ -3,12 +3,14 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { useAppSelector, useAppDispatch } from "state/hooks";
-import { selectArticlesData, deleteArticle, restoreArticle } from "state/articles";
-import { LoginType, selectLoginType } from "state/admin";
+import { selectArticlesData, deleteArticle, restoreArticle } from "state/strapi_test/articles";
+import { LoginType, selectLoginType } from "state/strapi_test/admin";
 
 import { validPageLink, dictionaryUpdateKey } from "lib/functions";
 import Button from "components/UI/Button";
 
+
+// TODO(someone)
 
 // little filler component as to not complict the RecyclingBin
 type DaysLeft = {

@@ -33,11 +33,13 @@ async function sanitizeComments(comments: CommentModel[]) {
   return await Promise.all(
     comments.map(
       async function (comment) {
+        // @ts-expect-error
         const user = await getUserById(comment.user?.id);
 
         const sanitized = {
           ...comment,
           user: {
+        // @ts-expect-error
             avatar: user?.avatar || "https://lh6.googleusercontent.com/-f9MhM40YFzc/AAAAAAAAAAI/AAAAAAABjbo/iG_SORRy0I4/photo.jpg",
             name:   user?.username || "Anonymous",
           }
@@ -58,6 +60,7 @@ export async function getArticleComments(name: string): Promise<CommentModel[]> 
 
 export async function getVotesOfArticle(name: string): Promise<VoteModel[]> {
   const article = await getArticle(name);
+        // @ts-expect-error
   return article.votes.map((vote) => { return { userId: vote.user, type: vote.type } });
 }
 
@@ -165,7 +168,7 @@ export async function getArticleLinks() {
 // the website (ship a token on visit, in order to prevent scrapers or whatever
 // from getting information. Not perfect, but it's one more layer to go through...)
 type Optional<T> = T | undefined | null;
-export async function getUserById(id?: number): Optional<User> {
+export async function getUserById(id?: number): Promise<Optional<User>> {
   if (id) {
     try {
       const { data } = await Requests.get<User>(`${STRAPI_INSTANCE_URL}/users/${id}`);

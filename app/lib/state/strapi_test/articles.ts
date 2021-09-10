@@ -127,8 +127,7 @@ export const migrateArticle = createAsyncThunk(
 
 export const deleteArticle = createAsyncThunk(
   "articles/deleteArticle",
-  async function() {
-
+  async function(name: string) {
   }
   // tryToCallWithUser(
   //   // @ts-ignore
@@ -141,7 +140,7 @@ export const deleteArticle = createAsyncThunk(
 
 export const restoreArticle = createAsyncThunk(
   "articles/restoreArticle",
-  async function() {
+  async function(name: string) {
 
   }
   // tryToCallWithUser(
@@ -162,7 +161,9 @@ export const insertArticle = createAsyncThunk(
       // If only there were a way to tie the "existance" of a variable
       // to something else?
       const accessToken  = admin.userInformation?.accessToken;
-      _insertArticle(articleData, accessToken);
+      if (accessToken) {
+        _insertArticle(articleData, accessToken);
+      }
     }
   }
 );
@@ -197,11 +198,13 @@ const articlesSlice = createSlice({
     ).addCase(
       queryForArticles.fulfilled,
       (state, action) => {
+        // @ts-ignore
         state.articlesData = action.payload;
       }
     ).addCase(
       queryForAllTags.fulfilled,
       (state, action) => {
+        // @ts-ignore
         state.allTags = action.payload.slice(0);
       }
     );
@@ -233,14 +236,16 @@ export function buildCommentDraft(loginType: LoginType, userInformation: User | 
     user: {
       name: 'Anonymous User',
       avatar: "/public/images/vora-is-hot-af.png"
-    }
+    },
   };
 
+  // @ts-ignore
   const commentDraft: CommentModel =
     (loginType === LoginType.NotLoggedIn)
       ? commentContents
       : {
         ...commentContents,
+  // @ts-ignore
         user: {id: userInformation.id}
       };
 
@@ -267,7 +272,7 @@ export async function deleteComment(articleName: string, commentId: number) {
 // will have to be a more special type of id to prevent against weird issues
 // when deleting. This is not done yet. (some sort of GUID) basically.
 export async function replyToComment(loginType: LoginType, accountDetails: AccountDetails, articleName: string, parentId: number, comment: string) {
-  const completedComment = buildCommentDraft(loginType, accountDetails, comment);
+  // not happening.
 }
 
 export async function articleVote(userInformation: User, articleName: string, voteType: VoteType) {

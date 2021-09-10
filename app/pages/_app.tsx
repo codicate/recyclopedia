@@ -6,7 +6,7 @@ import Secrets from 'secrets';
 
 import { wrapper } from 'state/store';
 import { useAppDispatch } from 'state/hooks';
-import { initApi } from 'state/articles';
+import { initApi } from 'state/strapi_test/articles';
 
 import Header from "components/Header/Header";
 import Footer from "components/Footer/Footer";
@@ -17,14 +17,18 @@ import * as Requests from 'lib/requests';
 // Keep this as the only place Axios *must* be exposed.
 function AsynchronousAxiosResponseWait<responseType>(axiosPromise: any): Promise<Requests.Response<responseType>> {
   return new Promise(
-    async function (resolve, reject) {
+    function (resolve, reject) {
       try {
-        const response = await axiosPromise;
-        resolve({
-          status: response.status,
-          data: response.data,
-          headers: response.headers,
-        });
+        axiosPromise.then(
+          // @ts-ignore
+          function (response) {
+            resolve({
+              status: response.status,
+              data: response.data,
+              headers: response.headers,
+            });
+          }
+        )
       } catch (error) {
         reject(error);
       }

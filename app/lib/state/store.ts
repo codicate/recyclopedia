@@ -9,7 +9,7 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-import articlesReducer from "./articles";
+import articlesReducer from "./strapi_test/articles";
 // import adminReducer from "./admin";
 import adminReducer from "./strapi_test/admin";
 

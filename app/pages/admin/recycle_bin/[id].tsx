@@ -1,3 +1,7 @@
+// TODO(someone):
+// restore recycling bin order. That would be very nice.
+// For now this is broken though. So don't worry about it I suppose.
+
 import Head from 'next/head';
 import { GetStaticPaths, GetStaticProps } from 'next';
 
@@ -31,7 +35,8 @@ export default Articles;
 const tokensCasher = new TokensCasher<QueriedArticleToken>('recycleBinArticle');
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const tokens = await getRecyleBinArticles();
+  // const tokens = await getRecyleBinArticles();
+  const tokens: QueriedArticleToken[] = [];
   tokensCasher.cacheTokens(tokens);
 
   const paths = tokens.map((token) => ({

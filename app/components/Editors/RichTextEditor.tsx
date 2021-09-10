@@ -56,7 +56,7 @@ import {
 } from "./RichTextEditWidgetInformation";
 
 import { ArticleDraftModel, ArticleModel } from 'lib/models';
-import { setFeaturedArticle } from "state/articles";
+// import { setFeaturedArticle } from "state/articles";
 import Input from "components/Form/Input";
 
 import bottomToolbarStyle from "./bottomToolbar.module.scss";
@@ -957,10 +957,10 @@ export function RichTextEditor({
           className={editorStyle.button}
           onClick={
             () => {
-              dispatch(setFeaturedArticle(
-                (initialArticleState?.name) ||
-                (editableTitleDOMRef.current?.textContent || "")
-              ));
+              // dispatch(setFeaturedArticle(
+              //   (initialArticleState?.name) ||
+              //   (editableTitleDOMRef.current?.textContent || "")
+              // ));
             }
           }
         >
