@@ -14,14 +14,11 @@ type ContextParams = {
   id: string;
   articleName: string;
 };
-type QueriedArticleToken = ArticleModel & { id: string };
 
 interface PageProps {
   article: ArticleModel;
 };
 
-// Why the fuck can this ever be undefined???
-// when does this happen???
 function Articles({ article }: PageProps) {
   if (article) {
     return (
@@ -46,14 +43,11 @@ function Articles({ article }: PageProps) {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const articleLinks = await getArticleLinks();
-
   const paths = articleLinks.map((link) => ({
     params: {
       id: validPageLink(link.name),
     }
   }));
-
-  console.log(paths);
 
   return {
     paths,

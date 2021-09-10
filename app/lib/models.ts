@@ -14,9 +14,8 @@ export enum VoteType {
 
 export type VoteTypeString = "like" | "dislike" | "none";
 export interface VoteModel {
-  // MongoDB does not know about typescript types
   type: "like" | "dislike" | "none";
-  userId: string;
+  user: number;
 }
 export const VoteModel = {
   toString(voteType: VoteType): VoteTypeString {
@@ -59,11 +58,19 @@ export interface ArticleDraftModel {
 export interface ArticleModel {
   name: string;
   content: string;
+
+  /*
+  NOTE(jerry):
+  Deprecated or unused at the moment.
+  Someone fix this later.
+  */
   draftStatus: boolean;
   bannerImage?: string;
-  dateCreated: Date;
-  dateModified?: Date;
-  tags?: string[];
+
+  createdAt: Date;
+  updatedAt: Date;
+
+  tags: string[];
   votes: VoteModel[];
   comments: CommentModel[];
 }
@@ -72,7 +79,9 @@ export const ArticleModel = {
     name: "Article Default",
     content: "Article Default Content",
     draftStatus: false,
-    dateCreated: new Date(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    tags: [],
     votes: [],
     comments: []
   }

@@ -33,6 +33,7 @@ function FloatingSocialMenu({
         name='likes'
         materialIcon='thumb_up'
         counter={likeCount}
+        // checked={(() => (currentLoginType !== LoginType.NotLoggedIn) && voteTypeByUserId(votes, currentUser.id) === "like")()}
         checked={(() => (currentLoginType !== LoginType.NotLoggedIn) && voteTypeByUserId(votes, currentUser.id) === "like")()}
         onClick={() => (async () => { await vote(VoteType.Like); })()}
       />

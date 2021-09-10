@@ -10,15 +10,19 @@ import { VoteType, VoteModel, CommentModel } from 'lib/models';
 
 import CheckboxButton from "components/UI/CheckboxButton";
 
-export function voteTypeByUserId(votes: VoteModel[], userId: any) {
+export function voteTypeByUserId(votes: VoteModel[], userId: number) {
+  console.log("Did you make it here?");
   if (!votes) {
+    console.log("no votes");
     return "none";
   }
+  console.log("pursuit!", votes, userId);
 
   // I really don't see why this can't just NOP when
   // the iterator is null/undefined?
   for (const vote of votes) {
-    if (vote.userId === userId) {
+    if (vote.user === userId) {
+      console.log(vote.user, userId);
       return vote.type;
     }
   }
@@ -85,7 +89,6 @@ function Comment({
       }
 
       for (const vote of comment.votes) {
-        // @ts-expect-error
         if (vote.user === currentUser.id) {
           setVoteType(vote.type);
           break;
@@ -100,7 +103,7 @@ function Comment({
       return false;
     }
 
-    if (voteTypeByUserId(comment.votes, currentUser.id) === type || voteType === type) {
+    if (voteType === type) {
       return true;
     }
   }

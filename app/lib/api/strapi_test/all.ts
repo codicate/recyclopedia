@@ -10,9 +10,21 @@ import { User } from "state/strapi_test/admin";
 
 export type ArticleLink = Pick<ArticleModel, 'name' | 'draftStatus' | 'tags'>;
 
-export async function getArticle(name: string) {
-  const { data } = await Requests.get_safe<ArticleModel>( `${STRAPI_INSTANCE_URL}/articles/by_name/${name}`, ArticleModel.default);
-  return data;
+export async function getArticle(articleName: string) {
+  const { data } = await Requests.get_safe<any>( `${STRAPI_INSTANCE_URL}/articles/by_name/${articleName}`, ArticleModel.default);
+  const {
+    name, content, created_at, updated_at, tags, votes, comments
+  } = data;
+  return {
+    ... ArticleModel.default,
+    name,
+    content,
+    createdAt: created_at,
+    updatedAt: updated_at,
+    tags,
+    votes,
+    comments
+  } as ArticleModel;
 }
 
 async function getCommentById(id: number) {
@@ -60,8 +72,7 @@ export async function getArticleComments(name: string): Promise<CommentModel[]> 
 
 export async function getVotesOfArticle(name: string): Promise<VoteModel[]> {
   const article = await getArticle(name);
-        // @ts-expect-error
-  return article.votes.map((vote) => { return { userId: vote.user, type: vote.type } });
+  return article.votes.map((vote) => { return { user: vote.user, type: vote.type } });
 }
 
 // TODO(jerry): no user association yet.
@@ -108,7 +119,7 @@ export async function insertArticle(article: ArticleModel, accessToken: string) 
       {
         name: article.name,
         content: article.content,
-        createdAt: article.dateCreated,
+        createdAt: article.createdAt,
         comments: [],
         tags: [],
       },

@@ -62,13 +62,8 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
   const {
     name,
     content,
-    // dateCreated,
-    // dateModified,
-
-    // @ts-expect-error
-    created_at,
-    // @ts-expect-error
-    updated_at,
+    createdAt,
+    updatedAt,
   } = article;
 
   const [migrationTitleName, updateMigrationTitleName] = useState(name);
@@ -188,11 +183,11 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
               <h1 className={styles.title}> {name} </h1>
               <div className={styles.dateView}>
                 <p>
-                  Created at {format(new Date(created_at), "LLLL d, yyyy, h:mm a")}
+                  Created at {format(new Date(createdAt), "LLLL d, yyyy, h:mm a")}
                 </p>
-                {(updated_at) && (
+                {(updatedAt) && (
                   <p>
-                    Last Modified at {format(new Date(updated_at), "LLLL d, yyyy, h:mm a")}
+                    Last Modified at {format(new Date(updatedAt), "LLLL d, yyyy, h:mm a")}
                   </p>
                 )}
               </div>
@@ -226,14 +221,14 @@ function ArticleComponent({ article, inRecycling }: ArticleProperties) {
                 if (migrationTitleName === name) {
                   alert("You cannot migrate a page unto itself!");
                 } else {
-            // @ts-expect-error
-                  const dispatchResult = await dispatch(migrateArticle({
-                    name,
-                    newName: migrationTitleName
-                  }));
-                  if (dispatchResult.payload) {
-                    router.push(validPageLink(migrationTitleName));
-                  }
+                  // TODO(jerry): reimplement article migration
+                  // const dispatchResult = await dispatch(migrateArticle({
+                  //   name,
+                  //   newName: migrationTitleName
+                  // }));
+                  // if (dispatchResult.payload) {
+                  //   router.push(validPageLink(migrationTitleName));
+                  // }
                 }
               }}>
                 Migrate Page
