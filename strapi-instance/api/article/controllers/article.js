@@ -12,6 +12,8 @@ const { sanitizeEntity, parseMultipartData, VALID_REST_OPERATORS } = require('st
 
     NOTE(jerry):
         All API routes will explicitly not search for recycled articles by default
+
+    NOTE(jerry): Read the policies page later...
 */
 
 function findExistingVoteByUser(votes, user) {
