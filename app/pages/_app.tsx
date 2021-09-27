@@ -18,20 +18,19 @@ import * as Requests from 'lib/requests';
 function AsynchronousAxiosResponseWait<responseType>(axiosPromise: any): Promise<Requests.Response<responseType>> {
   return new Promise(
     function (resolve, reject) {
-      try {
-        axiosPromise.then(
-          // @ts-ignore
-          function (response) {
-            resolve({
-              status: response.status,
-              data: response.data,
-              headers: response.headers,
-            });
-          }
-        )
-      } catch (error) {
-        reject(error);
-      }
+      axiosPromise.then(
+        // @ts-ignore
+        function (response) {
+          resolve({
+            status: response.status,
+            data: response.data,
+            headers: response.headers,
+          });
+        },
+        function (error) {
+          reject(error);
+        }
+      );
     }
   )
 }
