@@ -3,7 +3,7 @@
     {
       "method": "GET",
       "path": "/articles",
-      "handler": "article.find",
+      "handler": "article.findPublished",
       "config": {
         "policies": []
       }

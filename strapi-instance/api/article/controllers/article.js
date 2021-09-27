@@ -139,6 +139,13 @@ module.exports = {
         return {};
     },
 
+    async findPublished(context) {
+        const articles = await strapi.services.article.find();
+        return articles.filter(
+            ({recycled}) => !recycled
+        );
+    },
+
     async findRecycled(context) {
         const articles = await strapi.services.article.find();
         return articles.filter(
