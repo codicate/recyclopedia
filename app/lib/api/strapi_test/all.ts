@@ -10,6 +10,26 @@ import { User } from "state/strapi_test/admin";
 
 export type ArticleLink = Pick<ArticleModel, 'name' | 'draftStatus' | 'tags'>;
 
+// NOTE(jerry): Deduplicate later.
+// NOTE(jerry): recycled_articles will produce the same results as /articles/ for now,
+//              with the only exception being that just flat /recycled_articles/ will filter out all articles.
+//              Any other methods will proceed to act identically.
+export async function getRecycledArticle(articleName: string) {
+  const { data } = await Requests.get_safe<any>( `${STRAPI_INSTANCE_URL}/recycled_articles/by_name/${articleName}`, ArticleModel.default);
+  const {
+    name, content, created_at, updated_at, tags, votes, comments
+  } = data;
+  return {
+    ... ArticleModel.default,
+    name,
+    content,
+    createdAt: created_at,
+    updatedAt: updated_at,
+    tags,
+    votes,
+    comments
+  } as ArticleModel;
+}
 export async function getArticle(articleName: string) {
   const { data } = await Requests.get_safe<any>( `${STRAPI_INSTANCE_URL}/articles/by_name/${articleName}`, ArticleModel.default);
   const {
@@ -108,6 +128,19 @@ export async function getArticles() {
 
   return result;
 }
+export async function getRecycledArticles() {
+  const { data } = await Requests.get_safe<ArticleModel[]>(`${STRAPI_INSTANCE_URL}/recycled_articles`, []);
+  const articles = data;
+
+  const result = articles.map((article) => ({
+    ...article,
+    //@ts-ignore
+    tags: (article.tags).map(({name}) => name),
+    id: validPageLink(article.name),
+  }));
+
+  return result;
+}
 
 // Might as well take a user and retrieve the access token like I do in articleVote
 // which would be more convenient!
@@ -183,6 +216,9 @@ export async function articleVote(userInformation: User, articleName: string, vo
 // the same but with less fields.
 export async function getArticleLinks() {
   return (await getArticles()) as ArticleLink[];
+}
+export async function getRecycledArticleLinks() {
+  return (await getRecycledArticles()) as ArticleLink[];
 }
 
 // TODO(jerry):

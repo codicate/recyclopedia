@@ -137,5 +137,12 @@ module.exports = {
         }
 
         return {};
+    },
+
+    async findRecycled(context) {
+        const articles = await strapi.services.article.find();
+        return articles.filter(
+            ({recycled}) => recycled
+        );
     }
 };

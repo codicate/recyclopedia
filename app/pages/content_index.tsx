@@ -9,8 +9,6 @@ import { useAppSelector } from "state/hooks";
 import { LoginType, selectLoginType } from "state/strapi_test/admin";
 
 import { validPageLink, dictionaryUpdateKey } from "lib/functions";
-// import getArticleLinks, { ArticleLink } from "api/getArticleLinks";
-// import getArticleTags from 'api/getArticleTags';
 import {
   getArticleLinks,
   ArticleLink,
@@ -19,7 +17,6 @@ import {
 
 import Collapsible from "components/UI/Collapsible";
 import CheckboxButton from "components/UI/CheckboxButton";
-
 
 interface TagFilter {
   filterName: string;

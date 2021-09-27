@@ -1,24 +1,29 @@
-// TODO(someone):
-// restore recycling bin order. That would be very nice.
-// For now this is broken though. So don't worry about it I suppose.
+/*
+  NOTE/TODO(jerry):
+
+    This is exactly identical to the other [id].tsx, mostly cause these
+    files do the exact same thing except for being that they fetch from slightly
+    different URLs.
+*/
 
 import Head from 'next/head';
 import { GetStaticPaths, GetStaticProps } from 'next';
-
-import TokensCasher from 'utils/tokensCacher';
-import { RecycleBinArticleModel } from 'lib/models';
-import getRecyleBinArticles from 'api/getRecyleBinArticles';
+import { RecycleBinArticleModel, ArticleModel } from 'lib/models';
+import {
+  getRecycledArticle,
+  getRecycledArticleLinks,
+} from 'api/strapi_test/all';
 
 import Article from 'components/Article/Article';
+import {validPageLink} from 'lib/functions';
 
-
-type ContextParams = { id: string; };
-type QueriedArticleToken = RecycleBinArticleModel & ContextParams;
-
-interface PageProps {
-  article: QueriedArticleToken;
+type ContextParams = { 
+  id: string;
+  articleName: string;
 };
-
+interface PageProps {
+  article: ArticleModel;
+};
 
 const Articles = ({ article }: PageProps) => (
   <>
@@ -32,38 +37,34 @@ const Articles = ({ article }: PageProps) => (
 export default Articles;
 
 
-const tokensCasher = new TokensCasher<QueriedArticleToken>('recycleBinArticle');
-
 export const getStaticPaths: GetStaticPaths = async () => {
-  // const tokens = await getRecyleBinArticles();
-  const tokens: QueriedArticleToken[] = [];
-  tokensCasher.cacheTokens(tokens);
-
-  const paths = tokens.map((token) => ({
+  const articleLinks = await getRecycledArticleLinks();
+  const paths = articleLinks.map((link) => ({
     params: {
-      id: token.id
+      id: validPageLink(link.name),
     }
   }));
 
   return {
     paths,
-    fallback: false
+    fallback: true
   };
 };
 
 
 export const getStaticProps: GetStaticProps<PageProps, ContextParams> = async ({ params }) => {
   if (params?.id) {
-    const token = tokensCasher.retrieveToken(params.id);
+    const article = await getRecycledArticle(params.id);
 
     return {
       props: {
-        article: token
-      }
+        article
+      },
+      revalidate: 5
     };
-  };
+  }
 
   return {
     notFound: true
-  };
+  }
 };

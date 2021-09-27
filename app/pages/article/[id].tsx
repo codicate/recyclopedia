@@ -9,7 +9,6 @@ import {
 import Article from 'components/Article/Article';
 import {validPageLink} from 'lib/functions';
 
-
 type ContextParams = {
   id: string;
   articleName: string;

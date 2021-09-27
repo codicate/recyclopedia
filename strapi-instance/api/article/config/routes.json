@@ -33,6 +33,14 @@
       }
     },
     {
+      "method": "GET",
+      "path": "/recycled_articles/by_name/:id",
+      "handler": "article.findOneByName",
+      "config": {
+        "policies": []
+      }
+    },
+    {
       "method": "POST",
       "path": "/articles",
       "handler": "article.create",
@@ -72,6 +80,15 @@
       "method": "DELETE",
       "path": "/articles/by_name/:id",
       "handler": "article.deleteByName",
+      "config": {
+        "policies": []
+      }
+    },
+
+    {
+      "method": "GET",
+      "path": "/recycled_articles/",
+      "handler": "article.findRecycled",
       "config": {
         "policies": []
       }
