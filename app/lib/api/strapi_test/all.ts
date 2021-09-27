@@ -176,6 +176,18 @@ export async function deleteArticle(articleName: string, accessToken: string) {
   }
 }
 
+export async function restoreArticle(articleName: string, accessToken: string) {
+  const accessHeader = { Authorization: `Bearer ${accessToken}` };
+  try {
+    const response = await Requests.post(
+      `${STRAPI_INSTANCE_URL}/articles/by_name/${articleName}/restore`,
+      { headers: accessHeader }
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 // This is duped from another file. Need to think of better way to organize, since I want to
 // keep most stuff here for now.
 export async function commentVote(userInformation: User, commentId: number, voteCommand: string) {

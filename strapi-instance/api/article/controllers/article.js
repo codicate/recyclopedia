@@ -1,5 +1,5 @@
 'use strict';
-const { sanitizeEntity, parseMultipartData } = require('strapi-utils');
+const { sanitizeEntity, parseMultipartData, VALID_REST_OPERATORS } = require('strapi-utils');
 
 /*
     NOTE(jerry):
@@ -144,5 +144,20 @@ module.exports = {
         return articles.filter(
             ({recycled}) => recycled
         );
+    },
+
+    async restore(context) {
+        const original = await this.findOneByName(context);
+        const {id} = context.params;
+
+        if (!context.is('multipart')) {
+            original.recycled = false;
+            original.daysUntilDeletion = 0;
+
+            const newArticleResult = await strapi.services.article.update({ name: id }, original);
+            return sanitizeEntity(newArticleResult, { model: strapi.models.article });
+        }
+
+        return {};
     }
 };

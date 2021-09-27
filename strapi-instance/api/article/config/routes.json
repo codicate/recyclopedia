@@ -92,6 +92,15 @@
       "config": {
         "policies": []
       }
+    },
+
+    {
+      "method": "POST",
+      "path": "/articles/by_name/:id/restore",
+      "handler": "article.restore",
+      "config": {
+        "policies": []
+      }
     }
   ]
 }

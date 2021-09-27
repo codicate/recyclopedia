@@ -22,6 +22,7 @@ import {
   addArticleComment,
   // TODO(jerry): rename?
   deleteArticle as _deleteArticle,
+  restoreArticle as _restoreArticle,
   insertArticle as _insertArticle,
   articleVote   as _articleVote,
   commentVote   as _commentVote,
@@ -134,27 +135,17 @@ export const deleteArticle = createAsyncThunk(
       _deleteArticle(name, accessToken);
     }
   }
-  // tryToCallWithUser(
-  //   // @ts-ignore
-  //   async function (user: Realm.User, name: string, { dispatch }) {
-  //     await user.functions.removeArticle(name);
-  //     dispatch(queryForArticles(undefined));
-  //   }
-  // )
 );
 
 export const restoreArticle = createAsyncThunk(
   "articles/restoreArticle",
-  async function(name: string) {
-
+  async function(name: string, { getState }) {
+    const { admin } = getState() as AppState;
+    if (admin.loginType === LoginType.Admin) {
+      const accessToken = admin.userInformation?.accessToken;
+      _restoreArticle(name, accessToken);
+    }
   }
-  // tryToCallWithUser(
-  //   // @ts-ignore
-  //   async function (user: Realm.User, name: string, { dispatch }) {
-  //     await user.functions.restoreArticle(name);
-  //     dispatch(queryForArticles(undefined));
-  //   }
-  // )
 );
 
 export const insertArticle = createAsyncThunk(
