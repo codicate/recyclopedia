@@ -79,7 +79,7 @@ function RecyclingBin({ articleLinks, tags }) {
             { /*@ts-expect-error*/ }
             {articleLinks.map(({ name, daysUntilDeletion }) => (
               <div key={name}>
-                <Link href={"/admin/recycle_bin" + validPageLink(name)}>
+                <Link href={"/admin/recycle_bin/" + validPageLink(name)}>
                   {name}
                 </Link>
                 <div>
