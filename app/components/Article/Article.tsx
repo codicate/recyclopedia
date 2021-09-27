@@ -52,6 +52,14 @@ interface ArticleProperties {
   article: ArticleModel,
 }
 
+/*
+  NOTE(jerry):
+    Don't know if we'll ever do anything about this, but in retrospect the Article should probably
+    not be able to know whether it's being editted or not.
+
+    It should really only just display the article itself, but whatever since this works just fine and
+    only has these few responsibilities...
+*/
 function ArticleComponent({ article, inRecycling }: ArticleProperties) {
   const router = useRouter();
   const dispatch = useAppDispatch();

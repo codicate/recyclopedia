@@ -21,12 +21,12 @@ import {
   getArticleComments,
   addArticleComment,
   // TODO(jerry): rename?
+  deleteArticle as _deleteArticle,
   insertArticle as _insertArticle,
   articleVote   as _articleVote,
   commentVote   as _commentVote,
   getVotesOfArticle as _getVotesOfArticle,
 } from 'lib/api/strapi_test/all';
-import { access } from "fs-extra";
 
 export interface RecycledArticle extends ArticleModel {
   pendingDaysUntilDeletion: number;
@@ -127,7 +127,12 @@ export const migrateArticle = createAsyncThunk(
 
 export const deleteArticle = createAsyncThunk(
   "articles/deleteArticle",
-  async function(name: string) {
+  async function(name: string, { getState }) {
+    const { admin } = getState() as AppState;
+    if (admin.loginType === LoginType.Admin) {
+      const accessToken = admin.userInformation?.accessToken;
+      _deleteArticle(name, accessToken);
+    }
   }
   // tryToCallWithUser(
   //   // @ts-ignore

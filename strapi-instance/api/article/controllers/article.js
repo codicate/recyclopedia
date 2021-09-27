@@ -1,10 +1,18 @@
 'use strict';
 const { sanitizeEntity, parseMultipartData } = require('strapi-utils');
 
-/**
- * Read the documentation (https://strapi.io/documentation/developer-docs/latest/development/backend-customization.html#core-controllers)
- * to customize this controller
- */
+/*
+    NOTE(jerry):
+        While recycled articles may and should be separate at scale, for now
+        for simplicity of implementation since I have school tomorrow lol, I'm
+        going to "fatten" the article like previously, and keep it in the same collection.
+
+        It isn't particularly too difficult to migrate into a separate collection and as far as
+        the app is concerned, this difference doesn't exist, so feel free to fix this when not lazy.
+
+    NOTE(jerry):
+        All API routes will explicitly not search for recycled articles by default
+*/
 
 function findExistingVoteByUser(votes, user) {
     if (!votes) {
@@ -104,6 +112,28 @@ module.exports = {
 
             const newArticleResult = await strapi.services.article.update({ name: id }, original);
             return sanitizeEntity(newArticleResult, { model: strapi.models.article });
+        }
+
+        return {};
+    },
+
+    async deleteByName(context) {
+        const {id} = context.params;
+
+        if (!context.is('multipart')) {
+            const original = await this.findOneByName(context);
+
+            if (!original.recycled) {
+                original.recycled = true;
+                original.daysUntilDeletion = 30;
+
+                const sanitized = sanitizeEntity(original, { model: strapi.models.article });
+                await strapi.services.article.update({ name: id }, sanitized);
+
+                return sanitized;
+            } else {
+                await strapi.query('article').delete({name: original.name});
+            }
         }
 
         return {};

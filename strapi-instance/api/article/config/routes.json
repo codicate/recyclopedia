@@ -67,6 +67,14 @@
       "config": {
         "policies": []
       }
+    },
+    {
+      "method": "DELETE",
+      "path": "/articles/by_name/:id",
+      "handler": "article.deleteByName",
+      "config": {
+        "policies": []
+      }
     }
   ]
 }

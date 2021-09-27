@@ -28,6 +28,15 @@
     },
     "votes": {
       "collection": "vote"
+    },
+    "daysUntilDeletion": {
+      "default": 0,
+      "type": "integer"
+    },
+    "recycled": {
+      "type": "boolean",
+      "default": false,
+      "required": false
     }
   }
 }

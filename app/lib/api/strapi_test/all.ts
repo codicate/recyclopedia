@@ -130,6 +130,19 @@ export async function insertArticle(article: ArticleModel, accessToken: string) 
   }
 }
 
+export async function deleteArticle(articleName: string, accessToken: string) {
+  const accessHeader = { Authorization: `Bearer ${accessToken}` };
+  try {
+    // lmao reserved keywords
+    const response = await Requests._delete(
+      `${STRAPI_INSTANCE_URL}/articles/by_name/${articleName}`,
+      { headers: accessHeader }
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 // This is duped from another file. Need to think of better way to organize, since I want to
 // keep most stuff here for now.
 export async function commentVote(userInformation: User, commentId: number, voteCommand: string) {
