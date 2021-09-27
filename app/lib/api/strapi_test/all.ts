@@ -181,6 +181,7 @@ export async function restoreArticle(articleName: string, accessToken: string) {
   try {
     const response = await Requests.post(
       `${STRAPI_INSTANCE_URL}/articles/by_name/${articleName}/restore`,
+      {},
       { headers: accessHeader }
     );
   } catch (error) {

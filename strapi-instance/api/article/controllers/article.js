@@ -146,15 +146,17 @@ module.exports = {
         );
     },
 
-    async restore(context) {
+    async restoreByName(context) {
+        console.log(context);
         const original = await this.findOneByName(context);
-        const {id} = context.params;
 
+        console.log("restore me!");
         if (!context.is('multipart')) {
             original.recycled = false;
             original.daysUntilDeletion = 0;
 
-            const newArticleResult = await strapi.services.article.update({ name: id }, original);
+            const newArticleResult = await strapi.services.article.update({ name: original.name }, original);
+            console.log(original, newArticleResult);
             return sanitizeEntity(newArticleResult, { model: strapi.models.article });
         }
 

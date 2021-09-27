@@ -97,7 +97,7 @@
     {
       "method": "POST",
       "path": "/articles/by_name/:id/restore",
-      "handler": "article.restore",
+      "handler": "article.restoreByName",
       "config": {
         "policies": []
       }
